@@ -1,0 +1,4 @@
+export(LDA.Tree,PDA.Tree,PP.classify,PP.optimize.anneal,PP.optimize.Huber,PP.optimize.plot,PP.optimize.random,PP.Tree,PPindex.class,PPindex.LDA,PPindex.Lp,PPindex.PDA)     
+useDynLib(PPtree)
+importFrom(penalizedLDA,PenalizedLDA)
+importFrom(MASS,lda)

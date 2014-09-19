@@ -1,0 +1,17 @@
+7dd50c70646157210d711cefc1a2edad *DESCRIPTION
+f377eed91eb113719bb92e88a8dbca2b *NAMESPACE
+32e4c653de9b8c0a889e5940dc72b110 *R/LDATree.R
+b2cc0a3f0f0dcc88ff1f0b3f21188472 *R/PDATree.R
+769f3fdc9f1922965367154f7ef56402 *R/PPTreeNew.R
+dd5e38bc9c2d2c3342a4947e861e6501 *R/PPindex.R
+96276d17198e481a200350611f4a5b97 *man/ClassPP.Rd
+c63c4194f5f2cc2331d4754b7fae1be2 *man/LDA.Tree.Rd
+6a437fda003c841b091e546267b87b9e *man/PDA.Tree.Rd
+93e7849ed8084c823b4be11a6dfbe3c4 *man/PP.Tree.Rd
+7ebaef49123210b7832eaabd12f6a392 *man/PP.classify.Rd
+042af684f27c031a9e4df43a15b41549 *man/PP.optimize.Rd
+1a6222fa66fe01cda209c906a52bd788 *man/PPindex.class.Rd
+c7fb6a6fb3c5ea353b95f22a8213b896 *src/GiniEnt.c
+c401286ad45a62ccc57140d81f783e2d *src/LDA.c
+2d2e31bda363ee32a5f3353c71ef3b0a *src/PDA.c
+712faacb557030fdfeca96458b8070e5 *src/optimize.c
