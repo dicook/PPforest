@@ -1,6 +1,7 @@
 sample.tr<-function(data,ntree){
   n<-length(data[, 1])
-  rdply(ntree,sample(1:n, replace = TRUE) )
+  sam.id<-rdply(ntree,sample(1:n, replace = TRUE) )[,-1]
+  cbind(tr=rep(1:ntree,each=n),data[as.numeric(data.matrix(sam.id)),] )  
 }
 
 
