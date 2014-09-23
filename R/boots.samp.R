@@ -1,3 +1,9 @@
+sample.tr<-function(data,ntree){
+  n<-length(data[, 1])
+  rdply(ntree,sample(1:n, replace = TRUE) )
+}
+
+
 boots.samp<-function(i.class, i.data,ntree=50,m.index,PPmethod='LDA', weight = TRUE, r = NULL,  
                      lambda, cooling = 0.999, temp = 1, energy = 0.01,  ...)
 {
