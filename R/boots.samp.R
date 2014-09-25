@@ -12,6 +12,7 @@ sample.var<-function(data,ntree,nodes){
   
 }
 
+#trees for the bootstrap sampling with classification for each sample to do a bagging
 
 pps.index<-function(data,i.class, i.data,m.index,PPmethod='LDA', weight = TRUE, r = NULL,  
                     lambda, cooling = 0.999, temp = 1, energy = 0.01,  ...)
@@ -20,17 +21,19 @@ pps.index<-function(data,i.class, i.data,m.index,PPmethod='LDA', weight = TRUE, 
   if(m.index=="PP.Tree"){
     out<- PP.Tree(PPmethod, i.class, i.data, weight = TRUE, r = NULL,lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01)
     pred<- PP.classify(i.data, i.class,out, Rule=1)
-    
+    cl.pr<-which.max((table(pred[2])))
   }
   if(m.index=="LDA.Tree"){
     out<-  LDA.Tree(i.class, i.data)
     pred<- PP.classify(i.data, i.class,out, Rule=1)
+    cl.pr<-which.max((table(pred[2])))
   }
   if(m.index=="PDA.Tree"){
     out<-PDA.Tree(i.class, i.data,lambda)
     pred<- PP.classify(i.data, i.class,out, Rule=1)
+    cl.pr<-which.max((table(pred[2])))
   }
-  return(c(out,pred)) 
+  return(c(out,pred,cl.pr)) 
 }
 
 
