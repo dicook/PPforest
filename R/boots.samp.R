@@ -9,11 +9,11 @@ sample.train<-function(data,ntree,size.p){
   return(list(test,train.boot))
 }
 
-sample.var<-function(data,ntree,nodes){
+
+sample.var<-function(data,ntree,nodes,size){
   n<-length(data[1,-1])
-  sam.id<-rdply(ntree*nodes,sample(1:n, replace = TRUE) )[,-1]
-  cbind(tr=rep(1:ntree,each=nodes),data[as.numeric(data.matrix(sam.id)),] )  
-  
+  sam.id<-rdply(ntree*nodes,sample(1:size) )[,-1]
+  cbind(tr=rep(1:ntree*nodes,each=nodes),data[as.numeric(data.matrix(sam.id)),] )  
 }
 
 
@@ -52,6 +52,5 @@ class.bagg<-function(ntree,out.pp){
     cl<-rbind(cl,out.pp[[i]][[5]] )
   }
   aux<-unlist(apply(cl,2,table))
-  apply(aux,2,which.max)
+  apply(aux,2,which.max)   
 }
-  
