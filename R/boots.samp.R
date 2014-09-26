@@ -1,3 +1,5 @@
+
+
 sample.train<-function(data,ntree){
   n<-length(data[,1])
   sam.id<-rdply(ntree,sample(1:n, replace = TRUE) )[,-1]
@@ -9,10 +11,9 @@ sample.var<-function(data,ntree,nodes){
   n<-length(data[1,-1])
   sam.id<-rdply(ntree*nodes,sample(1:n, replace = TRUE) )[,-1]
   cbind(tr=rep(1:ntree,each=nodes),data[as.numeric(data.matrix(sam.id)),] )  
-  
-}
+  }
 
-#trees for the bootstrap sampling with classification for each sample to do a bagging
+
 
 pps.index<-function(data,i.class, i.data,m.index,PPmethod='LDA', weight = TRUE, r = NULL,  
                     lambda, cooling = 0.999, temp = 1, energy = 0.01,  ...)
@@ -21,19 +22,16 @@ pps.index<-function(data,i.class, i.data,m.index,PPmethod='LDA', weight = TRUE, 
   if(m.index=="PP.Tree"){
     out<- PP.Tree(PPmethod, i.class, i.data, weight = TRUE, r = NULL,lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01)
     pred<- PP.classify(i.data, i.class,out, Rule=1)
-    cl.pr<-which.max((table(pred[2])))
   }
   if(m.index=="LDA.Tree"){
     out<-  LDA.Tree(i.class, i.data)
     pred<- PP.classify(i.data, i.class,out, Rule=1)
-    cl.pr<-which.max((table(pred[2])))
   }
   if(m.index=="PDA.Tree"){
     out<-PDA.Tree(i.class, i.data,lambda)
     pred<- PP.classify(i.data, i.class,out, Rule=1)
-    cl.pr<-which.max((table(pred[2])))
   }
-  return(c(out,pred,cl.pr)) 
+  return(c(out,pred)) 
 }
 
 
@@ -42,7 +40,16 @@ bagg.pp<-function(data,ntree,m.index,PPmethod='LDA', weight = TRUE, r = NULL,
   
   aux<-sample.train(data,ntree)
   dlply(aux,.(tr),function(x) pps.index(data,i.class=x[,2],i.data=x[,-c(1,2)],m.index))
+  }
+
+
+
+class.bagg<-function(n.tree,out.pp){
+  cl<-out.pp[[1]][[5]] 
+  for(i in 2:ntree){
+    cl<-rbind(cl,out.pp[[i]][[5]] )
+  }
+  aux<-apply(cl,2,table)
+  apply(aux,2,which.max)
 }
-
-
   
