@@ -5,10 +5,10 @@
 #' @return numeric vector with the sample indexes for training
 #' @examples
 #' train_fn(iris[,5],.9)
-train_fn <- function(i.class,size.p){
+train_fn<- function(i.class,size.p){
   n <- length(i.class)
   class.id <- data.frame(id=1:n,class=i.class)
-  index  <- unlist(dlply(aux,.(i.class),function(x) sample(x$id,round(length(x$class)*size.p,1))))
-  names(index) <- NULL
+  index  <- unlist(dlply(class.id,.(i.class),function(x) sample(x$id,round(length(x$class)*size.p,1))))
+  names(index)<-NULL
   return(sort(index))
 }
