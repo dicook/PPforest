@@ -6,16 +6,18 @@
 #' @export
 #' @examples
 #' data<-iris[,5:1]
-#' output<-bootstrap_pp2(data,ntree=100,size.p=.9,index="LDA")  
-#' bagging_pp(data,output)
-bagging_pp<-function(data,boot,...){
-  votes.tr <- ldply(boot[[1]],function(x) PP.classify(test.data=data[x[[1]],-1],true.class=data[x[[1]],1],x[[2]],Rule=1)$predict.class)
-  error.tr <- ldply(boot[[1]],function(x) PP.classify(test.data=data[x[[1]],-1],true.class=data[x[[1]],1],x[[2]],Rule=1)$predict.error)
-  max.vote <-apply(votes.tr[,-1],2,function(x) {
-    t1<-table(x)
+#' output <- bootstrap_pp(data, ntree=100, size.p=.9, index="LDA")  
+#' bagging_pp(data, output)
+bagging_pp <- function(data, boot, ...){
+  votes.tr <- ldply(boot[[1]], function(x) PP.classify(test.data=data[x[[1]],-1],
+                                true.class=data[x[[1]],1], x[[2]], Rule=1)$predict.class)
+  error.tr <- ldply(boot[[1]], function(x) PP.classify(test.data=data[x[[1]],-1],
+                                true.class=data[x[[1]],1], x[[2]], Rule=1)$predict.error)
+  max.vote <- apply(votes.tr[,-1], 2, function(x) {
+    t1 <- table(x)
     names(t1)[which.max(t1)]
   }
   )
-  error<-sum(as.numeric(max.vote)!=as.numeric(data[boot[[2]],1]))/length(boot[[2]])
-  return(list(error,as.numeric(max.vote)))
+  error <- sum(as.numeric(max.vote) != as.numeric(data[boot[[2]],1])) / length(boot[[2]])
+  return(list(error, as.numeric(max.vote)))
 } 

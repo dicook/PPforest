@@ -14,10 +14,10 @@
 bootstrap_pp <- function(data, aux, ntree, size.p, index='LDA', ...){
   out <- mlply(data.frame(tr=1:ntree), function(tr) {
     boot <- sort(sample(aux, replace = TRUE))
-    pp.tree <- PP.Tree(PPmethod=index,i.data=data[boot,-1],i.class=data[boot,1],...) 
-    list(boot,pp.tree)
+    pp.tree <- PP.Tree(PPmethod=index, i.data=data[boot,-1], i.class=data[boot,1], ...) 
+    list(boot, pp.tree)
   })
-  return(list(out,aux))        
+  return(list(out, aux))        
 }
 
 
