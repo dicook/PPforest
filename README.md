@@ -75,3 +75,4 @@ bagging_pp<-function(data,boot,...){
   error<-sum(as.numeric(max.vote)!=as.numeric(data[boot[[2]],1]))/length(boot[[2]])
   return(list(error,as.numeric(max.vote)))
 } 
+```
