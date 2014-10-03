@@ -54,7 +54,7 @@ bootstrap_pp <- function(data,ntree,size.p,index='LDA', ...){
 
 Bagging function
 ---------
-
+```{r}
 #' List with bagging PP.tree error and bagging classification.
 #'
 #' @param data is a data frame with the complete data set. Class factor in the first column
