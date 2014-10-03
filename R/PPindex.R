@@ -1,10 +1,9 @@
-
 #############################################
 #
 # PP index calculation
 #
 #############################################
-PPindex.class <- function(PPmethod, data, class, weight=TRUE, r=NULL,
+PPindex.class <- function(PPmethod="LDA", data, class, weight=TRUE, r=NULL,
                           lambda=NULL, ...) {
     if (PPmethod =="LDA") 
         index <- PPindex.LDA(data, class, weight)

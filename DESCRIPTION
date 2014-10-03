@@ -4,7 +4,10 @@ Date: 2014-09-19
 Title: Projection pursuit classification forest
 Author: Natalia Da Silva, Eun-Kyung Lee, Di Cook
 Maintainer: Natalia Da Silva <ndasilva@iastate.edu>
-Imports: MASS (>= 3.1-20), penalizedLDA (>= 1.0)
-Description: Projection pursuit classification tree using LDA, Lr or PDA projection pursuit index
+Imports:
+    MASS (>= 3.1-20),
+    penalizedLDA (>= 1.0)
+Description: Projection pursuit classification tree using LDA, Lr or PDA
+    projection pursuit index
 License: LGPL-2.1
 NeedsCompilation: yes
