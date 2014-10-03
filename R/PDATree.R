@@ -1,3 +1,29 @@
+#' Find PP tree structure using PDA index
+#' 
+#' Find tree structure using projection pursuit in each split. 
+#' @usage PDA.Tree(i.class, i.data, weight = TRUE, lambda=1, ...)
+#' @param i.data A training data  without class information
+#' @param i.class class information
+#' @param weight weight flag using in LDA index
+#' @param lambda a parameter for PDA index
+#' @return Tree.Struct Tree structure
+#' @return Alpha.Keep 1D projection of each split
+#' @return C.Keep spliting rule for each split
+#' @references Lee, E.-K., Cook, D. (2009) A Projection Pursuit Index for Large p Small n Data, 
+#' Statistics and Computing,  
+#' \url{http://www.springerlink.com/content/g47n0n342761838m/#?p=d2ff5a7b69eb45ef8abf7ef3aba69557&pi=3}.
+#' @export
+#' @keywords tree
+#' @seealso {\code{\link{PPindex.class}}, \code{\link{PP.optimize}}}
+#' @examples
+#' data(iris)
+#' n <- nrow(iris)
+#' tot <- c(1:n)
+#' n.train <- round(n*0.9)
+#' train <- sample(tot,n.train)
+#' test <- tot[-train]
+#' Tree.result <- PDA.Tree(iris[train,5],iris[train,1:4])
+#' Tree.result
 PDA.Tree<-function( i.class, i.data, weight = TRUE, lambda=1,  ...) 
 {
     i.data <- as.matrix(i.data)

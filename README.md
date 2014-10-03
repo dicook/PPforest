@@ -40,8 +40,8 @@ Bootstrap function
 #'   training set.
 #' @examples
 #' data<-iris[,5:1]
-#' output<-bootstrap_pp(data,ntree=100,size.p=.9,index="LDA")  
-bootstrap_pp <- function(data,ntree,size.p,index='LDA', ...){
+#' output<-bootstrap_pp(data,ntree=100,size.p=.9,index)  
+bootstrap_pp <- function(data,ntree,size.p,index="LDA", ...){
   aux <- train_fn(data[,1],size.p)
   out <- mlply(data.frame(tr=1:ntree), function(tr) {
     boot <- sort(sample(aux, replace = TRUE))
@@ -87,8 +87,8 @@ library(xtable)
 data<-iris[,5:1]
 
 
-result.boot<-mlply(data.frame(ntree=c(1,10,50,100,500)), function(ntree) {
-        bootstrap_pp2(data,ntree,size.p=.9,index="LDA")
+result.boot<-mlply(data.frame(ntree=c(1,10,50,100)), function(ntree) {
+        bootstrap_pp(data,ntree,size.p=.9,index="LDA")
  
 }
 )    

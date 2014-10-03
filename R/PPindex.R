@@ -1,8 +1,32 @@
-#############################################
-#
-# PP index calculation
-#
-#############################################
+#' Calculate Projection Pursuit index
+#' 
+#' For given projected data and class information, calculate projection pursuit index.
+#' @name PPindex.class
+#' @aliases PPindex.class, PPindex.LDA, PPindex.Lp, PPindex.PDA
+#' @usage  PPindex.class(PPmethod, data, class, weight=TRUE, r=NULL, lambda=NULL, ...)
+#' PPindex.LDA(data, class, weight=TRUE, ...) 
+#' PPindex.Lp(data, class, r, ...) 
+#' PPindex.PDA(data, class, lambda, ...)
+#' @param PPmethod Selected PP index
+#' ``LDA" - LDA index
+#'  ``Lp"  - Lp index
+#'  ``PDA"  - Entropy-class index}
+#' @param data A data  without class information
+#' @param class class information
+#' @param weight weight flag using in LDA index
+#' @param r a parameter for \eqn{L^r} index
+#' @param lambda a parameter for PDA index
+#' @return The value is an projection pursuit index for given data.
+#' @export
+#' @keywords multivariate
+#' @seealso \code{\link{PP.optimize}}
+#' @examples
+#' data(iris)
+#' n <- nrow(iris)
+#' PPindex.class("LDA",iris[,1:2],iris[,5])
+#' PPindex.class("LDA",iris[,1:2],iris[,5],weight=FALSE)
+#' PPindex.class("Lp",iris[,1:2],iris[,5],r=1)
+#' PPindex.class("PDA",iris[,1:2],iris[,5],lambda=0.1)
 PPindex.class <- function(PPmethod="LDA", data, class, weight=TRUE, r=NULL,
                           lambda=NULL, ...) {
     if (PPmethod =="LDA") 
