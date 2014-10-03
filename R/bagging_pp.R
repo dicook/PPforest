@@ -7,7 +7,7 @@
 #' @examples
 #' data<-iris[,5:1]
 #' output<-bootstrap_pp2(data,ntree=100,size.p=.9,index="LDA")  
-#' bagging_pp(data,o)
+#' bagging_pp(data,output)
 bagging_pp<-function(data,boot,...){
   votes.tr <- ldply(boot[[1]],function(x) PP.classify(test.data=data[x[[1]],-1],true.class=data[x[[1]],1],x[[2]],Rule=1)$predict.class)
   error.tr <- ldply(boot[[1]],function(x) PP.classify(test.data=data[x[[1]],-1],true.class=data[x[[1]],1],x[[2]],Rule=1)$predict.error)

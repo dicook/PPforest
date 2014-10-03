@@ -1,5 +1,4 @@
-
-#' List of PP.Tree objets for bootstrap samples.
+#' List of PP.Tree objects for bootstrap samples.
 #'
 #' @param data is a data frame with the complete data set. Class factor in the first column
 #' @param ntree number of bootstrap samples or individual classifiers (trees).
