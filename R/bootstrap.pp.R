@@ -7,6 +7,7 @@
 #' @param index PP index to run the PP.Tree, options LDA, Lp or PDA.
 #' @return list with the PP.Tree output for all the bootstraps samples and the index for the initial 
 #'   training set.
+#' @export
 #' @examples
 #' data<-iris[,5:1]
 #' output<-bootstrap_pp(data,ntree=100,size.p=.9,index="LDA")  

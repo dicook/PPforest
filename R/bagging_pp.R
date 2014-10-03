@@ -3,6 +3,7 @@
 #' @param data is a data frame with the complete data set. Class factor in the first column
 #' @param boot object from bootstrap_pp (list of PP.Tree objets for bootstrap samples)
 #' @return list with the error and predicted classes.
+#' @export
 #' @examples
 #' data<-iris[,5:1]
 #' output<-bootstrap_pp2(data,ntree=100,size.p=.9,index="LDA")  
