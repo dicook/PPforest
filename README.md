@@ -6,7 +6,7 @@ This is going to be an R package that extends PPtree to incorporate ideas of ran
 Sample index function
 --------
 
-```{r} 
+```{r sample,eval=TRUE} 
 #' Index id for training set.
 #'
 #' @param i.class input character vector with class of the data
@@ -29,7 +29,7 @@ train_fn <- function(class,size.p){
 
 Bootstrap function
 --------
-```{r}
+```{r boot,eval=TRUE}
 #' List of PP.Tree objets for bootstrap samples.
 #'
 #' @param data is a data frame with the complete data set. Class factor in the first column
@@ -54,7 +54,7 @@ bootstrap_pp <- function(data,ntree,size.p,index='LDA', ...){
 
 Bagging function
 ---------
-```{r}
+```{r bagg, eval=TRUE}
 #' List with bagging PP.tree error and bagging classification.
 #'
 #' @param data is a data frame with the complete data set. Class factor in the first column
@@ -75,4 +75,28 @@ bagging_pp<-function(data,boot,...){
   error<-sum(as.numeric(max.vote)!=as.numeric(data[boot[[2]],1]))/length(boot[[2]])
   return(list(error,as.numeric(max.vote)))
 } 
+```
+
+
+```{r table,depenson=c('sample','boot','bagg'),eval=TRUE}
+
+library(PPtree)
+library(plyr)
+library(xtable)
+
+data<-iris[,5:1]
+
+
+result.boot<-mlply(data.frame(ntree=c(1,10,50,100,500)), function(ntree) {
+        bootstrap_pp2(data,ntree,size.p=.9,index="LDA")
+ 
+}
+)    
+
+result.bagg<-llply(result.boot[1:5],bagging_pp,data=data,result=result.boot)
+
+error<-sapply(result.bagg,function(x) x[[1]][1] )
+aux<-c(1,10,50,100,500)
+xtable(cbind(aux,error),digits=5)
+
 ```
