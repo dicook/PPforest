@@ -1,7 +1,7 @@
 
-#' Index id for training set.
+#' Index id for training set, sample in each class with the same proportion.
 #'
-#' @param i.class input character vector with class of the data
+#' @param class input character vector with class of the data
 #' @param size.p proportion of sample in each class group
 #' @return numeric vector giving number with the sample indexes for training
 #' @examples
