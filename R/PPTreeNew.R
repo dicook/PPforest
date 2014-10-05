@@ -1,4 +1,34 @@
- PP.Tree<- function (PPmethod, i.class, i.data, weight = TRUE, r = NULL,  lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01,  ...) 
+#' Find PP tree structure using PDA, Lp or PDA indexes
+#' 
+#' Find tree structure using projection pursuit in each split. 
+#' @usage PP.Tree(PPmethod, i.class, i.data, weight = TRUE, r = NULL,  
+#' lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01,  ...) 
+#' @param i.data A training data  without class information
+#' @param i.class class information
+#' @param weight weight flag using in LDA index
+#' @param r  a parameter for L_r index  
+#' @param lambda a parameter for PDA index
+#' @param cooling  parameter for optimization
+#' @param temp  inital temperature for optimization
+#' @param energy  parameter for simulated annealing optimization
+#' @return Tree.Struct Tree structure
+#' @return Alpha.Keep 1D projection of each split
+#' @return C.Keep spliting rule for each split
+#' @references Lee, E., Cook, D., and Klinke, S.(2002) Projection Pursuit indices for supervised 
+#' classification
+#' @export
+#' @keywords tree
+#' @seealso {\code{\link{PPindex.class}}, \code{\link{PP.optimize}}}
+#' @examples 
+#' data(iris)
+#' n <- nrow(iris)
+#' tot <- c(1:n)
+#' n.train <- round(n*0.9)
+#' train <- sample(tot,n.train)
+#' test <- tot[-train]
+#' Tree.result <- PP.Tree("LDA",iris[train,5],iris[train,1:4])
+#' Tree.result
+PP.Tree<- function (PPmethod, i.class, i.data, weight = TRUE, r = NULL,  lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01,  ...) 
 {
     i.data <- as.matrix(i.data)
     Find.proj <- function(i.class, i.data, PPmethod, r, lambda,  ...) 
