@@ -88,7 +88,7 @@ data<-iris[,5:1]
 
 
 result.boot<-mlply(data.frame(ntree=c(1,10,50,100)), function(ntree) {
-        bootstrap_pp(data,ntree,size.p=.9,index="LDA")
+        bootstrap_pp(data,training,index="LDA")
  
 }
 )    
