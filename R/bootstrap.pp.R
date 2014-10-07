@@ -10,12 +10,18 @@
 #' @export
 #' @examples
 #' data<-iris[,5:1]
-#' output<-bootstrap_pp(data,ntree=100,size.p=.9,index="LDA")  
-bootstrap_pp <- function(data, aux, ntree, size.p, index='LDA', ...){
+#' output<-bootstrap_pp(data,aux,ntree=50,index="LDA")  
+bootstrap_pp <- function(data, aux, ntree, index='LDA', ...){
+  names(data)[1]<-"class"
   out <- mlply(data.frame(tr=1:ntree), function(tr) {
-    boot <- sort(sample(aux, replace = TRUE))
-    pp.tree <- PP.Tree(PPmethod=index, i.data=data[boot,-1], i.class=data[boot,1], ...) 
-    list(boot, pp.tree)
+    n <- length(aux)
+    class.id <- data.frame(id=1:n,class=data[aux,"class"])
+    index.boot  <- unlist(dlply(class.id, .(class), function(x) 
+      sample(x$id, replace=TRUE)))
+    names(index.boot) <- NULL
+    index.boot<-sort(index.boot)
+    pp.tree <- PP.Tree(PPmethod=index, i.data=data[index.boot,-1], i.class=data[index.boot,1], ...) 
+    list(index.boot, pp.tree)
   })
   return(list(out, aux))        
 }
