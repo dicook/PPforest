@@ -13,7 +13,7 @@ Sample index function
 #' @param size.p proportion of sample in each class group
 #' @return numeric vector giving number with the sample indexes for training
 #' @examples
-#' train_fn(iris[,5],.9)
+#' training<-train_fn(iris[,5],.9)
 train_fn <- function(class,size.p){
   n <- length(class)
   class.id <- data.frame(id=1:n,class=class)
@@ -40,7 +40,7 @@ Bootstrap function
 #'   training set.
 #' @examples
 #' data<-iris[,5:1]
-#' output<-bootstrap_pp(data,ntree=100,size.p=.9,index)  
+#' output<-bootstrap_pp(data,ntree=100,size.p=.9,index='LDA')  
 bootstrap_pp <- function(data,ntree,size.p,index="LDA", ...){
   aux <- train_fn(data[,1],size.p)
   out <- mlply(data.frame(tr=1:ntree), function(tr) {
@@ -62,8 +62,8 @@ Bagging function
 #' @return list with the error and predicted classes.
 #' @examples
 #' data<-iris[,5:1]
-#' output<-bootstrap_pp2(data,ntree=100,size.p=.9,index="LDA")  
-#' bagging_pp(data,o)
+#' output<-bootstrap_pp(data,ntree=100,size.p=.9,index="LDA")  
+#' bagging_pp(data,output)
 bagging_pp<-function(data,boot,...){
   votes.tr <- ldply(boot[[1]],function(x) PP.classify(test.data=data[x[[1]],-1],true.class=data[x[[1]],1],x[[2]],Rule=1)$predict.class)
   error.tr <- ldply(boot[[1]],function(x) PP.classify(test.data=data[x[[1]],-1],true.class=data[x[[1]],1],x[[2]],Rule=1)$predict.error)
@@ -87,11 +87,12 @@ library(xtable)
 data<-iris[,5:1]
 
 
-result.boot<-mlply(data.frame(ntree=c(1,10,50,100)), function(ntree) {
-        bootstrap_pp(data,training,index="LDA")
+result.boot<-mlply(data.frame(ntree=c(1,10,50)), function(ntree) {
+       bootstrap_pp(data,size.p=.9,index="LDA") 
+       } )  
  
-}
-)    
+
+    
 
 result.bagg<-llply(result.boot[1:5],bagging_pp,data=data,result=result.boot)
 

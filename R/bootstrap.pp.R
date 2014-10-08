@@ -14,16 +14,19 @@
 bootstrap_pp <- function(data, training, ntree, index='LDA', ...){
   names(data)[1]<-"class"
   out <- mlply(data.frame(tr=1:ntree), function(tr) {
-      n <- length(training)
-      class.id <- data.frame(id=1:n,class=data[training,"class"])
-      index.boot  <- unlist(dlply(class.id, .(class), function(x) 
-        sample(x$id, replace=TRUE)))
-        names(index.boot) <- NULL
-        index.boot <- sort(index.boot)
+    n <- length(training)
+    class.id <- data.frame(id=1:n,class=data[training,"class"])
+    index.boot  <- unlist(dlply(class.id, .(class), function(x) 
+    sort(sample(x$id, replace=TRUE))))
+       names(index.boot) <- NULL
     pp.tree <- PP.Tree(PPmethod=index, i.data=data[index.boot,-1], i.class=data[index.boot,1], ...) 
     list(index.boot, pp.tree)
     } )
   return(list(out, training))        
 }
+
+
+
+
 
 

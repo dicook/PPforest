@@ -6,7 +6,7 @@
 #' @export
 #' @examples
 #' data<-iris[,5:1]
-#' output<-bootstrap_pp(data,training,ntree=100,index="LDA")    
+#' output<-bootstrap_pp(data,training,ntree=50,index="LDA")    
 #' bagging_pp(data, output)
 bagging_pp <- function(data, boot, ...){
   votes.tr <- ldply(boot[[1]], function(x) PP.classify(test.data=data[x[[1]],-1],
@@ -21,6 +21,6 @@ bagging_pp <- function(data, boot, ...){
   error <- sum(as.numeric(max.vote) != as.numeric(data[boot[[2]],1])) / length(boot[[2]])
   tab.t <- table(Observed=data[training,1],Predicted=max.vote)
   colnames(tab.t) <- rownames(tab.t)
-  tab.p <- round(prop.table(tab.t,1),3)
+  tab.p <- round(prop.table(tab.t,1),7)
   return(list(error, as.numeric(max.vote),tab.p))
 } 
