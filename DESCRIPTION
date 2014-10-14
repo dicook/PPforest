@@ -8,7 +8,7 @@ Depends:
     R (>= 3.1.1),
     plyr (>= 1.8.1)
 Imports:
-    MASS (>= 3.1-20),
+    MASS (>= 1.0),
     penalizedLDA (>= 1.0)
 Description: Projection pursuit classification tree using LDA, Lr or PDA
     projection pursuit index
