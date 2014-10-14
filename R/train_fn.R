@@ -5,7 +5,8 @@
 #' @return numeric vector giving number with the sample indexes for training
 #' @export
 #' @examples
-#' train_fn(iris[,5],.9)
+#' training<-train_fn(iris[,5],.9)
+#' training
 train_fn <- function(class, size.p) {
   n <- length(class)
   class.id <- data.frame(id=1:n,class=class)

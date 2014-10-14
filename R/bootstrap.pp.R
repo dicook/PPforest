@@ -9,20 +9,22 @@
 #'   training set.
 #' @export
 #' @examples
-#' data<-iris[,5:1]
-#' output<-bootstrap_pp(data,training,ntree=100,index="LDA")  
-bootstrap_pp <- function(data, training, ntree, index='LDA', ...){
-  names(data)[1]<-"class"
+#' data1<-iris[,5:1]
+#' output<-bootstrap_pp(data1,training,ntree=50,index="LDA")  
+#' output
+ bootstrap_pp <- function(data, training, ntree, index='LDA', ...){
+ names(data)[1] <-"class"
   out <- mlply(data.frame(tr=1:ntree), function(tr) {
     n <- length(training)
     class.id <- data.frame(id=1:n,class=data[training,"class"])
-    index.boot  <- unlist(dlply(class.id, .(class), function(x) 
-    sort(sample(x$id, replace=TRUE))))
-       names(index.boot) <- NULL
-    pp.tree <- PP.Tree(PPmethod=index, i.data=data[index.boot,-1], i.class=data[index.boot,1], ...) 
+   dat.train <- data[training,]
+  index.boot <- unlist(dlply(class.id, .(class), function(x) sort(sample(x$id, replace=TRUE)) ))
+    names(index.boot) <- NULL 
+    pp.tree <- PP.Tree(PPmethod=index, i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1]) 
     list(index.boot, pp.tree)
-    } )
-  return(list(out, training))        
+      } 
+    )
+  return(list(trees=out, dat.train=training))        
 }
 
 

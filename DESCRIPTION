@@ -13,4 +13,5 @@ Imports:
 Description: Projection pursuit classification tree using LDA, Lr or PDA
     projection pursuit index
 License: LGPL-2.1
+LazyData: true
 NeedsCompilation: yes
