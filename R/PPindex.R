@@ -8,9 +8,9 @@
 #' PPindex.Lp(data, class, r, ...) 
 #' PPindex.PDA(data, class, lambda, ...)
 #' @param PPmethod Selected PP index
-#' ``LDA" - LDA index
-#'  ``Lp"  - Lp index
-#'  ``PDA"  - Entropy-class index}
+#' "LDA" - LDA index
+#'  "Lp"  - Lp index
+#'  "PDA"  - Entropy-class index
 #' @param data A data  without class information
 #' @param class class information
 #' @param weight weight flag using in LDA index

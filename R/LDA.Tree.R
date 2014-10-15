@@ -21,8 +21,6 @@
 #' n.train <- round(n*0.9)
 #' train <- sample(tot,n.train)
 #' test <- tot[-train]
-#' Tree.result <- LDA.Tree(iris[train,5],iris[train,1:4])
-#' Tree.result
 LDA.Tree <- function( i.class, i.data, weight = TRUE, ...) {
     i.data <- as.matrix(i.data)
     Find.proj <- function(i.class, i.data,  ...) {
