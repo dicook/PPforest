@@ -37,8 +37,7 @@ Tree.result
 }
 \references{
 Lee, E.-K., Cook, D. (2009) A Projection Pursuit Index for Large p Small n Data,
-Statistics and Computing,
-\url{http://www.springerlink.com/content/g47n0n342761838m/#?p=d2ff5a7b69eb45ef8abf7ef3aba69557&pi=3}.
+Statistics and Computing,\url{http://www.springerlink.com/content/g47n0n342761838m/#?p=d2ff5a7b69eb45ef8abf7ef3aba69557&pi=3}.
 }
 \seealso{
 {\code{\link{PPindex.class}}, \code{\link{PP.optimize}}}
