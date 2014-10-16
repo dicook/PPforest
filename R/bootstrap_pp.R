@@ -10,7 +10,7 @@
 #' @export
 #' @examples
 #' data1<-iris[,5:1]
-#' output<-bootstrap_pp(data1,training,ntree=1,index="LDA")  
+#' output<-bootstrap_pp(data1,training,ntree=50,index="LDA")  
 #' output
  bootstrap_pp <- function(data, training, strata=TRUE,ntree, index='LDA', ...){
  names(data)[1] <-"class"
