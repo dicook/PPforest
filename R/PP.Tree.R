@@ -1,6 +1,7 @@
 #' Find PP tree structure using PDA, Lp or PDA indexes
 #' 
 #' Find tree structure using projection pursuit in each split. 
+#' @useDynLib PPforest
 #' @usage PP.Tree(PPmethod, i.class, i.data, weight = TRUE, r = NULL,  
 #' lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01,  ...) 
 #' @param i.data A training data  without class information
