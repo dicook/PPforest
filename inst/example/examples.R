@@ -69,7 +69,7 @@ library(randomForest)
 rf <- randomForest(Region ~ ., data=d.olive2[training,], importance=TRUE,strata=Region,
              proximity=TRUE)
 
-
+rf 
 
       
 
