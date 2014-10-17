@@ -11,8 +11,7 @@
 bagging_pp <- function(data, boot,training, ...){
   votes <- ldply(boot[[1]], function(x) PP.classify(test.data=data[,-1],
                                 true.class=data[,1], x[[2]], Rule=1)$predict.class)[,-1]
-  error.tr <- ldply(boot[[1]], function(x) PP.classify(test.data=data[,-1],
-                                true.class=data[,1], x[[2]], Rule=1)$predict.error)
+  
   max.vote <- apply(votes, 2, function(x) {
         t1 <- table(x)
     names(t1)[which.max(t1)]
@@ -25,14 +24,14 @@ bagging_pp <- function(data, boot,training, ...){
   
   mv.train <- melt(v.train)
   moob.var <- melt(oob.var)
- oob.votes <-mv.train[moob.var$value,]
+  max.oob[,1]<-mv.train[moob.var$value,]
    max.oob <- ddply(oob.votes,.(variable),function(x){
         t1 <- table(x$value)
     names(t1)[which.max(t1)]
     }
   )
 
- tr.class <- data.frame(paste(variable="V",training,sep=""),V1=as.numeric(data[training,1]))
+ tr.class <- data.frame(variable=paste(variable="V",training,sep=""),V1=as.numeric(data[training,1]))
  cond <- tr.class[max.oob[,1],]
    oob.error <- (dim(cond)[1]-sum(cond[,2]==as.numeric(max.oob[,2])))/dim(cond)[1]
   
