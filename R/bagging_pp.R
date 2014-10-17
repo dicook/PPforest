@@ -18,13 +18,13 @@ bagging_pp <- function(data, boot,training, ...){
     }
   )
  
-  v.train <- votes[,training]
+  v.train <- votes[,training]#only training votes
   l.train <- 1:length(training)
   oob.var <- ldply(boot[[1]],function(x) data.frame(t(!l.train%in%x[[1]])))[,-1]
   
   mv.train <- melt(v.train)
   moob.var <- melt(oob.var)
-  max.oob[,1]<-mv.train[moob.var$value,]
+ oob.votes <-mv.train[moob.var$value,]
    max.oob <- ddply(oob.votes,.(variable),function(x){
         t1 <- table(x$value)
     names(t1)[which.max(t1)]

@@ -54,7 +54,7 @@ result.boot2 <- mlply(data.frame(nt=c(1,10,50,100,500)), function(nt) {
 )  
 
 result.bagg2.st <- llply(result.boot2.st[1:5],bagging_pp,data=d.olive2,result=result.boot2.st,training=training)
-result.bagg2 <- llply(result.boot2[1:5],bagging_pp,data=d.olive2,result=result.boot2,training=training)
+result.bagg2 <- llply(result.boot2[1:5],bagging_pp,data=d.olive2,result=result.boot2,training=training,strata=FALSE)
 
 error <- sapply(result.bagg2,function(x) x[[1]][1] )
 error.st <- sapply(result.bagg2.st,function(x) x[[1]][1] )
