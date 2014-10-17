@@ -71,7 +71,7 @@ PPindex.LDA <- function(data, class, weight=TRUE, ...) {
            as.integer(gname),
            ngroup = as.integer(ngroup),
            index = as.double(val),
-           PACKAGE="PPtree")
+           PACKAGE="PPforest")
     else
         .C("discriminant2", 
            as.integer(n),
@@ -82,7 +82,7 @@ PPindex.LDA <- function(data, class, weight=TRUE, ...) {
            as.integer(gname),
            ngroup = as.integer(ngroup),
            index = as.double(val),
-           PACKAGE="PPtree")
+           PACKAGE="PPforest")
     LDA$index
 }
 
@@ -119,7 +119,7 @@ PPindex.PDA <- function(data, class, lambda, ...) {
               ngroup = as.integer(ngroup),
               index = as.double(val),
               as.double(lambda),
-              PACKAGE="PPtree")
+              PACKAGE="PPforest")
     PDA$index
 }
 
@@ -156,7 +156,7 @@ PPindex.Lp <- function(data, class, r, ...) {
               ngroup=as.integer(ngroup),
               index=as.double(val),
               as.integer(r),
-              PACKAGE="PPtree")
+              PACKAGE="PPforest")
     LDA$index
 }
 
@@ -237,7 +237,7 @@ PP.optimize.random <- function(PPmethod, projdim, data, class, std=TRUE,
               proj=as.double(proj),
               as.integer(r),
               as.double(lambda),
-              PACKAGE="PPtree")
+              PACKAGE="PPforest")
     index.best <- Opt$index
     if (pp != p) {
         proj.best <- matrix(0, pp, projdim)
@@ -320,7 +320,7 @@ PP.optimize.anneal <- function(PPmethod, projdim, data, class, std=TRUE,
               as.double(energy),
               as.integer(r),
               as.double(lambda),
-              PACKAGE="PPtree")
+              PACKAGE="PPforest")
     index.best<-Opt$index
     if (pp != p) {
         proj.best <- matrix(0, pp, projdim)
@@ -399,7 +399,7 @@ PP.optimize.Huber <- function(PPmethod, projdim, data, class, std=TRUE,
               index=as.double(val),
               proj=as.double(proj),
               as.integer(r),
-              PACKAGE="PPtree")
+              PACKAGE="PPforest")
     index.best <- Opt$index
     if (pp !=p) {
         proj.best <- matrix(0, pp, projdim)
