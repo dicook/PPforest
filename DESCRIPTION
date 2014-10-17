@@ -10,7 +10,7 @@ Depends:
 Imports:
     MASS (>= 3.1-20),
      penalizedLDA (>= 1.0),
-     reshape(>=0.8.5)
+     reshape(>= 0.8.5)
 Description: Projection pursuit classification tree using LDA, Lr or PDA
     projection pursuit index
 License: LGPL-2.1
