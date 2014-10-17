@@ -3,6 +3,7 @@
 export(LDA.Tree)
 export(PDA.Tree)
 export(PP.Tree)
+export(PP.classify)
 export(PPindex.class)
 export(bagging_pp)
 export(bootstrap_pp)
