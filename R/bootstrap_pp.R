@@ -12,7 +12,6 @@
 #'training<-train_fn(iris[,5],.9)
 #' data1<-iris[,5:1]
 #' output<-bootstrap_pp(data1,scale=TRUE,training,ntree=50,index="LDA")  
-#'
  bootstrap_pp <- function(data,scale=TRUE,training, strata=TRUE,ntree, index='LDA', ...){
    if(strata==TRUE) data[,-1] <- scale(data[,-1])
    names(data)[1] <-"class"

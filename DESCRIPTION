@@ -7,7 +7,8 @@ Maintainer: Natalia da Silva <ndasilva@iastate.edu>
 Depends:
     R (>= 3.1.1),
     plyr (>= 1.8.1),
-    penalizedLDA
+    penalizedLDA,
+    ggplot2
 Imports:
     MASS (>= 3.1-20)
 Description: Projection pursuit classification tree using LDA, Lr or PDA
