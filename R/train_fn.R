@@ -10,7 +10,7 @@
 train_fn <- function(class, size.p) {
   n <- length(class)
   class.id <- data.frame(id=1:n,class=class)
-  index  <- unlist(dlply(class.id, .(class), function(x) 
+  index  <- unlist(plyr:: dlply(class.id, .(class), function(x) 
     sample(x$id, round(length(x$class)*size.p, 1))))
   names(index) <- NULL
   return(sort(index))
