@@ -14,7 +14,7 @@
 #' b.pp <- bagging_pp(data1,scale=TRUE, strata=TRUE,output,training)
 bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training, ...){
   if(strata==TRUE) data[,-1] <- scale(data[,-1])
-  votes <- ldply(boot[[1]], function(x) PP.classify(test.data=data[,-1],
+  votes <- plyr:: ldply(boot[[1]], function(x) PPtree:: PP.classify(test.data=data[,-1],
                                 true.class=data[,1], x[[2]], Rule=1)$predict.class)[,-1]
   
   max.vote <- apply(votes, 2, function(x) {
@@ -25,12 +25,12 @@ bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training, ...){
  
   v.train <- votes[,training]#only training votes
   l.train <- 1:length(training)
-  oob.var <- ldply(boot[[1]],function(x) data.frame(t(!l.train%in%x[[1]])))[,-1]
+  oob.var <- plyr:: ldply(boot[[1]],function(x) data.frame(t(!l.train%in%x[[1]])))[,-1]
   
-  mv.train <- melt(v.train)
-  moob.var <- melt(oob.var)
+  mv.train <- reshape:: melt(v.train)
+  moob.var <- reshape:: melt(oob.var)
  oob.votes <-mv.train[moob.var$value,]
-   max.oob <- ddply(oob.votes,.(variable),function(x){
+   max.oob <- plyr:: ddply(oob.votes,.(variable),function(x){
         t1 <- table(x$value)
     names(t1)[which.max(t1)]
     }

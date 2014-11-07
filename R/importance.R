@@ -13,7 +13,8 @@ varimp_pp <- function(data,boot){
   mat.vi$sam <- rep(1: sum((mat.vi$tr)==1),dim(mat.vi)[1]/sum((mat.vi$tr)==1))
   aux <- melt(mat.vi,id.vars=c("sam","tr"))
   aux$sam <- factor(aux$sam)
-print(qplot(data=aux,x=variable,y=value,geom="boxplot",facets=~sam)+ theme( legend.title=element_blank(),axis.text.y="element_blank()",axis.text.x  = element_text(angle=40, vjust=0.5, size=8),axis.title.y=element_blank(), axis.title.x=element_blank(), legend.direction='vertical' ))
-return(mat.vi)
+print(qplot(data=aux,x=variable,y=value,geom="boxplot",facets=~sam))
+      return(mat.vi)
 }
 
++ theme( legend.title=element_blank(),axis.text.y="element_blank()",axis.text.x  = element_text(angle=40, vjust=0.5, size=8),axis.title.y=element_blank(), axis.title.x=element_blank(), legend.direction='vertical' ))

@@ -15,7 +15,7 @@
  bootstrap_pp <- function(data,scale=TRUE,training, strata=TRUE,ntree, index='LDA', ...){
    if(strata==TRUE) data[,-1] <- scale(data[,-1])
    names(data)[1] <-"class"
-  out <- mlply(data.frame(tr=1:ntree), function(tr) {
+  out <- plyr:: mlply(data.frame(tr=1:ntree), function(tr) {
     n <- length(training)
     class.id <- data.frame(id=1:n,class=data[training,"class"])
     dat.train <- data[training,]
@@ -23,7 +23,7 @@
     if(strata==TRUE){
       index.boot <- unlist(dlply(class.id, .(class), function(x) sort(sample(x$id, replace=TRUE)) ))
     names(index.boot) <- NULL 
-    pp.tree <- PP.Tree(PPmethod=index, i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1]) 
+    pp.tree <- PPtree:: PP.Tree(PPmethod=index, i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1]) 
     list(index.boot, pp.tree)
     }
    else{
