@@ -5,12 +5,12 @@ data.iris <- iris[,5:1]
 training<- train_fn(iris[,5],.9)
 
 result.boot.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
-  bootstrap_pp(data=data.iris,training=training,ntree=nt,index="LDA") 
+  bootstrap_pp(data=data.iris,scale=TRUE,training=training,ntree=nt,index="LDA") 
    }  
 )  
 
 result.boot <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
-  bootstrap_pp(data=data.iris,training=training,ntree=nt,strata=FALSE,index="LDA") 
+  bootstrap_pp(data=data.iris,scale=TRUE,training=training,ntree=nt,strata=FALSE,index="LDA") 
   
 }  
 )  
@@ -50,12 +50,12 @@ PP.classify(d.olive2[training,2:9],d.olive2[training,1],Tree.result,1)
 
 
 result.boot2.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
-  bootstrap_pp(data=d.olive2,training=training,ntree=nt,index="LDA") 
+  bootstrap_pp(data=d.olive2,scale=TRUE,training=training,ntree=nt,index="LDA") 
 }  
 )  
 
 result.boot2 <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
-  bootstrap_pp(data=d.olive2,training=training,strata=FALSE,ntree=nt,index="LDA") 
+  bootstrap_pp(data=d.olive2,scale=TRUE,training=training,strata=FALSE,ntree=nt,index="LDA") 
 }  
 )  
 
@@ -106,7 +106,7 @@ PP.classify(dat.pl[,-1],dat.pl[,1],Tree.result,1)
 
 ##PPbagging
 training<-train_fn(dat.pl[,1],.9)
- output<-bootstrap_pp(dat.pl,training,ntree=50,index="LDA")     
+ output<-bootstrap_pp(dat.pl,scale=TRUE,training,ntree=50,index="LDA")     
  bagging_pp(dat.pl, output,training)
 
 
