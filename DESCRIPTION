@@ -9,6 +9,7 @@ Depends:
 Imports:
     MASS,
     plyr,
+    reshape,
     penalizedLDA,
     PPtree,
     ggplot2

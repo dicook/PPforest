@@ -3,4 +3,4 @@
 export(bagging_pp)
 export(bootstrap_pp)
 export(train_fn)
-useDynLib(PPforest)
+export(varimp_pp)
