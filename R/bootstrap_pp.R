@@ -9,6 +9,7 @@
 #'   training set.
 #' @export
 #' @examples
+#'training<-train_fn(iris[,5],.9)
 #' data1<-iris[,5:1]
 #' output<-bootstrap_pp(data1,training,ntree=50,index="LDA")  
 #' output

@@ -6,8 +6,9 @@
 #' @export
 #' @examples
 #' data1<-iris[,5:1]
+#' training<-train_fn(iris[,5],.9)
 #' output<-bootstrap_pp(data1,training,ntree=50,index="LDA")     
-#' bagging_pp(data1, output,training)
+#' b.pp <- bagging_pp(data1, output,training)
 bagging_pp <- function(data, boot,training, ...){
   votes <- ldply(boot[[1]], function(x) PP.classify(test.data=data[,-1],
                                 true.class=data[,1], x[[2]], Rule=1)$predict.class)[,-1]
