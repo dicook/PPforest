@@ -5,7 +5,7 @@ Title: Projection pursuit classification forest
 Author: Natalia da Silva, Eun-Kyung Lee, Di Cook
 Maintainer: Natalia da Silva <ndasilva@iastate.edu>
 Depends:
-    R (>= 3.1.1)
+    R (>= 3.1.1), 
 Imports:
     MASS,
     plyr,

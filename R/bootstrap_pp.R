@@ -21,7 +21,7 @@
     dat.train <- data[training,]
     
     if(strata==TRUE){
-      index.boot <- unlist(plyr:: dlply(class.id, .(class), function(x) sort(sample(x$id, replace=TRUE)) ))
+      index.boot <- unlist(plyr:: dlply(class.id, plyr::.(class), function(x) sort(sample(x$id, replace=TRUE)) ))
     names(index.boot) <- NULL 
     pp.tree <- PPtree:: PP.Tree(PPmethod=index, i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1]) 
     list(index.boot, pp.tree)
