@@ -8,11 +8,11 @@ Depends:
     R (>= 3.1.1), 
 Imports:
     MASS,
-    plyr,
+    ggplot2,
     reshape,
+    plyr,
     penalizedLDA,
-    PPtree,
-    ggplot2
+    PPtree
 Description: Projection pursuit classification tree using LDA, Lr or PDA
     projection pursuit index
 License: LGPL-2.1
