@@ -7,16 +7,23 @@
 #' data1<-iris[,5:1]
 #' training<-train_fn(iris[,5],.9)
 #' output<-bootstrap_pp(data1,scale=TRUE,training,ntree=50,index="LDA")     
-#' varimp_pp(data1,output)
-varimp_pp <- function(data,boot){
+#' b.pp <- bagging_pp(data1,scale=TRUE, strata=TRUE,output,training)
+#' varimp_pp(data1,output,b.pp) 
+varimp_pp <- function(data,boot,bagg){
   mat.vi <- abs(plyr:: ldply(boot[[1]], function(x) x[[2]]$Alpha.Keep))
   colnames(mat.vi)[-1] <- colnames(data)[-1]
   mat.vi$sam <- rep(1: sum((mat.vi$tr)==1),dim(mat.vi)[1]/sum((mat.vi$tr)==1))
+  oob.error.tree <- rep(bagg[[5]],each=length(unique(mat.vi$sam)))
+  imp.weight <- mat.vi[,colnames(data1[-1])]*(1-oob.error.tree)
   aux <- reshape2::melt(mat.vi,id.vars=c("sam","tr"))
   aux$sam <- factor(aux$sam)
-print(ggplot2::qplot(data=aux,x=variable,y=value,geom="boxplot",facets=~sam) + 
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1))
-      )
-       return(mat.vi)
+  aux2<- cbind(tr=mat.vi$tr,sam=mat.vi$sam,imp.weight)
+  aux22 <- reshape2::melt(aux2,id.vars=c("sam","tr"))
+print(ggplot2::qplot(data=aux22,x=variable,y=value,geom="boxplot",facets=~sam) + 
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)))
+print(ggplot2::qplot(data=aux22,x=variable,y=value,geom="boxplot") + 
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)))
+
+       return(aux2)
 }
 
