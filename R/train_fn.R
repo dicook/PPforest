@@ -11,7 +11,7 @@ train_fn <-  function(class, size.p) {
   n <- length(class)
   class.id <- data.frame(id=1:n,class=class)
   index  <- unlist(plyr::dlply(class.id,plyr::.(class), function(x) 
-  sample(x$id, round(length(x$class)*size.p, 1))))
+  sample(x$id, floor(length(x$class)*size.p))))
   names(index) <- NULL
   return(sort(index))
 }
