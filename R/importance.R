@@ -1,6 +1,7 @@
-#' Data frame with the 1D projection of each split and plot of importance variable.
+#' Data frame with the 1D projection of each split weighted by 1- oob error rate for each tree and plots of importance variable for each split and jointly.
 #' @param boot object from bootstrap_pp (list of PP.Tree objets for bootstrap samples)
 #' @param data is a data frame with the complete data set. Class factor in the first column
+#' @param bagg object form bagging_pp (list with bagging PP.tree error and bagging classification)
 #' @return a data frame with 1D projection of each split (Alpha.Keep) and a boxplot with the importance of variable for each split.
 #' @export
 #' @examples

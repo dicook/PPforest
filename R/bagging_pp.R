@@ -23,7 +23,7 @@ bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training, ...){
     }
   )
  
-  v.train <- votes[,training]#only training votes
+  v.train <- votes[,training]
   l.train <- 1:length(training)
   oob.var <- plyr::ldply(boot[[1]],function(x) data.frame(t(as.numeric(!l.train%in%x[[1]]))))[,-1]
   colnames(oob.var) <- l.train
@@ -38,8 +38,8 @@ bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training, ...){
   )
 
  
-  oob.tree.aux<-v.train*oob.var
- oob.error.tree <-plyr::adply(oob.tree.aux,1,function(x) {
+  oob.tree.aux <- v.train*oob.var
+ oob.error.tree <- plyr::adply(oob.tree.aux,1,function(x) {
    nam <- colnames(x)
   colnames(x) <- l.train
   oob.nam <- as.numeric(colnames(x)[x!=0])
