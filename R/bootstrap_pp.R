@@ -11,9 +11,9 @@
 #' @examples
 #' training<-train_fn(iris[,5],.9)
 #' data1<-iris[,5:1]
-#' output<-bootstrap_pp(data1,scale=TRUE,training,strata=TRUE,ntree=50,index="LDA")  
- bootstrap_pp <- function(data,scale=TRUE,training, strata=TRUE,ntree, index='LDA', ...){
-   if(strata==TRUE) data[,-1] <- scale(data[,-1])
+#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training,strata=TRUE,ntree=50,index="LDA")  
+ bootstrap_pp <- function(data,scale=TRUE,size.p=.9,training, strata=TRUE,ntree, index='LDA', ...){
+   if(scale==TRUE) data[,-1] <- scale(data[,-1])
    names(data)[1] <-"class"
   out <- plyr::mlply(data.frame(tr=1:ntree), function(tr) {
     n <- length(training)
@@ -23,12 +23,12 @@
     if(strata==TRUE){
       index.boot <- unlist(plyr::dlply(class.id, plyr::.(class), function(x) sort(sample(x$id, replace=TRUE)) ))
     names(index.boot) <- NULL 
-    pp.tree <- PPtree:: PP.Tree(PPmethod=index, i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1]) 
+    pp.tree <-PPtree_split(PPmethod=index, size.p=.9,i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1]) 
     list(index.boot, pp.tree)
     }
    else{
     index.boot <- sort(sample(class.id$id, replace = TRUE))
-      pp.tree <- PPtree::PP.Tree(PPmethod=index, i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1]) 
+      pp.tree <- PPtree_split(PPmethod=index,size.p=.9, i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1]) 
     list(index.boot, pp.tree)
     }
   
