@@ -1,4 +1,4 @@
-PPtree_split<-function (PPmethod, i.class, i.data, weight = TRUE, r = NULL, 
+PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r = NULL, 
           lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01, 
           ...) 
 {
@@ -85,11 +85,11 @@ PPtree_split<-function (PPmethod, i.class, i.data, weight = TRUE, r = NULL,
     list(Index = Index, Alpha = Alpha, C = C, IOindexL = IOindexL, 
          IOindexR = IOindexR)
   }
-  Tree.construct <- function(i.class, i.data, Tree.Struct, 
+  Tree.construct <- function(i.class, i.data, Tree.Struct,size.p, 
                              id, rep, rep1, rep2, Alpha.Keep, index.var,C.Keep, PPmethod, r = NULL, 
                              lambda = NULL, ...) {
     i.class <- as.integer(i.class)
-    aux <- var_select(i.data,size.p=0.9)
+    aux <- var_select(i.data,size.p)
     n <- nrow(i.data)
     g <- table(i.class)
     G <- length(g)
@@ -122,7 +122,7 @@ PPtree_split<-function (PPmethod, i.class, i.data, weight = TRUE, r = NULL,
       t.index <- sort(t.index[-(1:t.n)])
       t.class <- t.class[t.index]
       t.data <- i.data[t.index, ]
-      b <- Tree.construct(t.class, t.data, Tree.Struct, 
+      b <- Tree.construct(t.class, t.data, Tree.Struct, size.p,
                           Tree.Struct[id, 2], rep, rep1, rep2, Alpha.Keep,index.var, 
                           C.Keep, PPmethod, r, lambda)
       Tree.Struct <- b$Tree.Struct
@@ -142,7 +142,7 @@ PPtree_split<-function (PPmethod, i.class, i.data, weight = TRUE, r = NULL,
       t.data <- i.data[t.index, ]
       n <- nrow(t.data)
       G <- length(table(t.class))
-      b <- Tree.construct(t.class, t.data, Tree.Struct, 
+      b <- Tree.construct(t.class, t.data, Tree.Struct, size.p,
                           Tree.Struct[id, 3], rep, rep1, rep2, Alpha.Keep, index.var,
                           C.Keep, PPmethod, r, lambda)
       Tree.Struct <- b$Tree.Struct
@@ -177,7 +177,7 @@ PPtree_split<-function (PPmethod, i.class, i.data, weight = TRUE, r = NULL,
   else if (PPmethod == "PDA") 
     method <- 6
   else stop("Wrong PPmethod")
-  Tree.final <- Tree.construct(i.class, i.data, Tree.Struct, 
+  Tree.final <- Tree.construct(i.class, i.data, Tree.Struct, size.p,
                                id, rep, rep1, rep2, Alpha.Keep, index.var,C.Keep, PPmethod, r, 
                                lambda)
   Tree.Struct <- Tree.final$Tree.Struct
