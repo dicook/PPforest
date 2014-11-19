@@ -10,7 +10,7 @@
 #' @examples
 #' data1<-iris[,5:1]
 #' training<-train_fn(iris[,5],.9)
-#' output<-bootstrap_pp(data1,scale=TRUE,training,strata=TRUE,ntree=50,index="LDA")      
+#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training,strata=TRUE,ntree=50,index="LDA")      
 #' b.pp <- bagging_pp(data1,scale=TRUE, strata=TRUE,output,training)
 bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training, ...){
   if(strata==TRUE) data[,-1] <- scale(data[,-1])
@@ -51,12 +51,16 @@ bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training, ...){
  
  tr.class <- data.frame(variable=paste(variable="V",training,sep=""),V1=as.numeric(data[training,1]))
     cond <- tr.class[max.oob[,1],]
-oob.error <- (dim(cond)[1]-sum(cond[,2]==as.numeric(max.oob[,2])))/dim(cond)[1]
-  
-            tab.t <- table(Observed=data[,1],Predicted=max.vote)
+ tab.oob <-table(Observed=cond[,2],Predicted=as.numeric(max.oob[,2]))
+oob.error <- 1-sum(diag(tab.oob))/length(cond[,1])
+ 
+
+            tab.t <- table(Observed=data[training,1],Predicted=max.vote[training])
   colnames(tab.t) <- rownames(tab.t)
  class.error <- 1-diag(tab.t)/((addmargins(tab.t,2))[,"Sum"])
             tab.p <- cbind(round(prop.table(tab.t,1),7),class.error)
-            error <- round((dim(data)[1]-sum(diag(tab.t)))/dim(data)[1],5)
- return(list(oob.error,error, as.numeric(max.vote),tab.p,oob.error.tree$V1))
+            error <- round((dim(data[training,])[1]-sum(diag(tab.t)))/dim(data)[1],5)
+out <- list(oob.error,error,as.numeric(max.vote),tab.p,oob.error.tree$V1)
+names(out) <-c("OOB estimate or error rate","Training error","Predicted","Confusion matrix","OOB error Tree")
+return(out)
 } 
