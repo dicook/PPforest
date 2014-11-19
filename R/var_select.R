@@ -11,5 +11,5 @@ var_select <-  function(data,size.p) {
   nam <- colnames(data)
   var.num <- 1:length(nam)
   index <- sample(var.num, floor(length(var.num)*size.p))
-  return(index)
+  return(sort(index))
 }
