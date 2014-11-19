@@ -1,3 +1,21 @@
+
+#' Finding PP tree structure using various indices
+#' 
+#' Find tree structure using various projection pursuit indices of classification in each split.
+#' @usage PPtree_split(PPmethod,  i.class, i.data,size.p, weight = TRUE, ...) 
+#' @param PPmethod method for projection pursuit, LDA, PDA, Lp, Gini, Enp
+#' @param i.data A training data  without class information
+#' @param i.class class information
+#' @param size.p proportion of sample variable in each split
+#' @param weight weight flag using in LDA index
+#' @return Tree.Struct Tree structure of PPtree result
+#' @return Alpha.Keep 1D projections of each split
+#' @return C.Keep spliting rules for each split
+#' @export
+#' @examples
+#' training<-train_fn(iris[,5],.9)
+#' data1<-iris[,5:1]
+#' Tree.result <- PPtree_split("LDA", data1[training,1], data1[training,2:5],size.p=0.9)
 PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r = NULL, 
           lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01, 
           ...) 
@@ -112,9 +130,12 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
       a <- Find.proj(i.class, i.data[,aux], PPmethod, r, lambda)
       C.Keep <- rbind(C.Keep, a$C)
       Tree.Struct[id, 5] <- a$Index
-      Alpha.Keep <- rbind(Alpha.Keep, a$Alpha)
+      
+      a1 <- rep(0,dim(i.data)[2])
+      a1[aux]<-a$Alpha
+      Alpha.Keep <- rbind( Alpha.Keep, a1)
       index.var <- rbind(index.var,aux)
-      t.class <- i.class
+       t.class <- i.class
       t.data <- i.data
       t.class <- t.class * a$IOindexL
       t.n <- length(t.class[t.class == 0])
@@ -186,6 +207,6 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
   Alpha.Keep <- Tree.final$Alpha.Keep
   C.Keep <- Tree.final$C.Keep
   index.var <- Tree.final$index.var
-  list(Tree.Struct = Tree.Struct, Alpha.Keep = Alpha.Keep,index.var=index.var, 
+  list(Tree.Struct = Tree.Struct, Alpha.Keep =Alpha.Keep,  
        C.Keep = C.Keep)
 }

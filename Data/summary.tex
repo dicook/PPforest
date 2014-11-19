@@ -1,0 +1,160 @@
+\documentclass{article}
+
+\begin{document}
+
+\section{IRIS DATA}
+
+\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: argument "{}boot"{} is missing, with no default}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: argument "{}boot"{} is missing, with no default}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: object 'result.bagg' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: object 'result.bagg.st' not found}}\end{kframe}
+
+\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: object 'error' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: object 'aaa' not found}}\end{kframe}
+
+Ussing PPtree with LDA the error is 0
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(PPtree)}
+\hlstd{Tree.result} \hlkwb{<-} \hlkwd{PP.Tree}\hlstd{(}\hlstr{"LDA"}\hlstd{,iris[training,}\hlnum{5}\hlstd{],iris[training,}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{])}
+\hlstd{test} \hlkwb{<-} \hlstd{iris[}\hlopt{-}\hlstd{training,]}
+\hlstd{res}\hlkwb{<-}\hlkwd{PP.classify}\hlstd{(test[,}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{],test[,}\hlnum{5}\hlstd{],Tree.result,}\hlnum{1}\hlstd{)}
+\hlkwd{print}\hlstd{(res[[}\hlnum{1}\hlstd{]]}\hlopt{/}\hlkwd{length}\hlstd{(res[[}\hlnum{2}\hlstd{]]))}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.06667
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Ussing the same data we run a random forest and the oob error is around 6\%.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## 
+## Call:
+##  randomForest(formula = Species ~ ., data = iris[training, ],      importance = TRUE, proximity = TRUE, strata = Specie) 
+##                Type of random forest: classification
+##                      Number of trees: 500
+## No. of variables tried at each split: 2
+## 
+##         OOB estimate of  error rate: 3.7%
+## Confusion matrix:
+##            setosa versicolor virginica class.error
+## setosa         45          0         0     0.00000
+## versicolor      0         43         2     0.04444
+## virginica       0          3        42     0.06667
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+
+  
+\newpage
+
+\section{OLIVE DATA}
+
+
+
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+% Fri Nov  7 12:12:59 2014
+\begin{table}[ht]
+\centering
+\caption{OOB error for PP.bagging with bootstrap samples without strata and with strata} 
+\begin{tabular}{rrrr}
+  \hline
+ & aux & error & error.st \\ 
+  \hline
+1 & 5.00000 & 0.05263 & 0.07918 \\ 
+  2 & 10.00000 & 0.09309 & 0.12202 \\ 
+  3 & 50.00000 & 0.14815 & 0.16138 \\ 
+  4 & 100.00000 & 0.15344 & 0.14021 \\ 
+  5 & 500.00000 & 0.07672 & 0.12169 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+Using PPtree function I do not know why I have this big error?????
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## [1] 0.2513
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+Using random forest the OOb error us 0\%
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## 
+## Call:
+##  randomForest(formula = Region ~ ., data = d.olive2[training,      ], importance = TRUE, strata = Region, proximity = TRUE) 
+##                Type of random forest: classification
+##                      Number of trees: 500
+## No. of variables tried at each split: 2
+## 
+##         OOB estimate of  error rate: 0%
+## Confusion matrix:
+##     1  2 class.error
+## 1 290  0           0
+## 2   0 88           0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\section{CRAB DATA}
+
+
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+% Fri Nov  7 12:12:59 2014
+\begin{table}[ht]
+\centering
+\caption{OOB error for PP.bagging with bootstrap samples without strata and with strata} 
+\begin{tabular}{rrrr}
+  \hline
+ & aux & error & error.st \\ 
+  \hline
+1 & 5.00000 & 0.67284 & 0.53750 \\ 
+  2 & 10.00000 & 0.64246 & 0.65730 \\ 
+  3 & 50.00000 & 0.56111 & 0.54444 \\ 
+  4 & 100.00000 & 0.60556 & 0.61111 \\ 
+  5 & 500.00000 & 0.59444 & 0.60556 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
