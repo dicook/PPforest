@@ -29,7 +29,7 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
     g.name <- as.numeric(as.factor(names(g)))#I have added as.factor, change the classes to numbers
     G <- length(g) #number of classes
     
-    a <- PP.optimize.anneal(PPmethod, 1, i.data, i.class, 
+    a <- PPtree::PP.optimize.anneal(PPmethod, 1, i.data, i.class, 
                             std = TRUE, cooling, temp, energy, r, lambda) #optimal projection and optimal index
     proj.data <- as.matrix(i.data) %*% a$proj.best #projected data
     sign <- sign(a$proj.best[abs(a$proj.best) == max(abs(a$proj.best))])# sign of the abs maximum optimal projected value
@@ -61,7 +61,7 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
       g.name <- as.numeric(names(g))
       G <- length(g)
       n <- nrow(i.data)
-      a <- PP.optimize.anneal(PPmethod, 1, i.data, class, 
+      a <- PPtree::PP.optimize.anneal(PPmethod, 1, i.data, class, 
                               std = TRUE, cooling, temp, energy, r, lambda)
       if (sign != sign(a$proj.best[index])) 
         a$proj.best <- -a$proj.best
