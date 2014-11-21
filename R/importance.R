@@ -7,7 +7,7 @@
 #' @examples
 #' data1<-iris[,5:1]
 #' training<-train_fn(iris[,5],.9)
-#' output<-bootstrap_pp(data1,scale=TRUE,training,ntree=50,index="LDA")     
+#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training,strata=TRUE,ntree=50,index="LDA")     
 #' b.pp <- bagging_pp(data1,scale=TRUE, strata=TRUE,output,training)
 #' varimp_pp(data1,output,b.pp) 
 varimp_pp <- function(data,boot,bagg){
@@ -20,9 +20,10 @@ varimp_pp <- function(data,boot,bagg){
   aux$sam <- factor(aux$sam)
   aux2<- cbind(tr=mat.vi$tr,sam=mat.vi$sam,imp.weight)
   aux22 <- reshape2::melt(aux2,id.vars=c("sam","tr"))
-print(ggplot2::qplot(data=aux22,x=variable,y=value,geom="boxplot",facets=~sam) + 
+  aux22.0 <- subset(aux22,value!=0)
+print(ggplot2::qplot(data=aux22.0,x=variable,y=value,geom="boxplot",facets=~sam) + 
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)))
-print(ggplot2::qplot(data=aux22,x=variable,y=value,geom="boxplot") + 
+print(ggplot2::qplot(data=aux22.0,x=variable,y=value,geom="boxplot") + 
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)))
 
        return(aux2)
