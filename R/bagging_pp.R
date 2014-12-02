@@ -22,7 +22,15 @@ bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training, ...){
     names(t1)[which.max(t1)]
     }
   )
- 
+
+  
+ votes.con <- apply(b.pp[[6]],2,table)
+ votes.prop <- ldply(votes.con,function(x) as.data.frame(x/50))
+    
+   
+  
+
+
   v.train <- votes[,training]
   l.train <- 1:length(training)
   oob.var <- plyr::ldply(boot[[1]],function(x) data.frame(t(as.numeric(!l.train%in%x[[1]]))))[,-1]
@@ -60,7 +68,7 @@ oob.error <- 1-sum(diag(tab.oob))/length(cond[,1])
  class.error <- 1-diag(tab.t)/((addmargins(tab.t,2))[,"Sum"])
             tab.p <- cbind(round(prop.table(tab.t,1),7),class.error)
             error <- round((dim(data[training,])[1]-sum(diag(tab.t)))/dim(data)[1],5)
-out <- list(oob.error,error,as.numeric(max.vote),tab.p,oob.error.tree$V1)
-names(out) <-c("OOB estimate or error rate","Training error","Predicted","Confusion matrix","OOB error Tree")
+out <- list(oob.error,error,as.numeric(max.vote),tab.p,oob.error.tree$V1,votes,votes.prop)
+names(out) <-c("OOB estimate or error rate","Training error","Predicted","Confusion matrix","OOB error Tree","Votes","Votes proportion")
 return(out)
 } 
