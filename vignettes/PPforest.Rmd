@@ -1,0 +1,160 @@
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteDepends{knitr}
+%\VignetteIndexEntry{PPforest: forest ...}
+
+-->
+
+### IRIS DATA
+
+```{r data,echo=FALSE,cache=TRUE,message=FALSE,warning=FALSE,results='asis'}
+# example using Iris data
+library(PPforest)
+library(PPtree)
+library(reshape)
+library(plyr)
+library(ggplot2)
+library(randomForest)
+
+data.iris <- iris[,5:1]
+training<- train_fn(iris[,5],.9)
+
+result.boot.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
+  bootstrap_pp(data=data.iris, training=training, ntree=nt, index="LDA") 
+  }  
+)  
+
+result.boot <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
+  bootstrap_pp(data=data.iris, training=training, ntree=nt, strata=FALSE, index="LDA") 
+  }  
+)
+
+#Tree.result <- PPtree_split("LDA",data.iris[training,1], data.iris[training,2:5],size.p=0.9)
+#pp.cl <- PP.classify(data.iris[training,2:5],data.iris[training,1],Tree.result,1)
+
+result.bagg.st <- llply(result.boot.st[1:5], function(x) bagging_pp(data=data.iris, 
+                            boot=x,size.p=.9,training=training))
+result.bagg <- llply(result.boot[1:5], function(x) bagging_pp(data=data.iris,
+                            boot=x,size.p=.9,training=training))
+
+error <- sapply(result.bagg,function(x) x[[1]][1] )
+error.st <- sapply(result.bagg.st,function(x) x[[1]][1] )
+
+#sacalo <- function(xx) {
+ # ldply(xx[[1]], function(x) x[[2]]$Alpha.Keep)
+#}
+#sacalo(result.boot.st[[1]])
+#jj1<-ldply(result.boot.st, sacalo)
+#jj2<-ldply(result.boot.st[1:5], sacalo)
+
+###
+```
+
+```{r table.res,echo=FALSE,dependson='data',results='asis'}
+library(xtable)
+aux <- c(5,10,50,100,500)
+
+aaa<-xtable(cbind(aux,error,error.st),digits=5,caption="OOB error for PP.bagging with bootstrap samples without strata and with strata")
+###
+print(aaa,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
+
+```
+
+Using PPtree with LDA the error is 0
+
+```{r pp.iris,dependson='data',echo=TRUE,message=FALSE,warning=FALSE}
+library(PPtree)
+Tree.result <- PP.Tree("LDA",iris[training,5],iris[training,1:4])
+test <- iris[-training,]
+res<-PP.classify(test[,1:4],test[,5],Tree.result,1)
+print(res[[1]]/length(res[[2]]))
+```
+
+Ussing the same data we run a random forest and the oob error is around 5%.
+
+```{r rf.iris,depenson="data'",echo=FALSE,message=FALSE,warning=FALSE}
+library(randomForest)
+rf.iris<-randomForest(Species ~ ., data=iris[training,], importance=TRUE,
+                     proximity=TRUE,strata=Specie)
+print(rf.iris)
+```
+
+
+
+### OLIVE DATA
+
+```{r olive,cache=TRUE,echo=FALSE,results='asis',message=FALSE,warning=FALSE}
+data(olive)
+library(ggplot2)
+
+d.olive2 <- subset(d.olive,Region%in%c(1,2))[,-2]
+d.olive2$Region <- factor(d.olive2$Region)
+
+training <- train_fn(d.olive2[,1],.9)
+
+boot<-bootstrap_pp(data=d.olive2,training=training,ntree=50,index="LDA") 
+b.pp <- bagging_pp(d.olive2,scale=TRUE, strata=TRUE,boot,training)
+
+result.boot2.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
+  bootstrap_pp(data=d.olive2,training=training,ntree=nt,index="LDA") 
+}  
+)  
+
+result.boot2 <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
+  bootstrap_pp(data=d.olive2,training=training,strata=FALSE,ntree=nt,index="LDA") 
+}  
+)  
+
+result.bagg2.st <- llply(result.boot2.st[1:5],function(x) bagging_pp(data=d.olive2,scale=TRUE,strata=TRUE,boot=x,training=training))
+result.bagg2 <- llply(result.boot2[1:5],function(x) bagging_pp(data=d.olive2,boot=x,,scale=TRUE,strata=TRUE,training=training))
+
+error <- sapply(result.bagg2,function(x) x[[1]][1] )
+error.st <- sapply(result.bagg2.st,function(x) x[[1]][1] )
+```
+
+
+```{r table.olive,echo=FALSE,dependson='olive',results='asis',message=FALSE,warning=FALSE}
+library(xtable)
+aux <- c(5,10,50,100,500)
+
+aaa<-xtable(cbind(aux,error,error.st),digits=5,caption="OOB error for PP.bagging with bootstrap samples without strata and with strata")
+###
+print(aaa,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
+
+```
+
+
+```{r pp.olive,dependson='olive',cache=TRUE,echo=FALSE}
+library(PPtree)
+Tree.result <-  LDA.Tree(d.olive2[training,1],d.olive2[training,2:9])
+
+
+
+test <- d.olive2[-training,]
+res<-PP.classify(d.olive2[training,2:9],d.olive2[training,1],Tree.result,1)
+
+print(res[[1]]/length(res[[2]]))
+
+```
+
+Using random forest the OOb error us 0\%
+
+```{r rf.olive,dependson='olive',cache=TRUE,echo=FALSE}
+library(randomForest)
+
+rf <- randomForest(Region ~ ., data=d.olive2[training,], importance=TRUE,strata=Region,
+             proximity=TRUE)
+
+print(rf )
+
+```
+
+
+Basic Output of PPforest for ntree=50
+
+```{r olive2,depenson='olive',cache=TRUE,echo=FALSE}
+boot<-bootstrap_pp(data=d.olive2,training=training,ntree=50,index="LDA")  
+b.pp <- bagging_pp(d.olive2,scale=TRUE, strata=TRUE,boot,training)
+
+print(b.pp)
+```

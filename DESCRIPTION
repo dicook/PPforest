@@ -18,3 +18,8 @@ Description: Projection pursuit classification tree using LDA, Lr or PDA
 License: LGPL-2.1
 LazyData: true
 NeedsCompilation: yes
+VignetteBuilder: knitr
+Suggests:
+    knitr,
+    roxygen2 (>= 3.0.0)
+Roxygen: list(wrap = TRUE)
