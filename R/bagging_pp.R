@@ -24,11 +24,9 @@ bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training, ...){
   )
 
   
- votes.con <- apply(b.pp[[6]],2,table)
- votes.prop <- ldply(votes.con,function(x) as.data.frame(x/50))
+ votes.con <- apply(votes,2,table)
+ votes.prop <- ldply(votes.con,function(x) as.data.frame(x/dim(votes)[1]))
     
-   
-  
 
 
   v.train <- votes[,training]
