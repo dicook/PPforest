@@ -44,7 +44,7 @@ d.olive2$Region <- factor(d.olive2$Region)
 
 training <- train_fn(d.olive2[,1],.9)
 
-Tree.result <- PP.Tree("PDA",d.olive2[training,1],d.olive2[training,2:9],lambda=1)
+Tree.result <-  PP.Tree("PDA",d.olive2[training,1],d.olive2[training,2:9],lambda=1)
 
 PP.classify(d.olive2[training,2:9],d.olive2[training,1],Tree.result,1)
 
