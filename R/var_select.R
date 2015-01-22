@@ -1,4 +1,4 @@
-#' Index id for training set, sample in each class with the same proportion.
+#' Index id for variables set, sample variables without replacement with a sample proportion.
 #'
 #' @param data is a data frame without the class variable. 
 #' @param size.p proportion of sample in each class group

@@ -1,12 +1,12 @@
-#' List with bagging PP.tree error and bagging classification.
+#' List with bagging PP.tree  results
 #'
 #' @param data is a data frame with the data to classify. Class factor in the first column
 #' @param scale is to standardize the data set, by default it is TRUE.
 #' @param strata is to stratify the bootstrap samples, by default is TRUE.
 #' @param boot object from bootstrap_pp (list of PP.Tree objets for bootstrap samples)
 #' @param training indices of the training data set.
-#' @param ntree number of bootstrap samples or individual classifiers (trees).
-#' @return list with the error, predicted classes and confusion matrix.
+#' @return list with the OOb error rate, training error,predicted classes, confusion matrix, oob error tree, votes proortion,
+#'  and proximity.
 #' @export
 #' @examples
 #' data1<-iris[,5:1]
