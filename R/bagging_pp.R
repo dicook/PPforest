@@ -12,8 +12,8 @@
 #' data1<-iris[,5:1]
 #' training<-train_fn(iris[,5],.9)
 #' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training,strata=TRUE,ntree=50,index="LDA")      
-#' b.pp <- bagging_pp(data1,scale=TRUE, strata=TRUE,output,training,ntree=50)
-bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training,ntree, ...){
+#' b.pp <- bagging_pp(data1,scale=TRUE, strata=TRUE,output,training)
+bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training, ...){
   if(strata==TRUE) data[,-1] <- scale(data[,-1])
   votes <- plyr::ldply(boot[[1]], function(x) PPtree::PP.classify(test.data=data[,-1],
                                 true.class=data[,1], x[[2]], Rule=1)$predict.class)[,-1]
@@ -29,11 +29,11 @@ bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training,ntree, ...){
   cond <- pos[,1]>= pos[,2]
   tri.low <- pos[cond,]
   same.node <- data.frame(tri.low,dif=apply(t(votes),2,function(x) x[ tri.low[,1]]-x[ tri.low[,2]]))
-  proximity <- data.frame(same.node[,c(1:2)],proxi=apply(same.node[,-c(1:2)],1,function(x) sum(x==0))/ntree)
+  proximity <- data.frame(same.node[,c(1:2)],proxi=apply(same.node[,-c(1:2)],1,function(x) sum(x==0))/dim(votes)[1])
   
   
  votes.con <- apply(votes,2,table)
- votes.prop <- ldply(votes.con,function(x) as.data.frame(x/dim(votes)[1]))
+ votes.prop <- plyr::ldply(votes.con,function(x) as.data.frame(x/dim(votes)[1]))
     
 
 
