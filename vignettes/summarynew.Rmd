@@ -108,7 +108,7 @@ result.boot2.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
   bootstrap_pp(data=d.olive2,training=training,ntree=nt,index="LDA") 
 }  
 )  
-
+#hahah
 result.boot2 <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
   bootstrap_pp(data=d.olive2,training=training,strata=FALSE,ntree=nt,index="LDA") 
 }  
