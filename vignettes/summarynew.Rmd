@@ -17,11 +17,10 @@ training<- train_fn(iris[,5],.9)
 test<-as.vector(1:length(iris[,5]))[!(1:length(iris[,5])%in%(training))]
 
 result.boot.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
-  bootstrap_pp(data=data.iris,scale=TRUE,size.p=.9,training=training,strata=TRUE,ntree=nt,index="LDA") 
+  bootstrap_pp(data=data.iris,scale=TRUE,size.p=.9,training=training,test,strata=TRUE,ntree=nt,index="LDA") 
    }  
 )  
 
-   
 
 #Tree.result <- PPtree_split("LDA",data.iris[training,1], data.iris[training,2:5],size.p=0.9)
 #pp.cl <- PP.classify(data.iris[training,2:5],data.iris[training,1],Tree.result,1)
@@ -30,6 +29,33 @@ result.boot.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
 result.bagg.st <- llply(result.boot.st[1:5],function(x) bagging_pp(data=data.iris,boot=x,size.p=.9,training=training,test=test))
 
 error.st <- sapply(result.bagg.st,function(x) x[[1]][1] )
+
+
+
+
+   output<-bootstrap_pp(data.iris,scale=TRUE,size.p=.9,training,strata=TRUE,ntree=500,index="LDA") 
+    b.pp <- bagging_pp(data.iris,scale=TRUE, strata=TRUE,output,training,test)
+
+
+#proximity matrix
+A<-matrix(0,ncol=150,nrow=150)
+A[lower.tri(A,diag=T)]<-b.pp[[9]][,3]
+A[upper.tri(A,diag=T)]
+dA<-as.dist(1-A)
+clA<-hclust(dA)
+cl.h<-cutree(clA, k = 3)
+qplot(y=Sepal.Width, x=Sepal.Length, data=iris,color=as.factor(cl.h))
+
+
+km.A<-kmeans(A,centers=3)
+qplot(y=Species, x=km.A$cluster,data=iris, group=km.A$cluster,geom="jitter" )
+table(iris$Species, km.A$cluster)
+qplot(y=Sepal.Width, x=Sepal.Length, data=iris,color=as.factor(km.A$cluster))
+qplot(y=Petal.Length, x=Petal.Width, data=iris,color=as.factor(km.A$cluster))
+qplot(y=Sepal.Length, x=Petal.Width, data=iris,color=as.factor(km.A$cluster))
+
+
+
 
 
 
@@ -180,27 +206,7 @@ parkinson <- read.csv("parkinsons.csv",header=T)
 ```
 
 
-glass$Type<-as.factor(glass$Type)
-
-data1 <- crab
-
-training<- train_fn(parkinson [,1],.9)
-
-a<-bootstrap_pp(data=parkinson,scale=TRUE,size.p=.9,training=training,strata=TRUE,ntree=5,index="LDA") 
-  
-b.pp <- bagging_pp(wine,scale=TRUE, strata=TRUE,a,training)
-
-b.pp[[1]]
-
-rf<-randomForest(as.factor(Type) ~ ., data=wine[training,], importance=TRUE,
-                      proximity=TRUE,strata=Type)
-
-print(rf)
-
-result.boot.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
-  bootstrap_pp(data=NCI60,scale=TRUE,size.p=.9,training=training,strata=TRUE,ntree=30,index="LDA") 
-   }  
-)  
+ 
 
 
 
@@ -273,40 +279,9 @@ data.frame(lda=lda.err(training,test),cart=cart.err(training,test),rf=rf.err(tra
 }
 
 ```
-library(ggplot2)
-source("../resamp.r")
-set.seed(1410)  # Ensure null samples are the same each time
 
-library(classPP)
-
-leuk <- read.csv("leukemia.csv", stringsAsFactors = FALSE)
-names(leuk) <- c("id", paste("gene", 1:(ncol(leuk) - 1), sep = ""))
-
-genes <- as.matrix(leuk[, -1])
-genes <- scale(genes) # rescale to mean 0, sd 1
-type <- factor(gsub("-[0-9]+$", "", leuk$id))
-
-PP.opt <- PP.optimize.anneal("PDA", 2, genes, type, 
-  cooling = 0.999, temp = 1, lambda = 0.8)
-proj <- as.matrix(genes) %*% PP.opt$proj.best
-true <- data.frame(type, scale(proj, scale = FALSE))
-qplot(X1, X2, data = true, colour = type)
-
-# Now do it n times on the resampled data
-
-leuk_pda <- function(type) {
-  PP.opt <- PP.optimize.anneal("PDA", 2, genes, type, 
-    cooling = 0.999, temp = 1, lambda = 0.8)
-  proj <- as.matrix(genes) %*% PP.opt$proj.best
-  data.frame(type, scale(proj, scale = FALSE))  
-}
-
-leuk_null <- rdply(19, leuk_pda(sample(type)), .progress = "text")
-leuk_all <- add_true(leuk_null, true, 14)
-
-ggplot(leuk_all, aes(X1, X2)) + 
-  geom_point(aes(colour = type), size = 1.8) +
-  facet_wrap(~ .n, ncol = 4) + 
-  xlab("PP1") + ylab("PP2") + opts(aspect.ratio = 1)
-ggsave("luekaemia.png", width = 5, height = 7)
+```{r}
+load("/Users/nataliadasilva/Box Sync/PP.forest/PP.Forest/data/CVwine2.Rdata")
+apply(wine.errors2,2,mean)
+```
 
