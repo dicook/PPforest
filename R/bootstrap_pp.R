@@ -11,12 +11,14 @@
 #' @examples
 #' training<-train_fn(iris[,5],.9)
 #' data1<-iris[,5:1]
-#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training,strata=TRUE,ntree=50,index="LDA")  
- bootstrap_pp <- function(data,scale=TRUE,size.p=.9,training, strata=TRUE,ntree, index='LDA', ...){
+#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=NULL,strata=TRUE,ntree=50,index="LDA")  
+ bootstrap_pp <- function(data,scale=TRUE,size.p=.9,training=NULL, strata=TRUE,ntree, index='LDA', ...){
    if(scale==TRUE) data[,-1] <- scale(data[,-1])
    names(data)[1] <-"class"
-  out <- plyr::mlply(data.frame(tr=1:ntree), function(tr) {
-    n <- length(training)
+   if(is.null(training)) training <- 1:dim(data)[1]
+  
+   out <- plyr::mlply(data.frame(tr=1:ntree), function(tr) {
+     n <- length(training)
     class.id <- data.frame(id=1:n,class=data[training,"class"])
     dat.train <- data[training,]
     
@@ -34,8 +36,12 @@
   
       } 
     )
+  
   return(list(trees=out, dat.train=training))        
 }
+
+ 
+  
 
 
 

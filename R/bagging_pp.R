@@ -11,9 +11,13 @@
 #' @examples
 #' data1<-iris[,5:1]
 #' training<-train_fn(iris[,5],.9)
-#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training,strata=TRUE,ntree=50,index="LDA")      
-#' b.pp <- bagging_pp(data1,scale=TRUE, strata=TRUE,output,training)
-bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training, ...){
+#' test<-as.vector(1:length(iris[,5]))[!(1:length(iris[,5])%in%(training))]
+#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=NULL,strata=TRUE,ntree=50,index="LDA")      
+#' b.pp <- bagging_pp(data1,scale=TRUE, strata=TRUE,output,training,test)
+bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training=NULL,test=NULL, ...){
+  
+  if(is.null(training)) training <- 1:dim(data)[1]
+  if(is.null(test)) test <- 1:dim(data)[1]
   if(strata==TRUE) data[,-1] <- scale(data[,-1])
   votes <- plyr::ldply(boot[[1]], function(x) PPtree::PP.classify(test.data=data[,-1],
                                 true.class=data[,1], x[[2]], Rule=1)$predict.class)[,-1]
@@ -34,8 +38,6 @@ bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training, ...){
   
  votes.con <- apply(votes,2,table)
  votes.prop <- plyr::ldply(votes.con,function(x) as.data.frame(x/dim(votes)[1]))
-    
-
 
   v.train <- votes[,training]
   l.train <- 1:length(training)
@@ -70,11 +72,15 @@ oob.error <- 1-sum(diag(tab.oob))/length(cond[,1])
  
 
             tab.t <- table(Observed=data[training,1],Predicted=max.vote[training])
+            tab.te <- table(Observed=data[test,1],Predicted=max.vote[test])
   colnames(tab.t) <- rownames(tab.t)
+ colnames(tab.te) <- rownames(tab.te)
+
  class.error <- 1-diag(tab.t)/((addmargins(tab.t,2))[,"Sum"])
             tab.p <- cbind(round(prop.table(tab.t,1),7),class.error)
-            error <- round((dim(data[training,])[1]-sum(diag(tab.t)))/dim(data)[1],5)
-out <- list(oob.error,error,as.numeric(max.vote),tab.p,oob.error.tree$V1,votes,votes.prop,proximity)
-names(out) <-c("OOB estimate or error rate","Training error","Predicted","Confusion matrix","OOB error Tree","Votes","Votes proportion","Proximity")
+            error.tr <- round((dim(data[training,])[1]-sum(diag(tab.t)))/(dim(data[training,])[1]),7)
+            error.te <- round((dim(data[test,])[1]-sum(diag(tab.te)))/(dim(data[test,])[1]),7)
+out <- list(oob.error,error.tr,error.te,as.numeric(max.vote),tab.p,oob.error.tree$V1,votes,votes.prop,proximity)
+names(out) <-c("OOB estimate or error rate","Training error","Test error","Predicted","Confusion matrix","OOB error Tree","Votes","Votes proportion","Proximity")
 return(out)
 } 
