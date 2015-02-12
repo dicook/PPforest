@@ -14,29 +14,21 @@ library(randomForest)
 
 data.iris <- iris[,5:1]
 training<- train_fn(iris[,5],.9)
-
-
+test<-as.vector(1:length(iris[,5]))[!(1:length(iris[,5])%in%(training))]
 
 result.boot.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
-  bootstrap_pp(data=data.iris,training=training,ntree=nt,index="LDA") 
+  bootstrap_pp(data=data.iris,scale=TRUE,size.p=.9,training=training,strata=TRUE,ntree=nt,index="LDA") 
    }  
 )  
 
-result.boot <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
-  bootstrap_pp(data=data.iris,training=training,ntree=nt,strata=FALSE,index="LDA") 
-  
-}  
-)
+   
 
 #Tree.result <- PPtree_split("LDA",data.iris[training,1], data.iris[training,2:5],size.p=0.9)
 #pp.cl <- PP.classify(data.iris[training,2:5],data.iris[training,1],Tree.result,1)
 
 
+result.bagg.st <- llply(result.boot.st[1:5],function(x) bagging_pp(data=data.iris,boot=x,size.p=.9,training=training,test=test))
 
-result.bagg.st <- llply(result.boot.st[1:5],function(x) bagging_pp(data=data.iris,boot=x,size.p=.9,training=training))
-result.bagg <- llply(result.boot[1:5],function(x) bagging_pp(data=data.iris,boot=x,size.p=.9,training=training))
-
-error <- sapply(result.bagg,function(x) x[[1]][1] )
 error.st <- sapply(result.bagg.st,function(x) x[[1]][1] )
 
 
@@ -101,23 +93,17 @@ training <- train_fn(d.olive2[,1],.9)
 boot<-bootstrap_pp(data=d.olive2,training=training,ntree=50,index="LDA") 
  b.pp <- bagging_pp(d.olive2,scale=TRUE, strata=TRUE,boot,training)
 
-
-
+  
 
 result.boot2.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
-  bootstrap_pp(data=d.olive2,training=training,ntree=nt,index="LDA") 
-}  
+  bootstrap_pp(data=d.olive2,scale=TRUE,size.p=.9,training=training,strata=TRUE,ntree=nt,index="LDA") 
+   }  
 )  
-#hahah
-result.boot2 <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
-  bootstrap_pp(data=d.olive2,training=training,strata=FALSE,ntree=nt,index="LDA") 
-}  
-)  
+
+ 
 
 result.bagg2.st <- llply(result.boot2.st[1:5],function(x) bagging_pp(data=d.olive2,scale=TRUE,strata=TRUE,boot=x,training=training))
-result.bagg2 <- llply(result.boot2[1:5],function(x) bagging_pp(data=d.olive2,boot=x,,scale=TRUE,strata=TRUE,training=training))
 
-error <- sapply(result.bagg2,function(x) x[[1]][1] )
 error.st <- sapply(result.bagg2.st,function(x) x[[1]][1] )
 
 ```
@@ -170,3 +156,157 @@ boot<-bootstrap_pp(data=d.olive2,training=training,ntree=50,index="LDA")
  print(b.pp)
 
 ```
+
+Corss validation
+
+
+
+```{r data.cv,cache=TRUE,echo=FALSE}
+setwd("./data")
+crab.aux <- read.csv("australian-crabs.csv",header=T)[,-3]
+crab <-data.frame(Type=with(crab.aux,paste(species,sex,sep="")),crab.aux[,-c(1,2)])
+leukemia <- read.csv( "Leuk-tot.csv",header=T)
+lymphoma <- read.csv("Lymp-tot.csv",header=T)
+NCI60 <- read.csv("NCI60.csv",header=T)
+wine <- read.csv( "wine.csv", header=T)
+glass <- read.csv("glass.csv",header=T)
+fishcatch <- read.csv("fishcatch.csv",header=T)[,-1]
+names(fishcatch)[1]<- "Type"
+image <- read.csv("image.csv",header=T  )
+parkinson <- read.csv("parkinsons.csv",header=T)
+
+#temp = list.files(pattern="*.csv")
+#myfiles = lapply(temp, read.delim)
+```
+
+
+glass$Type<-as.factor(glass$Type)
+
+data1 <- crab
+
+training<- train_fn(parkinson [,1],.9)
+
+a<-bootstrap_pp(data=parkinson,scale=TRUE,size.p=.9,training=training,strata=TRUE,ntree=5,index="LDA") 
+  
+b.pp <- bagging_pp(wine,scale=TRUE, strata=TRUE,a,training)
+
+b.pp[[1]]
+
+rf<-randomForest(as.factor(Type) ~ ., data=wine[training,], importance=TRUE,
+                      proximity=TRUE,strata=Type)
+
+print(rf)
+
+result.boot.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
+  bootstrap_pp(data=NCI60,scale=TRUE,size.p=.9,training=training,strata=TRUE,ntree=30,index="LDA") 
+   }  
+)  
+
+
+
+```{r}
+library(PPtree)
+library(rpart)
+library(randomForest)
+
+
+```
+```{r cv,dependson="data.cv",cache=TRUE,echo=FALSE}
+
+
+#PPtree
+lda.err <- function(tr,te){
+ppt.lda <-LDA.Tree(tr[,1],tr[,-1])
+
+ppt.pred.tr <-PP.classify(tr[,-1], tr[,1],ppt.lda , Rule=1)
+
+ppt.pred.te <-PP.classify(te[,-1], te[,1],ppt.lda , Rule=1)
+
+ err.tr <- ppt.pred.tr[[1]]/length(ppt.pred.tr[[2]])
+
+ err.te <- ppt.pred.te[[1]]/length(ppt.pred.te[[2]])
+data.frame(err.tr,err.te)
+
+}
+
+
+#CART
+cart.err <- function(tr,te){
+ cart<- rpart(as.factor(Type)~.,data=tr)
+  fit.preds.tr <- predict(cart,newdata=tr,type="class")
+ fit.preds.te <- predict(cart,newdata=te,type="class")
+fit.table.tr <- table(tr[,1],fit.preds.tr)
+fit.table.te <- table(te[,1],fit.preds.te)
+err.tr <- (dim(tr)[1]-sum(diag(fit.table.tr)))/dim(tr)[1]
+err.te <- (dim(te)[1]-sum(diag(fit.table.te)))/dim(te)[1]
+data.frame(err.tr,err.te)
+}
+
+#RF
+rf.err <- function(tr,te){
+rf <- randomForest(as.factor(Type) ~ ., data=tr)
+ err.tr <- (dim(tr)[1]-sum(diag(rf$confusion[,-dim(rf$confusion)[2]])))/dim(tr)[1]
+ fit.preds.te <- predict(rf,newdata=te,type="class")
+fit.table.te <- table(te[,1],fit.preds.te)
+err.te <- (dim(te)[1]-sum(diag(fit.table.te)))/dim(te)[1]
+data.frame(err.tr,err.te)
+}
+
+#PP.RF
+
+pprf.err <- function(data,tr,te,tr.index,te.index){
+bo.pp <- bootstrap_pp(data=data,scale=TRUE,size.p=.9,training=tr.index,strata=TRUE,ntree=50,index="LDA")      
+ba.pp <- bagging_pp(data,scale=TRUE, strata=TRUE,bo.pp,tr.index,te.index)
+data.frame(ba.pp[[2]],ba.pp[[3]])
+}
+
+
+cv.meth <- function(data) {
+
+rdply(10 , function(){
+  tr.index <- train_fn(data[,1],2/3)
+  te.index <- as.vector(1:length(data[,1]))[!(1:length(data[,1])%in%(tr.index))]
+ training<- data[tr.index,]
+test <- data[-tr.index,] 
+data.frame(lda=lda.err(training,test),cart=cart.err(training,test),rf=rf.err(training,test),pprf=pprf.err(data,training,test,tr.index,te.index)) 
+})
+}
+
+```
+library(ggplot2)
+source("../resamp.r")
+set.seed(1410)  # Ensure null samples are the same each time
+
+library(classPP)
+
+leuk <- read.csv("leukemia.csv", stringsAsFactors = FALSE)
+names(leuk) <- c("id", paste("gene", 1:(ncol(leuk) - 1), sep = ""))
+
+genes <- as.matrix(leuk[, -1])
+genes <- scale(genes) # rescale to mean 0, sd 1
+type <- factor(gsub("-[0-9]+$", "", leuk$id))
+
+PP.opt <- PP.optimize.anneal("PDA", 2, genes, type, 
+  cooling = 0.999, temp = 1, lambda = 0.8)
+proj <- as.matrix(genes) %*% PP.opt$proj.best
+true <- data.frame(type, scale(proj, scale = FALSE))
+qplot(X1, X2, data = true, colour = type)
+
+# Now do it n times on the resampled data
+
+leuk_pda <- function(type) {
+  PP.opt <- PP.optimize.anneal("PDA", 2, genes, type, 
+    cooling = 0.999, temp = 1, lambda = 0.8)
+  proj <- as.matrix(genes) %*% PP.opt$proj.best
+  data.frame(type, scale(proj, scale = FALSE))  
+}
+
+leuk_null <- rdply(19, leuk_pda(sample(type)), .progress = "text")
+leuk_all <- add_true(leuk_null, true, 14)
+
+ggplot(leuk_all, aes(X1, X2)) + 
+  geom_point(aes(colour = type), size = 1.8) +
+  facet_wrap(~ .n, ncol = 4) + 
+  xlab("PP1") + ylab("PP2") + opts(aspect.ratio = 1)
+ggsave("luekaemia.png", width = 5, height = 7)
+
