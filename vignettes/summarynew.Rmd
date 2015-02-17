@@ -261,8 +261,8 @@ data.frame(err.tr,err.te)
 #PP.RF
 
 pprf.err <- function(data,tr,te,tr.index,te.index){
-bo.pp <- bootstrap_pp(data=data,scale=TRUE,size.p=.9,training=tr.index,strata=TRUE,ntree=50,index="LDA")      
-ba.pp <- bagging_pp(data,scale=TRUE, strata=TRUE,bo.pp,tr.index,te.index)
+bo.pp <- bootstrap_pp(data=data,scale=TRUE,size.p=.9,training=tr.index,strata=FALSE,ntree=5,index="LDA")      
+ba.pp <- bagging_pp(data,scale=TRUE, strata=FALSE,bo.pp,tr.index,te.index)
 data.frame(ba.pp[[2]],ba.pp[[3]])
 }
 
@@ -281,6 +281,8 @@ data.frame(lda=lda.err(training,test),cart=cart.err(training,test),rf=rf.err(tra
 ```
 
 ```{r}
+
+
 load("/Users/nataliadasilva/Box Sync/PP.forest/PP.Forest/data/CVwine2.Rdata")
 
 wine.lda<- data.frame(results=round(apply(wine.errors2,2,mean),5))
