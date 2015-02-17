@@ -282,6 +282,17 @@ data.frame(lda=lda.err(training,test),cart=cart.err(training,test),rf=rf.err(tra
 
 ```{r}
 load("/Users/nataliadasilva/Box Sync/PP.forest/PP.Forest/data/CVwine2.Rdata")
-apply(wine.errors2,2,mean)
+
+wine.lda<- data.frame(results=round(apply(wine.errors2,2,mean),5))
+
+load("/Users/nataliadasilva/Box Sync/PP.forest/PP.Forest/data/CVlymphoma.Rdata")
+lymphomacv.lda<- data.frame(results=round(apply(lymphoma.errors2,2,mean),5))
+
+
+aux<-data.frame(rownames(wine.lda)[-1],wine.lda[-1,],lymphomacv.lda[-1,])
+res<-data.frame(t(aux[c(1,3,5,7),2:3]),t(aux[c(2,4,6,8),2:3]))
+colnames(res)<-c("lda.tr","cart.tr","rf.tr","pp.rf.tr","lda.te","cart.te","rf.te","pp.rf.te")
+rownames(res)<-c("Wind.lda","lymphoma.lda")
+res
 ```
 
