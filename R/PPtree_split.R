@@ -17,8 +17,8 @@
 #' data1<-iris[,5:1]
 #' Tree.result <- PPtree_split("LDA", data1[training,1], data1[training,2:5],size.p=0.9)
 PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r = NULL, 
-          lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01, 
-          ...) 
+                        lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01, 
+                        ...) 
 {
   i.data <- as.matrix(i.data)
   Find.proj <- function(i.class, i.data, PPmethod, r, lambda, 
@@ -30,7 +30,7 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
     G <- length(g) #number of classes
     
     a <- PPtree::PP.optimize.anneal(PPmethod, 1, i.data, i.class, 
-                            std = TRUE, cooling, temp, energy, r, lambda) #optimal projection and optimal index
+                                    std = TRUE, cooling, temp, energy, r, lambda) #optimal projection and optimal index
     proj.data <- as.matrix(i.data) %*% a$proj.best #projected data
     sign <- sign(a$proj.best[abs(a$proj.best) == max(abs(a$proj.best))])# sign of the abs maximum optimal projected value
     index <- (1:p) * (abs(a$proj.best) == max(abs(a$proj.best)))#identify the index place
@@ -62,7 +62,7 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
       G <- length(g)
       n <- nrow(i.data)
       a <- PPtree::PP.optimize.anneal(PPmethod, 1, i.data, class, 
-                              std = TRUE, cooling, temp, energy, r, lambda)
+                                      std = TRUE, cooling, temp, energy, r, lambda)
       if (sign != sign(a$proj.best[index])) 
         a$proj.best <- -a$proj.best
       proj.data <- as.matrix(i.data) %*% a$proj.best
@@ -135,7 +135,7 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
       a1[aux]<-a$Alpha
       Alpha.Keep <- rbind( Alpha.Keep, a1)
       index.var <- rbind(index.var,aux)
-       t.class <- i.class
+      t.class <- i.class
       t.data <- i.data
       t.class <- t.class * a$IOindexL
       t.n <- length(t.class[t.class == 0])

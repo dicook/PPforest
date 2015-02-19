@@ -11,7 +11,7 @@
 #' @examples
 #' training<-train_fn(iris[,5],.9)
 #' data1<-iris[,5:1]
-#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=NULL,strata=FALSE,ntree=50,index="LDA")  
+#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=NULL,strata=FALSE,ntree=5,index="LDA")  
  bootstrap_pp <- function(data,scale=TRUE,size.p=.9,training=NULL, strata=TRUE,ntree, index='LDA', ...){
    if(scale==TRUE) data[,-1] <- scale(data[,-1])
    names(data)[1] <-"class"
@@ -23,12 +23,9 @@
     dat.train <- data[training,]
     
     if(strata==TRUE){
-     
-      index.boot <- unlist(plyr::dlply(class.id, plyr::.(class), function(x) sort(sample(x$id, replace=TRUE)) ))
-      #index.boot <- unlist(plyr::dlply(class.id, plyr::.(class), function(x) train_fn(class=x$class,size.p=0.9)) )
-     
-   names(index.boot) <- NULL 
-    pp.tree <-PPtree_split(PPmethod=index, size.p=.9,i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1]) 
+    index.boot <- unlist(plyr::dlply(class.id, plyr::.(class), function(x) sort(sample(x$id, replace=TRUE)) ))
+    names(index.boot) <- NULL 
+    pp.tree <-PPtree_split(PPmethod=index, size.p=.9,i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1],...) 
     list(index.boot, pp.tree)
     }
    else{
@@ -36,9 +33,9 @@
      while(check){
     index.boot <- sort(sample(class.id$id, replace = TRUE))
     aux <-table(dat.train[index.boot,1],index.boot )
-    check <- !sum((apply(aux,1,function(x) ((sum(x==0))<dim(aux)[2]-2)|sum(x)>2)))==length(unique(data[,1]))
+    check <- !sum((apply(aux,1,function(x) ((sum(x==0))<dim(aux)[2]-2)&sum(x)>2)))==length(unique(data[,1]))
      }
-      pp.tree <- PPtree_split(PPmethod=index,size.p=.9, i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1]) 
+      pp.tree <- PPtree_split(PPmethod=index,size.p=.9, i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1],...) 
     list(index.boot, pp.tree)
     }
   

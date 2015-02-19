@@ -12,13 +12,13 @@
 #' data1<-iris[,5:1]
 #' training<-train_fn(iris[,5],.9)
 #' test<-as.vector(1:length(iris[,5]))[!(1:length(iris[,5])%in%(training))]
-#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=NULL,strata=TRUE,ntree=50,index="LDA")      
+#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=NULL,strata=TRUE,ntree=5,index="LDA")      
 #' b.pp <- bagging_pp(data1,scale=TRUE, strata=TRUE,output,training,test)
-bagging_pp <- function(data, scale=TRUE,strata=TRUE,boot,training=NULL,test=NULL, ...){
+bagging_pp <- function(data, scale=TRUE,boot,training=NULL,test=NULL, ...){
   
   if(is.null(training)) training <- 1:dim(data)[1]
   if(is.null(test)) test <- 1:dim(data)[1]
-  if(strata==TRUE) data[,-1] <- scale(data[,-1])
+  if(scale==TRUE) data[,-1] <- scale(data[,-1])
   votes <- plyr::ldply(boot[[1]], function(x) PPtree::PP.classify(test.data=data[,-1],
                                 true.class=data[,1], x[[2]], Rule=1)$predict.class)[,-1]
   

@@ -10,6 +10,7 @@ library(reshape)
 library(plyr)
 library(ggplot2)
 library(randomForest)
+library(lineprof)
 
 
 data.iris <- iris[,5:1]
@@ -235,6 +236,21 @@ data.frame(err.tr,err.te)
 
 }
 
+#PPtree
+pda.err <- function(tr,te){
+ppt.pda <-PDA.Tree(tr[,1],tr[,-1],lambda=.14)
+
+ppt.pred.tr <-PP.classify(tr[,-1], tr[,1],ppt.pda , Rule=1)
+
+ppt.pred.te <-PP.classify(te[,-1], te[,1],ppt.pda , Rule=1)
+
+ err.tr <- ppt.pred.tr[[1]]/length(ppt.pred.tr[[2]])
+
+ err.te <- ppt.pred.te[[1]]/length(ppt.pred.te[[2]])
+data.frame(err.tr,err.te)
+
+}
+
 
 #CART
 cart.err <- function(tr,te){
@@ -260,16 +276,16 @@ data.frame(err.tr,err.te)
 
 #PP.RF
 
-pprf.err <- function(data,tr,te,tr.index,te.index){
-bo.pp <- bootstrap_pp(data=data,scale=TRUE,size.p=.9,training=tr.index,strata=FALSE,ntree=5,index="LDA")      
-ba.pp <- bagging_pp(data,scale=TRUE, strata=FALSE,bo.pp,tr.index,te.index)
+pprf.err <- function(data,tr,te,tr.index,te.index,lambda=0.14,strata=TRUE,index="LDA"){
+bo.pp <- bootstrap_pp(data=data,scale=TRUE,size.p=.9,training=tr.index,strata=strata,ntree=5,index=index,lambda=0.14)      
+ba.pp <- bagging_pp(data,scale=TRUE,strata=strata,bo.pp,tr=tr.index,te=te.index)
 data.frame(ba.pp[[2]],ba.pp[[3]])
 }
 
 
 cv.meth <- function(data) {
 
-rdply(10 , function(){
+rdply(2 , function(){
   tr.index <- train_fn(data[,1],2/3)
   te.index <- as.vector(1:length(data[,1]))[!(1:length(data[,1])%in%(tr.index))]
  training<- data[tr.index,]
@@ -281,20 +297,82 @@ data.frame(lda=lda.err(training,test),cart=cart.err(training,test),rf=rf.err(tra
 ```
 
 ```{r}
+data<-leukemia
 
+ tr.index <- train_fn(data[,1],2/3)
+  te.index <- as.vector(1:length(data[,1]))[!(1:length(data[,1])%in%(tr.index))]
+ training<- data[tr.index,]
+test <- data[-tr.index,] 
+ppt.lda <-LDA.Tree(training[,1],training[,-1])
+PDA.Tree(training[,1],training[,-1],lambda=.14)
 
-load("/Users/nataliadasilva/Box Sync/PP.forest/PP.Forest/data/CVwine2.Rdata")
+#LDA in some cases the sample  Error in lda.default(x, grouping, ...) : 
+ # variable 27 appears to be constant within groups
+#PDA does not work with any lambda, why?
+#How you get the cv for leukemia data if you have this problem because you use lda, pda
 
-wine.lda<- data.frame(results=round(apply(wine.errors2,2,mean),5))
+data<-NCI60
+training<-train_fn(data[,1],.9)
+#part of bootstrap_pp code
+data[,-1] <- scale(data[,-1])
+names(data)[1] <-"class"
 
-load("/Users/nataliadasilva/Box Sync/PP.forest/PP.Forest/data/CVlymphoma.Rdata")
-lymphomacv.lda<- data.frame(results=round(apply(lymphoma.errors2,2,mean),5))
+ n <- length(training)
+    class.id <- data.frame(id=1:n,class=data[training,"class"])
+    dat.train <- data[training,]
 
+index.boot <- unlist(plyr::dlply(class.id, plyr::.(class), function(x) sort(sample(x$id, replace=TRUE)) ))
+    names(index.boot) <- NULL 
+    pp.tree <-PPtree_split(PPmethod=index, size.p=.9,i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1]) 
+    pp.tree <-PP.Tree(PPmethod=index, size.p=.9,i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1]) 
 
-aux<-data.frame(rownames(wine.lda)[-1],wine.lda[-1,],lymphomacv.lda[-1,])
-res<-data.frame(t(aux[c(1,3,5,7),2:3]),t(aux[c(2,4,6,8),2:3]))
-colnames(res)<-c("lda.tr","cart.tr","rf.tr","pp.rf.tr","lda.te","cart.te","rf.te","pp.rf.te")
-rownames(res)<-c("Wind.lda","lymphoma.lda")
-res
+pp.tree
+
+#I have a problem in the way I select the variables or how I change it in pptree function for some data work but not for all
 ```
 
+
+Profilling
+``{r}
+data1 <- iris[,5:1]
+
+ training <- train_fn(iris[,5],.9)
+ test <- as.vector(1:length(iris[,5]))[!(1:length(iris[,5])%in%(training))]
+ output <- bootstrap_pp(data1,scale=TRUE,size.p=.9,training=NULL,strata=TRUE,ntree=50,index="LDA")
+ 
+ bag.t <- system.time(bagging_pp(data1,scale=TRUE, strata=TRUE,output,training,test))
+boo.t <- system.time(bootstrap_pp(data1,scale=TRUE,size.p=.9,training=NULL,strata=TRUE,ntree=50,index="LDA"))
+
+pptree.sp.t <- system.time(PPtree_split("LDA", data1[training,1], data1[training,2:5],size.p=0.9))
+
+
+ptm <- proc.time()
+b1<-bagging_pp(data1,scale=TRUE, strata=TRUE,output,training,test)
+proc.time() - ptm
+
+ptm <- proc.time()
+b2<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=NULL,strata=TRUE,ntree=50,index="LDA")
+proc.time() - ptm
+
+library(profr)
+
+bl1 <- profr(
+  b1<-bagging_pp(data1,scale=TRUE, strata=TRUE,output,training,test)
+)
+head(bl1, 10)
+
+plot(bl1)
+
+bl2 <- profr(
+  b2<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=NULL,strata=TRUE,ntree=50,index="LDA")
+)
+head(bl2, 20)
+plot(bl2)
+
+```
+Problems
+
+``{r}
+
+
+```
