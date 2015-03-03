@@ -16,20 +16,39 @@
 #' training<-train_fn(iris[,5],.9)
 #' data1<-iris[,5:1]
 #' Tree.result <- PPtree_split("LDA", data1[training,1], data1[training,2:5],size.p=0.9)
+#' data1<-NCI60
+#' training<-train_fn(data1[,1],.9)
+#' 
+#' Tree.result <- PPtree_split("PDA", data1[training,1], data1[training,-1],size.p=0.9,lambda=.14)
+
 PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r = NULL, 
-                        lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01, 
-                        ...) 
+                        lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01,std=TRUE 
+                  ,...) 
 {
-  i.data <- as.matrix(i.data)
   Find.proj <- function(i.class, i.data, PPmethod, r, lambda, 
                         ...) {
+    i.data <- as.matrix(i.data)
+    i.class <- as.matrix(i.class)
+    v.rnd <- var_select(i.data,size.p)
+    vari <- dim(i.data)[2]
+    i.data<-i.data[,v.rnd]
+    pp <- ncol(i.data)
+    if (std) {
+      remove <- (1:pp) * (apply(i.data, 2, sd) == 0)
+      remove <- remove[remove != 0]
+      if (length(remove) != 0) {
+        i.data <- i.data[, -remove]
+      }
+      i.data <- scale(i.data)
+    }
+ 
     n <- nrow(i.data) #number of rows of data without class
     p <- ncol(i.data) #number of columns of data without class 
     g <- table(i.class) #table of class data
     g.name <- as.numeric(as.factor(names(g)))#I have added as.factor, change the classes to numbers
     G <- length(g) #number of classes
     
-    a <- PPtree::PP.optimize.anneal(PPmethod, 1, i.data, i.class, 
+    a <- PP.optimize.anneal(PPmethod, 1, i.data, i.class, 
                                     std = TRUE, cooling, temp, energy, r, lambda) #optimal projection and optimal index
     proj.data <- as.matrix(i.data) %*% a$proj.best #projected data
     sign <- sign(a$proj.best[abs(a$proj.best) == max(abs(a$proj.best))])# sign of the abs maximum optimal projected value
@@ -61,7 +80,7 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
       g.name <- as.numeric(names(g))
       G <- length(g)
       n <- nrow(i.data)
-      a <- PPtree::PP.optimize.anneal(PPmethod, 1, i.data, class, 
+      a <- PP.optimize.anneal(PPmethod, 1, i.data, class, 
                                       std = TRUE, cooling, temp, energy, r, lambda)
       if (sign != sign(a$proj.best[index])) 
         a$proj.best <- -a$proj.best
@@ -94,7 +113,9 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
                                                                              (IQR.LR[2]/n.LR[2]))
     C <- c(c1, c2, c3, c4, c5, c6)
     Index <- a$index.best
-    Alpha <- t(a$proj.best)
+    a1 <- rep(0,vari)
+    a1[v.rnd]<-t(a$proj.best) 
+    Alpha <- a1
     IOindexR <- NULL
     IOindexL <- NULL
     sort.LR <- as.numeric(names(sort(m.LR)))
@@ -103,11 +124,11 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
     list(Index = Index, Alpha = Alpha, C = C, IOindexL = IOindexL, 
          IOindexR = IOindexR)
   }
-  Tree.construct <- function(i.class, i.data, Tree.Struct,size.p, 
-                             id, rep, rep1, rep2, Alpha.Keep, index.var,C.Keep, PPmethod, r = NULL, 
+  
+  Tree.construct <- function(i.class, i.data, Tree.Struct, 
+                             id, rep, rep1, rep2, Alpha.Keep, C.Keep, PPmethod, r = NULL, 
                              lambda = NULL, ...) {
     i.class <- as.integer(i.class)
-    aux <- var_select(i.data,size.p)
     n <- nrow(i.data)
     g <- table(i.class)
     G <- length(g)
@@ -117,7 +138,7 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
     }
     if (G == 1) {
       Tree.Struct[id, 3] <- as.numeric(names(g))
-      list(Tree.Struct = Tree.Struct, Alpha.Keep = Alpha.Keep,index.var, 
+      list(Tree.Struct = Tree.Struct, Alpha.Keep = Alpha.Keep, 
            C.Keep = C.Keep, rep = rep, rep1 = rep1, rep2 = rep2)
     }
     else {
@@ -127,14 +148,10 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
       rep1 <- rep1 + 1
       Tree.Struct[id, 4] <- rep2
       rep2 <- rep2 + 1
-      a <- Find.proj(i.class, i.data[,aux], PPmethod, r, lambda)
+      a <- Find.proj(i.class, i.data, PPmethod, r, lambda)
       C.Keep <- rbind(C.Keep, a$C)
       Tree.Struct[id, 5] <- a$Index
-      
-      a1 <- rep(0,dim(i.data)[2])
-      a1[aux]<-a$Alpha
-      Alpha.Keep <- rbind( Alpha.Keep, a1)
-      index.var <- rbind(index.var,aux)
+      Alpha.Keep <- rbind(Alpha.Keep, a$Alpha)
       t.class <- i.class
       t.data <- i.data
       t.class <- t.class * a$IOindexL
@@ -143,13 +160,12 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
       t.index <- sort(t.index[-(1:t.n)])
       t.class <- t.class[t.index]
       t.data <- i.data[t.index, ]
-      b <- Tree.construct(t.class, t.data, Tree.Struct, size.p,
-                          Tree.Struct[id, 2], rep, rep1, rep2, Alpha.Keep,index.var, 
+      b <- Tree.construct(t.class, t.data, Tree.Struct, 
+                          Tree.Struct[id, 2], rep, rep1, rep2, Alpha.Keep, 
                           C.Keep, PPmethod, r, lambda)
       Tree.Struct <- b$Tree.Struct
       Alpha.Keep <- b$Alpha.Keep
       C.Keep <- b$C.Keep
-      index.var <- b$index.var
       rep <- b$rep
       rep1 <- b$rep1
       rep2 <- b$rep2
@@ -163,24 +179,22 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
       t.data <- i.data[t.index, ]
       n <- nrow(t.data)
       G <- length(table(t.class))
-      b <- Tree.construct(t.class, t.data, Tree.Struct, size.p,
-                          Tree.Struct[id, 3], rep, rep1, rep2, Alpha.Keep, index.var,
+      b <- Tree.construct(t.class, t.data, Tree.Struct, 
+                          Tree.Struct[id, 3], rep, rep1, rep2, Alpha.Keep, 
                           C.Keep, PPmethod, r, lambda)
       Tree.Struct <- b$Tree.Struct
       Alpha.Keep <- b$Alpha.Keep
       C.Keep <- b$C.Keep
-      index.var <- b$index.var
       rep <- b$rep
       rep1 <- b$rep1
       rep2 <- b$rep2
     }
-    list(Tree.Struct = Tree.Struct, Alpha.Keep = Alpha.Keep, index.var=index.var,
+    list(Tree.Struct = Tree.Struct, Alpha.Keep = Alpha.Keep, 
          C.Keep = C.Keep, rep = rep, rep1 = rep1, rep2 = rep2)
   }
   C.Keep <- NULL
   Alpha.Keep <- NULL
   Tree.Struct <- NULL
-  index.var <- NULL
   id <- 1
   rep1 <- 2
   rep2 <- 1
@@ -198,15 +212,23 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
   else if (PPmethod == "PDA") 
     method <- 6
   else stop("Wrong PPmethod")
-  Tree.final <- Tree.construct(i.class, i.data, Tree.Struct, size.p,
-                               id, rep, rep1, rep2, Alpha.Keep, index.var,C.Keep, PPmethod, r, 
+  Tree.final <- Tree.construct(i.class, i.data, Tree.Struct, 
+                               id, rep, rep1, rep2, Alpha.Keep, C.Keep, PPmethod, r, 
                                lambda)
   Tree.Struct <- Tree.final$Tree.Struct
   colnames(Tree.Struct) <- c("id", "L.node.ID", "R.F.node.ID", 
                              "Coef.ID", "Index")
   Alpha.Keep <- Tree.final$Alpha.Keep
   C.Keep <- Tree.final$C.Keep
-  index.var <- Tree.final$index.var
-  list(Tree.Struct = Tree.Struct, Alpha.Keep =Alpha.Keep,  
+  list(Tree.Struct = Tree.Struct, Alpha.Keep = Alpha.Keep, 
        C.Keep = C.Keep)
 }
+
+
+
+
+
+
+
+
+

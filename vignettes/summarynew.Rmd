@@ -1,9 +1,7 @@
 
 ### IRIS DATA
 
-```{r data,echo=FALSE,cache=TRUE,message=FALSE,warning=FALSE,results='asis'}
-
-#example using Iris data
+```{r,echo=FALSE,message=FALSE,warning=FALSE,results='asis'}
 library(PPforest)
 library(PPtree)
 library(reshape)
@@ -11,65 +9,49 @@ library(plyr)
 library(ggplot2)
 library(randomForest)
 library(lineprof)
+library(PPtree)
+library(rpart)
+library(randomForest)
 
+
+```
+
+```{r data,echo=FALSE,cache=TRUE,message=FALSE,warning=FALSE,results='asis'}
+#IRIS data example
 
 data.iris <- iris[,5:1]
-training<- train_fn(iris[,5],.9)
-test<-as.vector(1:length(iris[,5]))[!(1:length(iris[,5])%in%(training))]
+#training <- train_fn(iris[,5],.9)
+#test <- as.vector(1:length(iris[,5]))[!(1:length(iris[,5])%in%(training))]
+
 
 result.boot.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
-  bootstrap_pp(data=data.iris,scale=TRUE,size.p=.9,training=training,test,strata=TRUE,ntree=nt,index="LDA") 
+  bootstrap_pp(data=data.iris,scale=TRUE,size.p=.9,training=NULL,test=NULL,strata=TRUE,ntree=nt,index="LDA") 
    }  
 )  
 
 
-#Tree.result <- PPtree_split("LDA",data.iris[training,1], data.iris[training,2:5],size.p=0.9)
-#pp.cl <- PP.classify(data.iris[training,2:5],data.iris[training,1],Tree.result,1)
-
-
-result.bagg.st <- llply(result.boot.st[1:5],function(x) bagging_pp(data=data.iris,boot=x,size.p=.9,training=training,test=test))
+result.bagg.st <- llply(result.boot.st[1:5],function(x)  bagging_pp(data.iris,scale=TRUE, strata=TRUE,output,training=NULL,test=NULL))
 
 error.st <- sapply(result.bagg.st,function(x) x[[1]][1] )
 
 
-
-
-   output<-bootstrap_pp(data.iris,scale=TRUE,size.p=.9,training,strata=TRUE,ntree=500,index="LDA") 
-    b.pp <- bagging_pp(data.iris,scale=TRUE, strata=TRUE,output,training,test)
-
-
+bagging_pp(data.iris,scale=TRUE, strata=TRUE,output,training,test)
 #proximity matrix
-A<-matrix(0,ncol=150,nrow=150)
+A <- matrix(0,ncol=150,nrow=150)
 A[lower.tri(A,diag=T)]<-b.pp[[9]][,3]
 A[upper.tri(A,diag=T)]
-dA<-as.dist(1-A)
-clA<-hclust(dA)
-cl.h<-cutree(clA, k = 3)
+dA <- as.dist(1-A)
+clA <- hclust(dA)
+cl.h <- cutree(clA, k = 3)
 qplot(y=Sepal.Width, x=Sepal.Length, data=iris,color=as.factor(cl.h))
 
 
-km.A<-kmeans(A,centers=3)
+km.A <- kmeans(A,centers=3)
 qplot(y=Species, x=km.A$cluster,data=iris, group=km.A$cluster,geom="jitter" )
 table(iris$Species, km.A$cluster)
 qplot(y=Sepal.Width, x=Sepal.Length, data=iris,color=as.factor(km.A$cluster))
 qplot(y=Petal.Length, x=Petal.Width, data=iris,color=as.factor(km.A$cluster))
 qplot(y=Sepal.Length, x=Petal.Width, data=iris,color=as.factor(km.A$cluster))
-
-
-
-
-
-
-#sacalo <- function(xx) {
- # ldply(xx[[1]], function(x) x[[2]]$Alpha.Keep)
-#}
-#sacalo(result.boot.st[[1]])
-#jj1<-ldply(result.boot.st, sacalo)
-#jj2<-ldply(result.boot.st[1:5], sacalo)
-
-###
-
-
 
 
 ```
@@ -78,7 +60,7 @@ qplot(y=Sepal.Length, x=Petal.Width, data=iris,color=as.factor(km.A$cluster))
 library(xtable)
 aux <- c(5,10,50,100,500)
 
-aaa<-xtable(cbind(aux,error,error.st),digits=5,caption="OOB error for PP.bagging with bootstrap samples without strata and with strata")
+aaa <- xtable(cbind(aux,error.st),digits=5,caption="OOB error for PP.bagging with bootstrap samples without strata and with strata")
 ###
 print(aaa,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
 
@@ -140,7 +122,7 @@ error.st <- sapply(result.bagg2.st,function(x) x[[1]][1] )
 library(xtable)
 aux <- c(5,10,50,100,500)
 
-aaa<-xtable(cbind(aux,error,error.st),digits=5,caption="OOB error for PP.bagging with bootstrap samples without strata and with strata")
+aaa<-xtable(cbind(aux,error.st),digits=5,caption="OOB error for PP.bagging with bootstrap samples without strata and with strata")
 ###
 print(aaa,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
 
@@ -180,11 +162,9 @@ Basic Output of PPforest for ntree=50
 boot<-bootstrap_pp(data=d.olive2,training=training,ntree=50,index="LDA") 
  b.pp <- bagging_pp(d.olive2,scale=TRUE, strata=TRUE,boot,training)
 
- print(b.pp)
 
 ```
 
-Corss validation
 
 
 
@@ -206,18 +186,33 @@ parkinson <- read.csv("parkinsons.csv",header=T)
 #myfiles = lapply(temp, read.delim)
 ```
 
+```{r datapp,cache=TRUE,echo=FALSE,dependson="data.cv"}
+
+
+training <- train_fn(leukemia [,1],.9)
+
+result.boot2.st <- mlply(data.frame(nt=c(5,10,50,100,500)), function(nt) {
+  bootstrap_pp(data=leukemia,scale=TRUE,size.p=.9,training=training,strata=TRUE,ntree=nt,index="LDA") 
+   }  
+)  
+
+ result.bagg2.st <- llply(result.boot2.st,function(x) bagging_pp(data=leukemia,scale=TRUE,strata=TRUE,boot=x,training=training))
+
+error.st <- sapply(result.bagg2.st,function(x) x[[1]][1] )
+
+aux <- c(5,10,50,100,500)
+
+aaa<-xtable(cbind(aux,error.st),digits=5,caption="OOB error for PP.bagging with bootstrap samples without strata and with strata")
+###
+print(aaa,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
+
+```
 
  
 
 
+#Corss validation
 
-```{r}
-library(PPtree)
-library(rpart)
-library(randomForest)
-
-
-```
 ```{r cv,dependson="data.cv",cache=TRUE,echo=FALSE}
 
 
@@ -254,9 +249,9 @@ data.frame(err.tr,err.te)
 
 #CART
 cart.err <- function(tr,te){
- cart<- rpart(as.factor(Type)~.,data=tr)
-  fit.preds.tr <- predict(cart,newdata=tr,type="class")
- fit.preds.te <- predict(cart,newdata=te,type="class")
+cart<- rpart(as.factor(Type)~.,data=tr)
+fit.preds.tr <- predict(cart,newdata=tr,type="class")
+fit.preds.te <- predict(cart,newdata=te,type="class")
 fit.table.tr <- table(tr[,1],fit.preds.tr)
 fit.table.te <- table(te[,1],fit.preds.te)
 err.tr <- (dim(tr)[1]-sum(diag(fit.table.tr)))/dim(tr)[1]
@@ -296,6 +291,8 @@ data.frame(lda=lda.err(training,test),cart=cart.err(training,test),rf=rf.err(tra
 
 ```
 
+\end{document}
+
 ```{r}
 data<-leukemia
 
@@ -304,8 +301,11 @@ data<-leukemia
  training<- data[tr.index,]
 test <- data[-tr.index,] 
 ppt.lda <-LDA.Tree(training[,1],training[,-1])
+
+
 PDA.Tree(training[,1],training[,-1],lambda=.14)
 
+table(training[,36])
 #LDA in some cases the sample  Error in lda.default(x, grouping, ...) : 
  # variable 27 appears to be constant within groups
 #PDA does not work with any lambda, why?
@@ -369,10 +369,14 @@ bl2 <- profr(
 head(bl2, 20)
 plot(bl2)
 
-```
-Problems
+ldat <- profr(
+  lda<-LDA.Tree(iris[,5],iris[,-5])
+)
+head(ldat, 20)
+plot(ldat)
 
-``{r}
+```
+
 
 
 ```
