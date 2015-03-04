@@ -1,6 +1,7 @@
 
 #example using Iris data
 library(ggplot2)
+library(plyr)
 data.iris <- iris[,5:1]
 training<- train_fn(iris[,5],.9)
 
