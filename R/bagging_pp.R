@@ -12,8 +12,12 @@
 #' data1<-iris[,5:1]
 #' training<-train_fn(iris[,5],.9)
 #' test<-as.vector(1:length(iris[,5]))[!(1:length(iris[,5])%in%(training))]
-#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=NULL,strata=TRUE,ntree=50,index="LDA")      
+#' data1<-NCI60
+#' training<-train_fn(NCI60[,1],.9)
+ 
+#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=training,strata=FALSE,ntree=50,index="LDA") 
 #' b.pp <- bagging_pp(data1,scale=TRUE, strata=TRUE,output,training=NULL,test=NULL)
+
 bagging_pp <- function(data, scale=TRUE,boot,training=NULL,test=NULL, ...){
   
   if(is.null(training)) training <- 1:dim(data)[1]
@@ -27,7 +31,8 @@ bagging_pp <- function(data, scale=TRUE,boot,training=NULL,test=NULL, ...){
     names(t1)[which.max(t1)]
     }
   )
-
+  G <- length(unique( data[,1] ))
+  x1 <-  factor(as.numeric(max.vote), levels=1:G)
   
   pos <- expand.grid(a=1:dim(data)[1], b=1:dim(data)[1])
   cond <- pos[,1]>= pos[,2]
@@ -71,8 +76,11 @@ bagging_pp <- function(data, scale=TRUE,boot,training=NULL,test=NULL, ...){
 oob.error <- 1-sum(diag(tab.oob))/length(cond[,1])
  
 
-            tab.t <- table(Observed=data[training,1],Predicted=max.vote[training])
-            tab.te <- table(Observed=data[test,1],Predicted=max.vote[test])
+          G <- length(unique( data[,1] ))
+          x1 <-  factor(as.numeric(max.vote), levels=1:G)  
+          tab.t <- table(Observed=data[training,1],Predicted=x1[training])
+          tab.te <- table(Observed=data[test,1],Predicted=x1[test])
+
   colnames(tab.t) <- rownames(tab.t)
  colnames(tab.te) <- rownames(tab.te)
 

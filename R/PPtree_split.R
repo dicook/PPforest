@@ -16,23 +16,19 @@
 #' training<-train_fn(iris[,5],.9)
 #' data1<-iris[,5:1]
 #' Tree.result <- PPtree_split("LDA", data1[training,1], data1[training,2:5],size.p=0.9)
-#' 
 
-#' Tree.result <- PPtree_split("PDA", data1[training,1], data1[training,-1],size.p=0.9,lambda=.14)
 
-PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r = NULL, 
-                        lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01,std=TRUE 
-                  ,...) 
-{
-  Find.proj <- function(i.class, i.data, PPmethod, r, lambda, 
-                        ...) {
-    i.data <- as.matrix(i.data)
-    i.class <- as.matrix(i.class)
-    v.rnd <- var_select(i.data,size.p)
-    vari <- dim(i.data)[2]
-    i.data<-i.data[,v.rnd]
+PPtree_split <- function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r = NULL, 
+                          lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01,std=TRUE 
+                          ,...) 
+{ 
+  
+  Find.proj <- function(i.class, i.data, PPmethod, r , lambda, ... ) {
+    
+    i.data.ori <- i.data  #original data set
+    
     pp <- ncol(i.data)
-    if (std) {
+    if (std) { #remove the variable with zero variance same as in PP.optimize anneal
       remove <- (1:pp) * (apply(i.data, 2, sd) == 0)
       remove <- remove[remove != 0]
       if (length(remove) != 0) {
@@ -40,47 +36,51 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
       }
       i.data <- scale(i.data)
     }
- 
-    n <- nrow(i.data) #number of rows of data without class
-    p <- ncol(i.data) #number of columns of data without class 
-    g <- table(i.class) #table of class data
-    g.name <- as.numeric(as.factor(names(g)))#I have added as.factor, change the classes to numbers
-    G <- length(g) #number of classes
+    v.rnd <- var_select(i.data,size.p) #random variable selection
+    vari <- dim(i.data.ori)[2] # number of variables
+    i.data <- i.data[,v.rnd] #data with selected variables
     
-    a <- PPtree::PP.optimize.anneal(PPmethod, 1, i.data, i.class, 
-                                    std = TRUE, cooling, temp, energy, r, lambda) #optimal projection and optimal index
-    proj.data <- as.matrix(i.data) %*% a$proj.best #projected data
-    sign <- sign(a$proj.best[abs(a$proj.best) == max(abs(a$proj.best))])# sign of the abs maximum optimal projected value
-    index <- (1:p) * (abs(a$proj.best) == max(abs(a$proj.best)))#identify the index place
+    #---
+    n <- nrow(i.data)
+    p <- ncol(i.data)
+    i.class<-as.integer(i.class)
+    g <- table(i.class)
+    g.name <- as.numeric(names(g))
+    G <- length(g)
+    a <- PP.optimize.anneal(PPmethod, 1, i.data, i.class, 
+                            std = TRUE, cooling, temp, energy, r, lambda)
+    proj.data <- as.matrix(i.data) %*% a$proj.best
+    sign <- sign(a$proj.best[abs(a$proj.best) == max(abs(a$proj.best))])
+    index <- (1:p) * (abs(a$proj.best) == max(abs(a$proj.best)))
     index <- index[index > 0]
     if (G == 2) {
       class <- i.class
     }
     else {
-      m <- tapply(c(proj.data), i.class, mean) #mean by class
-      sd <- tapply(c(proj.data), i.class, sd) # sd by class
-      sd.sort <- sort.list(sd) #sort sd by class
-      m.list <- sort.list(m)#sort mean by class
-      m.sort <- sort(m) #sort mean values of classes
-      m.name <- as.numeric(as.factor(names(m.sort))) #sort names
-      G <- length(m) #numeber of classes
+      m <- tapply(c(proj.data), i.class, mean)
+      sd <- tapply(c(proj.data), i.class, sd)
+      sd.sort <- sort.list(sd)
+      m.list <- sort.list(m)
+      m.sort <- sort(m)
+      m.name <- as.numeric(names(m.sort))
+      G <- length(m)
       dist <- 0
       split <- 0
-      for (i in 1:(G - 1)) { #for in classes -1
-        if (m[m.list[i + 1]] - m[m.list[i]] > dist) { #dif in means is bigger than dist split
-          split <- i #number of split is number of classes -1
-          dist <- m[m.list[i + 1]] - m[m.list[i]] #mean diff between classes
+      for (i in 1:(G - 1)) {
+        if (m[m.list[i + 1]] - m[m.list[i]] > dist) {
+          split <- i
+          dist <- m[m.list[i + 1]] - m[m.list[i]]
         }
       }
-      class <- rep(0, n) #zeros for class 
-      for (i in 1:split) class <- class + (i.class == m.name[i]) #for each split the name
+      class <- rep(0, n)
+      for (i in 1:split) class <- class + (i.class == m.name[i])
       class <- 2 - class
       g <- table(class)
       g.name <- as.numeric(names(g))
       G <- length(g)
       n <- nrow(i.data)
-      a <- PPtree::PP.optimize.anneal(PPmethod, 1, i.data, class, 
-                                      std = TRUE, cooling, temp, energy, r, lambda)
+      a <- PP.optimize.anneal(PPmethod, 1, i.data, class, 
+                              std = TRUE, cooling, temp, energy, r, lambda)
       if (sign != sign(a$proj.best[index])) 
         a$proj.best <- -a$proj.best
       proj.data <- as.matrix(i.data) %*% a$proj.best
@@ -112,18 +112,21 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
                                                                              (IQR.LR[2]/n.LR[2]))
     C <- c(c1, c2, c3, c4, c5, c6)
     Index <- a$index.best
-    a1 <- rep(0,vari)
-    a1[v.rnd]<-t(a$proj.best) 
-    Alpha <- a1
     IOindexR <- NULL
     IOindexL <- NULL
     sort.LR <- as.numeric(names(sort(m.LR)))
     IOindexL <- class == sort.LR[1]
     IOindexR <- class == sort.LR[2]
+    
+    a1 <- rep(0, pp) # zeros lenght original variables    
+    a1[v.rnd] <- t(a$proj.best) #best.projt with selected variables and 0 in no selected original length      
+    Alpha <- a1
+    
     list(Index = Index, Alpha = Alpha, C = C, IOindexL = IOindexL, 
          IOindexR = IOindexR)
   }
   
+  ##########################################  
   Tree.construct <- function(i.class, i.data, Tree.Struct, 
                              id, rep, rep1, rep2, Alpha.Keep, C.Keep, PPmethod, r = NULL, 
                              lambda = NULL, ...) {
@@ -190,7 +193,7 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
     }
     list(Tree.Struct = Tree.Struct, Alpha.Keep = Alpha.Keep, 
          C.Keep = C.Keep, rep = rep, rep1 = rep1, rep2 = rep2)
-  }
+  }    
   C.Keep <- NULL
   Alpha.Keep <- NULL
   Tree.Struct <- NULL
@@ -222,12 +225,3 @@ PPtree_split<-function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r =
   list(Tree.Struct = Tree.Struct, Alpha.Keep = Alpha.Keep, 
        C.Keep = C.Keep)
 }
-
-
-
-
-
-
-
-
-

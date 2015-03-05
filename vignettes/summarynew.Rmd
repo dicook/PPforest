@@ -14,12 +14,13 @@ library(PPtree)
 library(rpart)
 library(randomForest)
 library(xtable)
+
 ```
 
 ```{r data,echo=FALSE,cache=TRUE,message=FALSE,warning=FALSE,results='asis'}
 #IRIS data example
 data.iris <- iris[ ,5:1]
-#training <- train_fn(iris[,5],.9)
+training <- train_fn(iris[,5],.9)
 #test <- as.vector(1:length(iris[,5]))[!(1:length(iris[,5])%in%(training))]
 
 result.boot.st <- mlply(data.frame(nt=c(5, 10, 50, 100, 500)), 
@@ -31,34 +32,17 @@ result.boot.st <- mlply(data.frame(nt=c(5, 10, 50, 100, 500)),
 )  
 
 result.bagg.st <- llply(result.boot.st[1:5], function(x) 
-  bagging_pp(data.iris, scale=TRUE, strata=TRUE, output, training=NULL,test=NULL))
+  bagging_pp(data=data.iris, scale=TRUE, strata=TRUE, boot=x, training=NULL))
 
 error.st <- sapply(result.bagg.st,function(x) x[[1]][1] )
 
-bagging_pp(data.iris, scale=TRUE, strata=TRUE, output, training, test)
-
-#proximity matrix
-A <- matrix(0,ncol=150,nrow=150)
-A[lower.tri(A,diag=T)] <- b.pp[[9]][,3]
-A[upper.tri(A,diag=T)]
-dA <- as.dist(1-A)
-clA <- hclust(dA)
-cl.h <- cutree(clA, k = 3)
-qplot(y=Sepal.Width, x=Sepal.Length, data=iris,color=as.factor(cl.h))
-
-km.A <- kmeans(A,centers=3)
-qplot(y=Species, x=km.A$cluster,data=iris, group=km.A$cluster,geom="jitter" )
-table(iris$Species, km.A$cluster)
-qplot(y=Sepal.Width, x=Sepal.Length, data=iris,color=as.factor(km.A$cluster))
-qplot(y=Petal.Length, x=Petal.Width, data=iris,color=as.factor(km.A$cluster))
-qplot(y=Sepal.Length, x=Petal.Width, data=iris,color=as.factor(km.A$cluster))
 ```
 
 ```{r table.res, echo=FALSE, dependson='data', results='asis'}
 aux <- c(5,10,50,100,500)
 
 aaa <- xtable(cbind(aux,error.st), digits=5, caption="OOB error for PP.bagging with bootstrap samples without strata and with strata")
-###
+
 print(aaa, caption.placement="top", include.rownames=TRUE, include.colnames=TRUE)
 ```
 
@@ -82,7 +66,7 @@ print(rf.iris)
 ### OLIVE DATA
 
 ```{r olive,cache=TRUE,echo=FALSE,results='asis',message=FALSE,warning=FALSE}
-load("../data/olive.rda")
+load("./data/olive.rda")
 
 d.olive2 <- subset(d.olive, Region%in%c(1,2))[,-2]
 d.olive2$Region <- factor(d.olive2$Region)
@@ -138,42 +122,119 @@ b.pp <- bagging_pp(d.olive2, scale=TRUE, strata=TRUE, boot, training)
 ```
 
 ```{r data.cv,cache=TRUE,echo=FALSE}
-crab.aux <- read.csv("../data/australian-crabs.csv", header=T)[,-3]
+crab.aux <- read.csv("./data/australian-crabs.csv", header=T)[,-3]
 crab <- data.frame(Type=with(crab.aux, paste(species, sex, sep="")), crab.aux[,-c(1,2)])
-leukemia <- read.csv( "../data/Leuk-tot.csv",header=T)
-lymphoma <- read.csv("../data/Lymp-tot.csv",header=T)
-NCI60 <- read.csv("../data/NCI60.csv",header=T)
-wine <- read.csv( "../data/wine.csv", header=T)
-glass <- read.csv("../data/glass.csv", header=T)
-fishcatch <- read.csv("../data/fishcatch.csv", header=T)[,-1]
+leukemia <- read.csv( "./data/Leuk-tot.csv",header=T)
+lymphoma <- read.csv("./data/Lymp-tot.csv",header=T)
+NCI60 <- read.csv("./data/NCI60.csv",header=T)
+wine <- read.csv( "./data/wine.csv", header=T)
+glass <- read.csv("./data/glass.csv", header=T)
+fishcatch <- read.csv("./data/fishcatch.csv", header=T)[,-1]
 names(fishcatch)[1] <- "Type"
-image <- read.csv("image.csv",header=T  )
-parkinson <- read.csv("parkinsons.csv",header=T)
+image <- read.csv("./data/image.csv",header=T  )
+parkinson <- read.csv("./data/parkinsons.csv",header=T)
 
 #temp = list.files(pattern="*.csv")
 #myfiles = lapply(temp, read.delim)
 ```
 
 ```{r datapp,cache=TRUE,echo=FALSE,dependson="data.cv"}
-training <- train_fn(leukemia [,1], .9)
+#################Leukemia####################
+training.leuk <- train_fn(leukemia[,1], .9)
 
-result.boot2.st <- mlply(data.frame(nt=c(5,10,50,100,500)), 
+result.boot.leuk <- mlply(data.frame(nt=c(5,10,50,100,500)), 
   function(nt) {
     bootstrap_pp(data=leukemia, scale=TRUE, size.p=.9, 
-                training=training,strata=TRUE, ntree=nt, index="LDA") 
+                training=training.leuk,strata=TRUE, ntree=nt, index="LDA") 
    }  
 )  
 
-result.bagg2.st <- llply(result.boot2.st, function(x) 
-  bagging_pp(data=leukemia, scale=TRUE, strata=TRUE, boot=x, training=training))
+result.bagg.leuk <- llply(result.boot.leuk, function(x) 
+  bagging_pp(data=leukemia, scale=TRUE, strata=TRUE, boot=x, training=training.leuk))
 
-error.st <- sapply(result.bagg2.st, function(x) x[[1]][1] )
+error.leuk <- sapply(result.bagg.leuk, function(x) x[[1]][1] )
 
 aux <- c(5,10,50,100,500)
 
-aaa<-xtable(cbind(aux,error.st),digits=5,caption="OOB error for PP.bagging with bootstrap samples without strata and with strata")
+aaa.leuk<-xtable(cbind(aux,error.leuk),digits=5,caption="OOB error for PP.bagging with bootstrap samples with strata ")
 ###
-print(aaa,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
+print(aaa.leuk,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
+
+################NCI60###################
+
+training.nci60 <- train_fn(NCI60[,1], .9)
+output<-bootstrap_pp(NCI60,scale=TRUE,size.p=.9,training=training.nci60,strata=TRUE,ntree=50,index="LDA") 
+ b.pp <- bagging_pp(NCI60,scale=TRUE, strata=TRUE,output,training=NULL,test=NULL)
+ b.pp[[1]]
+
+output.pda<-bootstrap_pp(NCI60,scale=TRUE,size.p=.9,training=training.nci60,strata=TRUE,ntree=50,index="PDA",lambda=.14) 
+ b.pp <- bagging_pp(NCI60,scale=TRUE, strata=TRUE,output,training=NULL,test=NULL)
+ b.pp[[1]]
+
+
+result.boot.nci60 <- mlply(data.frame(nt=c(5,10,50,100,500)), 
+  function(nt) {
+    bootstrap_pp(data=NCI60, scale=TRUE, size.p=.9, training=training.nci60,strata=TRUE, ntree=nt, index="PDA",lambda=.14) 
+   }  
+)  
+
+result.bagg.nci60 <- llply(result.boot.nci60, function(x) 
+  bagging_pp(data=NCI60, scale=TRUE, strata=TRUE, boot=x, training=training.nci60))
+
+error.nci60 <- sapply(result.bagg.nci60, function(x) x[[1]][1] )
+
+aux <- c(5,10,50,100,500)
+
+aaa.nci60<-xtable(cbind(aux,error.nci60),digits=5,caption="OOB error for PP.bagging with bootstrap samples with strata ")
+###
+print(aaa.nci60,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
+
+###########################
+training.leuk <- train_fn(leukemia[,1], .9)
+
+result.boot.leuk <- mlply(data.frame(nt=c(5,10,50,100,500)), 
+  function(nt) {
+    bootstrap_pp(data=leukemia, scale=TRUE, size.p=.9, 
+                training=training.leuk,strata=TRUE, ntree=nt, index="LDA") 
+   }  
+)  
+
+result.bagg.leuk <- llply(result.boot.leuk, function(x) 
+  bagging_pp(data=leukemia, scale=TRUE, strata=TRUE, boot=x, training=training.leuk))
+
+error.leuk <- sapply(result.bagg.leuk, function(x) x[[1]][1] )
+
+aux <- c(5,10,50,100,500)
+
+aaa.leuk<-xtable(cbind(aux,error.leuk),digits=5,caption="OOB error for PP.bagging with bootstrap samples with strata ")
+###
+print(aaa.leuk,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
+
+#######################wine
+
+training.wine <- train_fn(wine[,1], .9)
+
+result.boot.wine<- mlply(data.frame(nt=c(5,10,50,100,500)), 
+  function(nt) {
+    bootstrap_pp(data=wine, scale=TRUE, size.p=.9, 
+                training=training.wine,strata=TRUE, ntree=nt, index="LDA") 
+   }  
+)  
+
+result.bagg.wine <- llply(result.boot.wine, function(x) 
+  bagging_pp(data=wine, scale=TRUE, strata=TRUE, boot=x, training=training.wine))
+
+error.wine <- sapply(result.bagg.wine, function(x) x[[1]][1] )
+
+aux <- c(5,10,50,100,500)
+
+aaa.wine<-xtable(cbind(aux,error.wine),digits=5,caption="OOB error for PP.bagging with bootstrap samples with strata ")
+###
+print(aaa.wine,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
+
+
+
+
 ```
 
 # Cross validation
