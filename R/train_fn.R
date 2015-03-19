@@ -15,5 +15,3 @@ train_fn <-  function(class, size.p) {
   names(index) <- NULL
   return(sort(index))
 }
-
-
