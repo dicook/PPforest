@@ -44,12 +44,3 @@ bootstrap_pp <- function(data,scale=TRUE,size.p=.9,training=NULL, strata=TRUE,nt
   
   return(list(trees=out, dat.train=training))        
 }
-
- 
-  
-
-
-
-
-
-

@@ -2,17 +2,15 @@
 # Not a good idea to run all at once, run line by line 
 
 ```{r libraries, echo=FALSE,message=FALSE,warning=FALSE,results='asis'}
-library(PPforest)
 library(PPtree)
 library(reshape)
+library(dplyr)
 library(plyr)
 library(ggplot2)
 library(randomForest)
 library(lineprof)
 library(profr)
-library(PPtree)
 library(rpart)
-library(randomForest)
 library(xtable)
 
 ```
@@ -30,6 +28,8 @@ result.boot.st <- mlply(data.frame(nt=c(5, 10, 50, 100, 500)),
             strata=TRUE, ntree=nt, index="LDA") 
         }  
 )  
+
+
 
 result.bagg.st <- llply(result.boot.st[1:5], function(x) 
   bagging_pp(data=data.iris, scale=TRUE, strata=TRUE, boot=x, training=NULL))
@@ -131,8 +131,8 @@ wine <- read.csv( "./data/wine.csv", header=T)
 glass <- read.csv("./data/glass.csv", header=T)
 fishcatch <- read.csv("./data/fishcatch.csv", header=T)[,-1]
 names(fishcatch)[1] <- "Type"
-image <- read.csv("./data/image.csv",header=T  )
-parkinson <- read.csv("./data/parkinsons.csv",header=T)
+image <- read.csv("./data/image.csv",header=T  )[,c(1:3,5:20)]
+parkinson <- read.csv("./data/parkinsons.csv",header=T)[,c(1:5,7:23)]
 
 #temp = list.files(pattern="*.csv")
 #myfiles = lapply(temp, read.delim)
@@ -144,7 +144,7 @@ training.leuk <- train_fn(leukemia[,1], .9)
 
 result.boot.leuk <- mlply(data.frame(nt=c(5,10,50,100,500)), 
   function(nt) {
-    bootstrap_pp(data=leukemia, scale=TRUE, size.p=.9, 
+    bootstrap_pp(data=leukemia, scale=TRUE, size.p=2/3, 
                 training=training.leuk,strata=TRUE, ntree=nt, index="LDA") 
    }  
 )  
@@ -233,6 +233,50 @@ aaa.wine<-xtable(cbind(aux,error.wine),digits=5,caption="OOB error for PP.baggin
 print(aaa.wine,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
 
 
+#######################glass
+
+training.glass <- train_fn(glass[,1], .9)
+
+result.boot.glass<- mlply(data.frame(nt=c(5,10,50,100,500)), 
+  function(nt) {
+    bootstrap_pp(data=glass, scale=TRUE, size.p=.9, 
+                training=training.glass,strata=TRUE, ntree=nt, index="LDA") 
+   }  
+)  
+
+result.bagg.glass <- llply(result.boot.glass, function(x) 
+  bagging_pp(data=glass, scale=TRUE, strata=TRUE, boot=x, training=training.glass))
+
+error.glass <- sapply(result.bagg.glass, function(x) x[[1]][1] )
+
+aux <- c(5,10,50,100,500)
+
+aaa.glass<-xtable(cbind(aux,error.glass),digits=5,caption="OOB error for PP.bagging with bootstrap samples with strata ")
+###
+print(aaa.glass,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
+
+#######################image
+
+training.image <- train_fn(image[,1], .9)
+
+result.boot.image<- mlply(data.frame(nt=c(5,10,50,100,500)), 
+  function(nt) {
+    bootstrap_pp(data=image, scale=TRUE, size.p=.9, 
+                training=training.image,strata=TRUE, ntree=nt, index="LDA") 
+   }  
+)  
+
+result.image.glass <- llply(result.boot.image, function(x) 
+  bagging_pp(data=image, scale=TRUE, strata=TRUE, boot=x, training=training.image))
+
+error.glass <- sapply(result.bagg.image, function(x) x[[1]][1] )
+
+aux <- c(5,10,50,100,500)
+
+aaa.image<-xtable(cbind(aux,error.image),digits=5,caption="OOB error for PP.bagging with bootstrap samples with strata ")
+###
+print(aaa.image,caption.placement="top",include.rownames=TRUE,include.colnames=TRUE)
+
 
 
 ```
@@ -240,30 +284,34 @@ print(aaa.wine,caption.placement="top",include.rownames=TRUE,include.colnames=TR
 # Cross validation
 ```{r cv,dependson="data.cv",cache=TRUE,echo=FALSE}
 #PPtree
-lda.err <- function(tr,te){
+pptr.err <- function(tr,te,index){
+   pp <- ncol(tr[,-1])
+      remove <- (1:pp) * (apply(tr[,-1], 2, sd) == 0)
+      remove <- remove[remove != 0]
+      if (length(remove) != 0) {
+        tr<- tr[, -(remove+1)]
+        te<- te[, -(remove+1)]
+    }
+  if(index=="LDA"){
 ppt.lda <- LDA.Tree(tr[,1],tr[,-1])
-
 ppt.pred.tr <- PP.classify(tr[,-1], tr[,1],ppt.lda , Rule=1)
 
 ppt.pred.te <- PP.classify(te[,-1], te[,1],ppt.lda , Rule=1)
 
+}
+else{
+ ppt.pda <- PDA.Tree(tr[,1],tr[,-1],lambda=.14)
+ppt.pred.tr <- PP.classify(tr[,-1], tr[,1],ppt.pda , Rule=1)
+
+ppt.pred.te <- PP.classify(te[,-1], te[,1],ppt.pda , Rule=1)
+  }
+
 err.tr <- ppt.pred.tr[[1]]/length(ppt.pred.tr[[2]])
 
 err.te <- ppt.pred.te[[1]]/length(ppt.pred.te[[2]])
 data.frame(err.tr,err.te)
 }
 
-#PPtree
-pda.err <- function(tr,te){
-ppt.pda <- PDA.Tree(tr[,1],tr[,-1],lambda=.14)
-
-ppt.pred.tr <- PP.classify(tr[,-1], tr[,1], ppt.pda, Rule=1)
-ppt.pred.te <- PP.classify(te[,-1], te[,1], ppt.pda, Rule=1)
-
-err.tr <- ppt.pred.tr[[1]]/length(ppt.pred.tr[[2]])
-err.te <- ppt.pred.te[[1]]/length(ppt.pred.te[[2]])
-data.frame(err.tr,err.te)
-}
 
 #CART
 cart.err <- function(tr,te){
@@ -296,35 +344,94 @@ pprf.err <- function(data, tr, te, tr.index, te.index, lambda=0.14, strata=TRUE,
   data.frame(ba.pp[[2]], ba.pp[[3]])
 }
 
-cv.meth <- function(data) {
- rdply(2, function() {
-  tr.index <- train_fn(data[,1], 2/3)
+cv.meth <- function(data,index,std=TRUE) {
+
+rdply(200 , function(){
+  tr.index <- train_fn(data[,1],2/3)
   te.index <- as.vector(1:length(data[,1]))[!(1:length(data[,1])%in%(tr.index))]
-  training <- data[tr.index,]
-  test <- data[-tr.index,] 
-  data.frame(lda=lda.err(training,test), cart=cart.err(training,test), 
-             rf=rf.err(training,test), 
-             pprf=pprf.err(data,training, test, tr.index, te.index)) 
-  })
+ training<- data[tr.index,]
+test <- data[-tr.index,] 
+  
+data.frame(pptr=pptr.err(training,test,index),cart=cart.err(training,test),rf=rf.err(training,test),pprf=pprf.err(data,training,test,tr.index,te.index),index) 
+})
 }
+ 
+
+####Checking wich data work
+#OK
+nci60.lda<-cv.meth(NCI60,"LDA")  
+nci60.pda<-cv.meth(NCI60,"PDA") 
+apply(nci60.lda[,-10],2,mean)
+apply(nci60.pda[,-10],2,mean)
+ 
+#OK
+crab.lda <- cv.meth(crab,"LDA")  
+crab.pda <- cv.meth(crab,"PDA")  
+ 
+
+#PROBLEM LDA
+leukemia.lda<- cv.meth(leukemia,"LDA") 
+leukemia.pda<- cv.meth(leukemia,"PDA")
+
+ #OK
+ lymphoma.lda<-cv.meth(lymphoma,"LDA") 
+ lymphoma.pda<-cv.meth(lymphoma,"PDA") 
+
+ 
+ #PROBLEM
+ glass.lda<-cv.meth(glass,"LDA") 
+ glass.pda<-cv.meth(glass,"PDA") 
+
+ #OK
+ fishcatch.lda<-cv.meth(fishcatch,"LDA") 
+ fishcatch.pda<-cv.meth(fishcatch,"PDA")
+
+ 
+ #PROBLEM
+ image.lda<-cv.meth(image,"LDA") 
+ image.pda<-cv.meth(image,"PDA") 
+
+ #PROBLEM
+ parkinson.lda<-cv.meth(parkinson,"LDA") 
+ parkinson.pda<-cv.meth(parkinson,"PDA") 
+
+ #OK
+ wine.lda <-cv.meth(wine,"LDA")
+ wine.pda <-cv.meth(wine,"PDA")
+
+ 
+
 ```
 
 ```{r}
-data <- leukemia
 
+train_fn2 <-  function(class, size.p) {
+  n <- length(class)
+  index  <- sample(n, floor(n*size.p))
+  names(index) <- NULL
+  return(sort(index))
+}
+ 
+data<-leukemia
 tr.index <- train_fn(data[,1], 2/3)
-te.index <- as.vector(1:length(data[,1]))[!(1:length(data[,1])%in%(tr.index))]
-training <- data[tr.index,]
-test <- data[-tr.index,] 
-ppt.lda <- LDA.Tree(training[,1], training[,-1])
-
+  te.index <- as.vector(1:length(data[,1]))[!(1:length(data[,1])%in%(tr.index))]
+  training <- data[tr.index,]
+  test <- data[-tr.index,] 
+LDA.Tree(training[,1],training[,-1])
 PDA.Tree(training[,1], training[,-1], lambda=.14)
 
-table(training[,36])
+leukemia.lda<- cv.meth(leukemia,"LDA") 
+
+
+pprf.err(data,training, test, tr.index, te.index)
+
 #LDA in some cases the sample  Error in lda.default(x, grouping, ...) : 
  # variable 27 appears to be constant within groups
 #PDA does not work with any lambda, why?
 #How you get the cv for leukemia data if you have this problem because you use lda, pda
+
+
+
 
 data <- NCI60
 training <- train_fn(data[,1], .9)

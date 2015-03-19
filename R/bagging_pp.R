@@ -19,6 +19,7 @@
 #' b.pp <- bagging_pp(data1,scale=TRUE, strata=TRUE,output,training=NULL,test=NULL)
 
 bagging_pp <- function(data, scale=TRUE,boot,training=NULL,test=NULL, ...){
+
   
   if(is.null(training)) training <- 1:dim(data)[1]
   if(is.null(test)) test <- 1:dim(data)[1]
