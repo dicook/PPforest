@@ -1,13 +1,13 @@
 #' grouped data frame.
 #'
-#' @param df is a data frame with the complete data set. 
+#' @param df is a data frame with the complete data set and class in the first column. 
 #' @param m number of bootstrap replicate
 #' @param strata identify if the bootrap samples are stratify by class
-#' @return grouped data frame object 
+#' @return grouped data frame object with m bootstrap samples 
 #' @export
 #' @examples
-#'iris.b <- bootstrap(iris[,5:1], 5) 
-#'attributes(iris.b)$indices
+#'iris.b <- bootstrap(iris[,5:1], 5,strata=FALSE) 
+#'lapply(attributes(iris.b2)$indices,function(x) x+1)
 bootstrap <- function(df, m,strata=TRUE) {
   n <- nrow(df)
   class.id <- data.frame(id=1:n,class=df[,1])
@@ -21,7 +21,7 @@ bootstrap <- function(df, m,strata=TRUE) {
   attr(df, "indices") <- lapply(samp.g, function(x) as.numeric(unlist(x))-1)
   }
   else{
-    attr(df, "indices") <-  replicate(m, sample(n, replace = TRUE)-1, 
+    attr(df, "indices") <-  replicate(m, sort(sample(n, replace = TRUE)-1), 
                                       simplify = FALSE)
   }
   attr(df, "drop") <- TRUE
