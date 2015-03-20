@@ -10,14 +10,12 @@
 #' training<-train_fn(iris[,5],.9)
 #' data1<-iris[training,5:1]
 #' iris.b <- bootstrap(data1, 5) 
-#' output<-trees_pp(iris.b,scale=TRUE,size.p=.9,index="LDA") 
+#' output <- trees_pp(iris.b,scale=TRUE,size.p=.9,index="LDA") 
 trees_pp <- function(data.b,scale=TRUE,size.p=.9,index='LDA', ...){
-  if(scale==TRUE) data.b[,-1] <- scale(data.b[,-1])
   names(data.b)[1] <-"class"
-  
-  trees <- data.b %>% do(tr = PPtree_split2(index, as.formula('class~.'), data = . ,size.p=size.p))
-  
-  trees
+  trees <-data.b %>% do(tr = PPtree_split2(index, as.formula('class~.'),scale=scale, data = . ,size.p=size.p))
+ attr(trees,"scale") <- scale
+ trees
 }
 
 

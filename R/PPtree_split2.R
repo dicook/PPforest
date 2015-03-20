@@ -7,7 +7,7 @@
 #' @param data  is a the complete data frame with class information in the first column
 #' @param i.class class information
 #' @param size.p proportion of sample variable in each split
-#' @param weight weight flag using in LDA index
+#' @param weight weight flag using in LDA index?
 #' @return Tree.Struct Tree structure of PPtree result
 #' @return Alpha.Keep 1D projections of each split
 #' @return C.Keep spliting rules for each split
@@ -15,8 +15,8 @@
 #' @examples
 #' training<-train_fn(iris[,5],.9)
 #' data1<-iris[,5:1]
-#' Tree.result <- PPtree_split2("LDA", as.formula('Species~.'), data=data1 ,size.p=0.9)
-PPtree_split2 <- function (PPmethod,fr, data ,size.p=0.9, weight = TRUE, r = NULL, 
+#' Tree.result <- PPtree_split2("LDA", as.formula('Species~.'),scale=TRUE, data=data1 ,size.p=0.9)
+PPtree_split2 <- function (PPmethod,fr,scale=TRUE, data ,size.p=0.9, weight = TRUE, r = NULL, 
                           lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01,std=TRUE 
                           ,...) 
 { 
@@ -34,7 +34,9 @@ PPtree_split2 <- function (PPmethod,fr, data ,size.p=0.9, weight = TRUE, r = NUL
       if (length(remove) != 0) {
         i.data <- i.data[, -remove]
       }
-      i.data <- scale(i.data)
+        }
+    if(scale==TRUE){
+    i.data <- scale(i.data)
     }
     v.rnd <- var_select(i.data,size.p) #random variable selection
     vari <- dim(i.data.ori)[2] # number of variables
