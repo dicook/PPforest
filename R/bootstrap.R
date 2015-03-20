@@ -2,7 +2,7 @@
 #'
 #' @param df is a data frame with the complete data set. 
 #' @param m number of bootstrap replicate
-#' @return grouped data frame object form dplyr
+#' @return grouped data frame object 
 #' @export
 #' @examples
 #'iris.b <- bootstrap(iris[,5:1], 50) 
