@@ -2,16 +2,27 @@
 #'
 #' @param df is a data frame with the complete data set. 
 #' @param m number of bootstrap replicate
+#' @param strata identify if the bootrap samples are stratify by class
 #' @return grouped data frame object 
 #' @export
 #' @examples
 #'iris.b <- bootstrap(iris[,5:1], 50) 
 #'attributes(iris.b)$indices
-bootstrap <- function(df, m) {
+bootstrap <- function(df, m,strata=TRUE) {
   n <- nrow(df)
-  
-  attr(df, "indices") <- replicate(m, sample(n, replace = TRUE)- 1, 
+  class.id <- data.frame(id=1:n,class=df[,1])
+  if(strata==TRUE){
+  attr(df, "indices") <- replicate(m, class.id %>% 
+                                     group_by(class) %>%
+                                     do(samp=sort(sample(.$id, replace=TRUE)) ) %>%
+                                     ungroup() %>%
+                                     select(samp), 
                                    simplify = FALSE)
+  }
+  else{
+    attr(df, "indices") <-  replicate(m, sample(n, replace = TRUE)-1, 
+                                      simplify = FALSE)
+  }
   attr(df, "drop") <- TRUE
   attr(df, "group_sizes") <- rep(n, m)
   attr(df, "biggest_group_size") <- n
