@@ -6,18 +6,19 @@
 #' @return grouped data frame object 
 #' @export
 #' @examples
-#'iris.b <- bootstrap(iris[,5:1], 50) 
+#'iris.b <- bootstrap(iris[,5:1], 5) 
 #'attributes(iris.b)$indices
 bootstrap <- function(df, m,strata=TRUE) {
   n <- nrow(df)
   class.id <- data.frame(id=1:n,class=df[,1])
   if(strata==TRUE){
-  attr(df, "indices") <- replicate(m, class.id %>% 
+  samp.g <- replicate(m, class.id %>% 
                                      group_by(class) %>%
                                      do(samp=sort(sample(.$id, replace=TRUE)) ) %>%
                                      ungroup() %>%
                                      select(samp), 
                                    simplify = FALSE)
+  attr(df, "indices") <- lapply(samp.g, function(x) as.numeric(unlist(x))-1)
   }
   else{
     attr(df, "indices") <-  replicate(m, sample(n, replace = TRUE)-1, 
