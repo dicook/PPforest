@@ -3,7 +3,8 @@
 #' Find tree structure using various projection pursuit indices of classification in each split.
 #' @usage PPtree_split(PPmethod,  i.class, i.data,size.p, weight = TRUE, ...) 
 #' @param PPmethod method for projection pursuit, LDA, PDA, Lp, Gini, Enp
-#' @param i.data A training data  without class information
+#' @param fr as.formula argument, as.formula('class~.')
+#' @param data  is a the complete data frame with class information in the first column
 #' @param i.class class information
 #' @param size.p proportion of sample variable in each split
 #' @param weight weight flag using in LDA index

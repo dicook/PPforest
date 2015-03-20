@@ -15,14 +15,14 @@
 #' @examples
 #' training<-train_fn(iris[,5],.9)
 #' data1<-iris[,5:1]
-#' Tree.result <- PPtree_split("LDA", data1[training,1], data1[training,2:5],size.p=0.9)
+#' Tree.result <- PPtree_split("LDA", i.data=data1[,2:5],i.class=data1[,1]  ,size.p=0.9)
 
 
-PPtree_split <- function (PPmethod, i.class, i.data,size.p=0.9, weight = TRUE, r = NULL, 
+PPtree_split <- function (PPmethod, i.data,i.class ,size.p=0.9, weight = TRUE, r = NULL, 
                           lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01,std=TRUE 
                           ,...) 
 { 
-  
+
   Find.proj <- function(i.class, i.data, PPmethod, r , lambda, ... ) {
     
     i.data.ori <- i.data  #original data set
