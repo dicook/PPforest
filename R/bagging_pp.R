@@ -15,7 +15,7 @@
 #' data1<-NCI60
 #' training<-train_fn(NCI60[,1],.9)
  
-#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=training,strata=FALSE,ntree=50,index="LDA") 
+#' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=training,strata=FALSE,ntree=5,index="LDA") 
 #' b.pp <- bagging_pp(data1,scale=TRUE, strata=TRUE,output,training=NULL,test=NULL)
 
 bagging_pp <- function(data, scale=TRUE,boot,training=NULL,test=NULL, ...){

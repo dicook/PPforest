@@ -15,8 +15,8 @@
 #' @examples
 #' training<-train_fn(iris[,5],.9)
 #' data1<-iris[,5:1]
-#' Tree.result <- PPtree_split2("LDA", as.formula('Species~.'),scale=TRUE, data=data1 ,size.p=0.9)
-PPtree_split2 <- function (PPmethod,fr,scale=TRUE, data ,size.p=0.9, weight = TRUE, r = NULL, 
+#' Tree.result <- PPtree_split2("LDA", as.formula('class~.'), data=data1 ,size.p=0.9)
+PPtree_split2 <- function (PPmethod,fr, data ,size.p=0.9, weight = TRUE, r = NULL, 
                           lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01,std=TRUE 
                           ,...) 
 { 
@@ -35,9 +35,7 @@ PPtree_split2 <- function (PPmethod,fr,scale=TRUE, data ,size.p=0.9, weight = TR
         i.data <- i.data[, -remove]
       }
         }
-    if(scale==TRUE){
-    i.data <- scale(i.data)
-    }
+    
     v.rnd <- var_select(i.data,size.p) #random variable selection
     vari <- dim(i.data.ori)[2] # number of variables
     i.data <- i.data[,v.rnd] #data with selected variables

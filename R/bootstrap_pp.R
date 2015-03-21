@@ -11,9 +11,7 @@
 #' @examples
 #' training<-train_fn(iris[,5],.9)
 #' data1<-iris[,5:1]
-#' ptm <- proc.time()
 #' output<-bootstrap_pp(data1,scale=TRUE,size.p=.9,training=training,strata=TRUE,ntree=50,index="LDA")
-#' proc.time() - ptm   
 bootstrap_pp <- function(data,scale=TRUE,size.p=.9,training=NULL, strata=TRUE,ntree, index='LDA', ...){
    if(scale==TRUE) data[,-1] <- scale(data[,-1])
    names(data)[1] <-"class"
