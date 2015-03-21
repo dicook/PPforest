@@ -13,9 +13,9 @@
 #' @return C.Keep spliting rules for each split
 #' @export
 #' @examples
-#' training<-train_fn(iris[,5],.9)
-#' data1<-iris[,5:1]
-#' Tree.result <- PPtree_split2("LDA", as.formula('class~.'), data=data1 ,size.p=0.9)
+#' training<-train_fn2(iris[,5],.9)
+#' data1<-iris[training$id,5:1]
+#' Tree.result <- PPtree_split2("LDA", as.formula('Species~.'), data=data1 ,size.p=0.9)
 PPtree_split2 <- function (PPmethod,fr, data ,size.p=0.9, weight = TRUE, r = NULL, 
                           lambda = NULL, cooling = 0.999, temp = 1, energy = 0.01,std=TRUE 
                           ,...) 
