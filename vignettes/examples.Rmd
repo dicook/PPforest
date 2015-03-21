@@ -1,0 +1,124 @@
+---
+title: "PPforest"
+author: "Natalia da Silva"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+fig_caption: yes 
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+ 
+---
+Random forest is a powerful ensemble learning method, which add an additional randomness to bagging. How each tree is constructed in random forest differs to a standard tree. In random forest each split is base in the best split among a subset of o predictors randomly chosen at that node. 
+The error rate in random forest can be reduced increasing the strength of each individual tree in the forest.
+PPforest package implement a random forest for classification that take into account the correlation of the variables in each node partition based on projection pursuit. Projection pursuit basic idea is to find interesting low-dimension linear projections of high-dimensional data optimizing some specified function called projection pursuit index.
+ Then using random forest and projection pursuit ideas, node splitting is done with random selected variables and a projection pursuit index is selected using class information to maximize and find the projection with most separated classes. 
+
+## Package functions
+This is the second version of the package, it is a more simple and efficient version since we change the previous functions that use `plyr` to `dplyr`.
+
+1. `var_select` random selection of variables to use in each node spliting
+2. `train_fn2` get a random sample by strata a training set with a sample proportion
+3. `boostrap_pp` bootstrap samples with strata option
+4. `PPtree_split2` projection pursuit tree with random variable spliting in each node
+5. `trees_pp` for each bootstrap sample get a projection pursuit tree
+6. `predict_pp` prediction for the PPforest
+
+## Function examples
+I will do the first example with Fisher's Iris data.
+```{r,echo=FALSE}
+library(PPforest)
+library(PPtree)
+library(ggplot2)
+library(dplyr)
+library(reshape)
+library(gridExtra)
+
+```
+
+```{r,fig.show='hold',fig.width = 3 ,fig.height = 3 }
+ggplot( data = iris,aes(x=Sepal.Length, y=Petal.Length, color = Species))+
+  geom_point()+ theme(legend.position = "bottom")
+ggplot( data = iris,aes(x=Sepal.Width, y=Petal.Width, color = Species))+
+  geom_point()+ theme(legend.position = "bottom")
+```
+
+
+1. `var_select` random selection of variables to use in each node spliting
+this function return a sample of id variables and has two arguments the data without class variable and the sample size proportion we want. We have to include a way to select the optimal sample size proportion base for example in cross validation.
+
+```{r,eval=TRUE,collapse=TRUE}
+head(iris[,-1])
+x.iris <- iris[,-1]
+set.seed(123)
+variables <- var_select(data=x.iris,size.p=0.7)
+     variables
+names(x.iris[,variables])
+
+```
+The selected variables are Petal.Length and  Petal.Width, we have to mention that we thake the floor of the sample proportion, this is the resason we got 2 out of 4 variables usen a size.p (sample proportion) of 0.7.
+2. `train_fn2` get a random sample by strata if we want a training set
+
+```{r,collapse=TRUE}
+set.seed(123)
+ training <- train_fn2(class=iris[,5],size.p=0.7)
+ with(iris[training$id, c(variables,5)],table(Species))
+```
+We can see that the sample is stratified by class.
+```{r,fig.show='hold',fig.width = 7 ,fig.height = 7}
+train <- iris %>% 
+        slice(as.numeric(training$id)) %>% 
+        mutate(sam="sample")
+
+test <- iris %>%
+      slice(-as.numeric(training$id)) %>%
+      mutate(sam="test")
+
+data.pl <- rbind_list(train,test)
+data.pl.melt <- melt(data.frame(data.pl),id.vars=c("Species","sam"))
+
+
+ggplot( data = data.pl.melt,aes(x=Species, y=value,color = sam))+ ylab("")+
+  geom_dotplot(binaxis="y", stackdir="center", binwidth=0.15) +
+         labs(title="Dot plots")+ theme(legend.position = "bottom") +facet_wrap(~variable)
+
+```
+3. `boostrap_pp` bootstrap samples with strata option
+```{r,fig.show='hold',fig.width = 3 ,fig.height = 3}
+iris.b <- bootstrap(iris[,5:1], 5) 
+index <-lapply(attributes(iris.b)$indices ,function(x) x+1)
+boot.dat <- lapply(index,function(x) iris[x,])
+aux1 <- lapply(boot.dat,function(x) melt(x,id.vars=c("Petal.Width","Petal.Length","Species")))
+
+```
+```{rfig.show='hold',fig.width = 7 ,fig.height = 7}
+p1 <- ggplot( data = iris,aes(x=Petal.Width, y=Petal.Length, color = Species))+
+  geom_point()+ theme(legend.position = "bottom") +ggtitle("Iris Data")
+p2 <- ggplot( data = aux1[[1]],aes(x=Petal.Width, y=Petal.Length, color = Species))+geom_point()+ theme(legend.position = "bottom")+ggtitle("Replicate 1")
+p3<- ggplot( data = aux1[[2]],aes(x=Petal.Width, y=Petal.Length, color = Species))+geom_point()+ theme(legend.position = "bottom")+ggtitle("Replicate 2")
+p4<- ggplot( data = aux1[[3]],aes(x=Petal.Width, y=Petal.Length, color = Species))+geom_point()+ theme(legend.position = "bottom")+ggtitle("Replicate 3")
+p5<- ggplot( data = aux1[[4]],aes(x=Petal.Width, y=Petal.Length, color = Species))+geom_point()+ theme(legend.position = "bottom")+ggtitle("Replicate 4")
+
+p1
+grid.arrange(p2, p3,p4,p5,heights=c(.7, .7,.7,.7))
+
+```
+4.`PPtree_split2` projection pursuit tree with random variable spliting in each node
+```{r}
+
+ data1<-iris[,5:1]
+Tree.result <- PPtree_split2("LDA", as.formula('Species~.'),scale=TRUE, data=data1 ,size.p=0.9)
+Tree.result
+```
+
+5. `trees_pp` for each bootstrap sample get a projection pursuit tree
+```{r}
+ output <- trees_pp(iris.b,scale=TRUE,size.p=.9,index="LDA") 
+```
+
+6. `predict_pp` prediction for the PPforest
+```{r}
+
+```
+

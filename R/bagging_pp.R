@@ -24,7 +24,7 @@ bagging_pp <- function(data, scale=TRUE,boot,training=NULL,test=NULL, ...){
   if(is.null(training)) training <- 1:dim(data)[1]
   if(is.null(test)) test <- 1:dim(data)[1]
   if(scale==TRUE) data[,-1] <- scale(data[,-1])
-  votes <- plyr::ldply(boot[[1]], function(x) PPtree::PP.classify(test.data=data[,-1],
+  votes <- ldply(boot[[1]], function(x) PPtree::PP.classify(test.data=data[,-1],
                                 true.class=data[,1], x[[2]], Rule=1)$predict.class)[,-1]
   
   max.vote <- apply(votes, 2, function(x) {
@@ -43,17 +43,17 @@ bagging_pp <- function(data, scale=TRUE,boot,training=NULL,test=NULL, ...){
   
   
  votes.con <- apply(votes,2,table)
- votes.prop <- plyr::ldply(votes.con,function(x) as.data.frame(x/dim(votes)[1]))
+ votes.prop <- ldply(votes.con,function(x) as.data.frame(x/dim(votes)[1]))
 
   v.train <- votes[,training]
   l.train <- 1:length(training)
-  oob.var <- plyr::ldply(boot[[1]],function(x) data.frame(t(as.numeric(!l.train%in%x[[1]]))))[,-1]
+  oob.var <- ldply(boot[[1]],function(x) data.frame(t(as.numeric(!l.train%in%x[[1]]))))[,-1]
   colnames(oob.var) <- l.train
   mv.train <- reshape2::melt(v.train)
   moob.var <- reshape2::melt(oob.var)
  oob.votes <-mv.train[(moob.var$value)==1,]
  
-   max.oob <- plyr::ddply(oob.votes,plyr::.(variable),function(x){
+   max.oob <- ddply(oob.votes,.(variable),function(x){
         t1 <- table(x$value)
     names(t1)[which.max(t1)]
     }
@@ -61,7 +61,7 @@ bagging_pp <- function(data, scale=TRUE,boot,training=NULL,test=NULL, ...){
 
  
   oob.tree.aux <- v.train*oob.var
- oob.error.tree <- plyr::adply(oob.tree.aux,1,function(x) {
+ oob.error.tree <- adply(oob.tree.aux,1,function(x) {
    nam <- colnames(x)
   colnames(x) <- l.train
   oob.nam <- as.numeric(colnames(x)[x!=0])

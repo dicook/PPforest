@@ -9,10 +9,10 @@
 train_fn2 <-function(class=class,size.p=.9){
   n <- length(class)
   class.id <- data.frame(id=1:n,class=class)
-  class.id %>%
-    group_by(class) %>% 
-    sample_frac(size.p)  %>%
-    arrange(id) %>% 
-    ungroup() %>%
-    select(id)
+    class.id %>%
+    dplyr::group_by(class) %>% 
+    dplyr::sample_frac(size.p)  %>%
+    dplyr::arrange(id) %>% 
+    dplyr::ungroup() %>%
+    dplyr::select(id)
 }

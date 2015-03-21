@@ -8,17 +8,16 @@
 #' @examples
 #'iris.b <- bootstrap(iris[,5:1], 30) 
 #'lapply(attributes(iris.b)$indices,function(x) x+1)
-
 bootstrap <- function(df, m,strata=TRUE) {
   n <- nrow(df)
   class.id <- data.frame(id=1:n,class=df[,1])
   if(strata==TRUE){
     samp.g <- replicate(m, class.id %>% 
-                          group_by(class) %>%
-                          do(samp=sort(sample(.$id, replace=TRUE)) ) %>%
-                          ungroup() %>%
-                          select(samp), 
-                        simplify = FALSE)
+                                  dplyr::group_by(class) %>%
+                                  dplyr::do(samp=sort(sample(.$id, replace=TRUE)) ) %>%
+                                  dplyr::ungroup() %>%
+                                  dplyr::select(samp), 
+                               simplify = FALSE)
     attr(df, "indices") <- lapply(samp.g, function(x) as.numeric(sort(unlist(x)))-1)
   }
   else{

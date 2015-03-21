@@ -19,13 +19,13 @@ bootstrap_pp <- function(data,scale=TRUE,size.p=.9,training=NULL, strata=TRUE,nt
    names(data)[1] <-"class"
    if(is.null(training)) training <- 1:dim(data)[1]
   
-   out <- plyr::mlply(data.frame(tr=1:ntree), function(tr) {
+   out <- mlply(data.frame(tr=1:ntree), function(tr) {
      n <- length(training)
     class.id <- data.frame(id=1:n,class=data[training,"class"])
     dat.train <- data[training,]
     
     if(strata==TRUE){
-    index.boot <- unlist(plyr::dlply(class.id, plyr::.(class), function(x) sort(sample(x$id, replace=TRUE)) ))
+    index.boot <- unlist(dlply(class.id, plyr::.(class), function(x) sort(sample(x$id, replace=TRUE)) ))
     names(index.boot) <- NULL 
     pp.tree <-PPtree_split(PPmethod=index, size.p=.9,i.data=dat.train[index.boot,-1], i.class=dat.train[index.boot,1],...) 
     list(index.boot, pp.tree)
