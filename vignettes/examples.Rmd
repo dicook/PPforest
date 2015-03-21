@@ -92,37 +92,47 @@ boot.dat <- lapply(index,function(x) iris[x,])
 aux1 <- lapply(boot.dat,function(x) melt(x,id.vars=c("Petal.Width","Petal.Length","Species")))
 
 ```
-```{rfig.show='hold',fig.width = 7 ,fig.height = 7}
+```{r, fig.show='hold',fig.width = 7 ,fig.height = 4,echo=FALSE}
 p1 <- ggplot( data = iris,aes(x=Petal.Width, y=Petal.Length, color = Species))+
   geom_point()+ theme(legend.position = "bottom") +ggtitle("Iris Data")
+p1
+```
+```{r, fig.show='hold',fig.width = 7 ,fig.height = 7,echo=FALSE}
 p2 <- ggplot( data = aux1[[1]],aes(x=Petal.Width, y=Petal.Length, color = Species))+geom_point()+ theme(legend.position = "bottom")+ggtitle("Replicate 1")
 p3<- ggplot( data = aux1[[2]],aes(x=Petal.Width, y=Petal.Length, color = Species))+geom_point()+ theme(legend.position = "bottom")+ggtitle("Replicate 2")
 p4<- ggplot( data = aux1[[3]],aes(x=Petal.Width, y=Petal.Length, color = Species))+geom_point()+ theme(legend.position = "bottom")+ggtitle("Replicate 3")
 p5<- ggplot( data = aux1[[4]],aes(x=Petal.Width, y=Petal.Length, color = Species))+geom_point()+ theme(legend.position = "bottom")+ggtitle("Replicate 4")
 
-p1
 grid.arrange(p2, p3,p4,p5,heights=c(.7, .7,.7,.7))
 
 ```
 4.`PPtree_split2` projection pursuit tree with random variable spliting in each node
 ```{r}
-
+ training<-train_fn2(iris[,5],.9)
  data1<-iris[,5:1]
-Tree.result <- PPtree_split2("LDA", as.formula('Species~.'),scale=TRUE, data=data1 ,size.p=0.9)
+ Tree.result <- PPtree_split2("LDA", as.formula('Species~.'), data=data1 ,size.p=0.9)
 Tree.result
 ```
 
 5. `trees_pp` for each bootstrap sample get a projection pursuit tree
 ```{r}
- output <- trees_pp(iris.b,scale=TRUE,size.p=.9,index="LDA") 
+output <- trees_pp(iris.b,size.p=.9,index="LDA") 
 names(output)
 ```
 The PPtrees object are in output$tr
 6. `forest_ppred` prediction for the PPforest
-```{r,warning=FALSE}
-pred <-forest_ppred(iris[-training$id,1:4],output)
-t1 <- table(pred,iris[-training$id,5])
+
+```{r,collapse=TRUE}
+iris.sc <- data.frame(Class = iris[,5], scale(iris[,1:4]))
+training <- train_fn2(class=iris[,5] , size.p=0.9)
+iris.b <- bootstrap( iris.sc[training$id,], 10) 
+output <- trees_pp(iris.b,size.p=0.9,index="LDA") 
+pred <- forest_ppred( iris.sc[-training$id,2:5] , output)
+
+t1 <- table(pred,iris.sc[-training$id,1])
 t1
-sum(diag(t1))
+
+error <-1-sum(diag(t1))/length(iris.sc[-training$id,1])
+error
 ```
 
