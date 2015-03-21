@@ -457,6 +457,44 @@ pp.tree
 ```
 
 
+
+
+```{r}
+# work flow for iris data (inputs for creating a function wrapping up the whole forest)
+aux  <- list("bootstrap.R","forest_ppred.R","PPtree_split2.R","train_fn2.R","trees_pp.R","var_select.R")
+lapply(aux,function(x) source(paste("R/",x,sep='')))
+
+iris.sc <- data.frame(Class = iris[,5], scale(iris[,1:4]))
+
+training <- train_fn2(class=iris[,5] , size.p=0.9)
+
+iris.b <- bootstrap( iris.sc[training$id,], 50 ) 
+
+output <- trees_pp(iris.b,size.p=.9,index="LDA") 
+
+forest_ppred( iris.sc[-training$id,2:5] , output)
+
+
+
+# individual predictions of each tree
+o <- output %>% 
+  do( pr = PP.classify(iris.sc[-training$id, 2:5], iris.sc[-training$id, 1], Tree.result=.$tr, Rule=1) ) %>% do(pred = .$pr[[2]] ) %>% ungroup()
+
+# forest pred works? yes, the votes are fine 
+out.tree <- iris.b %>% do(tr = PP.Tree("LDA", iris.sc[training$id,1], iris.sc[training$id,2:5 ]) )
+forest_ppred( iris.sc[-training$id,2:5] , out.tree)
+
+
+ind <- attributes(iris.b)$indices[[1]]+1
+tree <- PPtree_split2('LDA',as.formula('Class~.'), data=iris.sc[ind,],size.p=1) 
+PP.classify(iris.sc[-training$id, 2:5], iris.sc[-training$id, 1], Tree.result=tree, Rule=1) 
+
+tree.old <- PP.Tree('LDA',i.data=iris.sc[-training$id, 2:5], i.class=iris.sc[-training$id, 1] ) 
+PP.classify(iris.sc[-training$id, 2:5], iris.sc[-training$id, 1], Tree.result=tree.old, Rule=1) 
+
+
+```
+
 Profiling
 
 ``{r}

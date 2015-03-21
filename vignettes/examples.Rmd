@@ -23,7 +23,7 @@ This is the second version of the package, it is a more simple and efficient ver
 3. `boostrap_pp` bootstrap samples with strata option
 4. `PPtree_split2` projection pursuit tree with random variable spliting in each node
 5. `trees_pp` for each bootstrap sample get a projection pursuit tree
-6. `predict_pp` prediction for the PPforest
+6. `forest_ppred` prediction for the PPforest
 
 ## Function examples
 I will do the first example with Fisher's Iris data.
@@ -115,10 +115,14 @@ Tree.result
 5. `trees_pp` for each bootstrap sample get a projection pursuit tree
 ```{r}
  output <- trees_pp(iris.b,scale=TRUE,size.p=.9,index="LDA") 
+names(output)
 ```
-
-6. `predict_pp` prediction for the PPforest
-```{r}
-
+The PPtrees object are in output$tr
+6. `forest_ppred` prediction for the PPforest
+```{r,warning=FALSE}
+pred <-forest_ppred(iris[-training$id,1:4],output)
+t1 <- table(pred,iris[-training$id,5])
+t1
+sum(diag(t1))
 ```
 
