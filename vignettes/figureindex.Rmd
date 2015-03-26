@@ -1,5 +1,5 @@
 ---
-title: "figureindex"
+title: "Figure LDA Index"
 author: "NDS"
 date: "March 26, 2015"
 output: html_document
@@ -53,6 +53,7 @@ $\mu_1=\left( \begin{array}{c}
 
 
 ```{r}
+set.seed(123)
 bivn <- mvrnorm(50, mu = c(-1, 0.6), Sigma = matrix(c(1, 0.95, 0.95, 1), 2))
 bivn2 <- mvrnorm(50, mu = c(1, -0.6), Sigma = matrix(c(1, 0.95, 0.95, 1), 2))
 
@@ -96,6 +97,9 @@ ilda.rm <- mdply(data.frame(theta=0:179),ilda.aov)
 ```
 
 I got the same result with the two ways to compute ILDA :-)
+
+
+
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 4 }
 wmi <-which.min(ilda)-1
 wma <- which.max(ilda)-1
@@ -105,11 +109,11 @@ ggplot(data=dat.sim,aes(x=X1,y=X2))+geom_point(aes(shape=Sim))+
   geom_abline(intercept=0,slope=sin(wma*pi/180)/cos(wma*pi/180))+
   geom_abline(intercept=0,slope=sin(wmi*pi/180)/cos(wmi*pi/180))
   
-
 ```
-Plot the LDA index vs $\theta$ values, maximun value is in $\theta=136$\\
 
-\begin{figure}
+Plot the LDA index vs $\theta$ values, maximun value is in $\theta=136$
+
+
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 4,echo=FALSE }
 dat.pl<-data.frame(ilda=ilda,theta=theta)
 aux<-which.max(ilda)-1
@@ -117,9 +121,10 @@ aux2<-which.min(ilda)-1
 ggplot(data=dat.pl,aes(x=theta, y= ilda) )+geom_line()+geom_vline(xintercept=aux,colour=I("red")) +
   geom_hline(yintercept=ilda[[1]],linetype="dashed")
 ```
-\end{figure}
 
-Plot only  $\theta=0:179$ and the other part is symmetric\\
+
+Plot only  $\theta=0:179$ and the other part is symmetric
+
 
 
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 4,echo=FALSE }
@@ -130,13 +135,27 @@ df2 <- data.frame(x=cos(theta*pi/180)*ilda,y=sin(theta*pi/180)*ilda)
 ggplot(data=df2,aes(x=x,y=y))+geom_point() 
 
 ```
-Plot all and also the reference line base in the mean(ilda)\\
+
+
+Plot all and also the reference line base in the mean(ilda)
+
+
 
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 4,echo=FALSE }
-
 p1 <- ggplot(df)  + geom_line(aes(x=x,y=y))+geom_line(aes(x=-x,y=-y)) 
 p1 + geom_point(data=df2,aes(x=x,y=y)) + geom_point(data=df2,aes(x=-x,y=-y)) 
-        
 
+```
+
+
+Histograms of the most interesting projected data and the least interesting one
+
+
+```{r,fig.show='hold',fig.width = 6 ,fig.height = 4,echo=FALSE ,message=FALSE}
+ilda.best <- ilda[wma]
+proj.data.best <- data.frame(Sim=dat.sim[,1],proj=cos(wma*pi/180)*dat.sim[,2]+sin(wma*pi/180)*dat.sim[,3])
+proj.data.nobest <- data.frame(Sim=dat.sim[,1],proj=cos(wmi*pi/180)*dat.sim[,2]+sin(wmi*pi/180)*dat.sim[,3])
+ggplot(proj.data.best,aes(x=proj))+geom_histogram()
+ggplot(proj.data.nobest,aes(x=proj))+geom_histogram()
 
 ```
