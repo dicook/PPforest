@@ -6,7 +6,7 @@
 #' @return grouped data frame object with m bootstrap samples 
 #' @export
 #' @examples
-#'iris.b <- bootstrap(iris[,5:1], 30,scale=TRUE) 
+#'iris.b <- bootstrap(iris[,5:1], 30) 
 #'lapply(attributes(iris.b)$indices,function(x) x+1)
 bootstrap <- function(df, m,strata=TRUE) {
 

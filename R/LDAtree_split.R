@@ -45,7 +45,7 @@ LDAtree_split <- function (fr,data, weight = TRUE,std=TRUE,size.p=0.9, ...)
     g.name <- as.numeric(factor(names(g)))
     G <- length(g)
     
-    a.proj.best <- lda(i.data, i.class)[[4]][, 1]
+    a.proj.best <- MASS::lda(i.data, i.class)[[4]][, 1]
     proj.data <- as.matrix(i.data) %*% a.proj.best
     sign <- sign(a.proj.best[abs(a.proj.best) == max(abs(a.proj.best))])
     index <- (1:p) * (abs(a.proj.best) == max(abs(a.proj.best)))
@@ -77,7 +77,7 @@ LDAtree_split <- function (fr,data, weight = TRUE,std=TRUE,size.p=0.9, ...)
       g.name <- as.numeric(names(g))
       G <- length(g)
       n <- nrow(i.data)
-      a.proj.best <- lda(i.data, factor(class))[[4]][, 
+      a.proj.best <- MASS::lda(i.data, factor(class))[[4]][, 
                                                      1]
       if (sign != sign(a.proj.best[index])) 
         a.proj.best <- -a.proj.best

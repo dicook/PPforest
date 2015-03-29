@@ -44,7 +44,7 @@ PDAtree_split <- function (fr,data, weight = TRUE,std=TRUE,size.p=0.9, lambda=la
     g <- table(i.class)
     g.name <- as.numeric(factor(names(g)))
     G <- length(g)
-    a.proj.best <- PenalizedLDA(i.data, as.numeric(as.factor(i.class)), 
+    a.proj.best <- penalizedLDA::PenalizedLDA(i.data, as.numeric(as.factor(i.class)), 
                                 lambda = lambda, K = 1)$discrim[, 1]
     proj.data <- as.matrix(i.data) %*% a.proj.best
     sign <- sign(a.proj.best[abs(a.proj.best) == max(abs(a.proj.best))])
@@ -77,7 +77,7 @@ PDAtree_split <- function (fr,data, weight = TRUE,std=TRUE,size.p=0.9, lambda=la
       g.name <- as.numeric(names(g))
       G <- length(g)
       n <- nrow(i.data)
-      a.proj.best <- PenalizedLDA(i.data, class, lambda = lambda, 
+      a.proj.best <- penalizedLDA::PenalizedLDA(i.data, class, lambda = lambda, 
                                   K = 1)$discrim[, 1]
       if (sign != sign(a.proj.best[index])) 
         a.proj.best <- -a.proj.best
