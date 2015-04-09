@@ -6,7 +6,7 @@
 #' @return grouped data frame object with m bootstrap samples 
 #' @export
 #' @examples
-#'iris.b <- bootstrap(iris[,5:1], 30) 
+#'iris.b <- bootstrap(iris[,5:1], 30,strata=FALSE) 
 #'lapply(attributes(iris.b)$indices,function(x) x+1)
 bootstrap <- function(df, m,strata=TRUE) {
 
@@ -19,12 +19,14 @@ bootstrap <- function(df, m,strata=TRUE) {
                                   dplyr::ungroup() %>%
                                   dplyr::select(samp), 
                                simplify = FALSE)
+    
     attr(df, "indices") <- lapply(samp.g, function(x) as.numeric(sort(unlist(x)))-1)
   }
   else{
     attr(df, "indices") <-  replicate(m, sort(sample(n, replace = TRUE)-1), 
                                       simplify = FALSE)
   }
+  
   attr(df, "drop") <- TRUE
   attr(df, "group_sizes") <- rep(n, m)
   attr(df, "biggest_group_size") <- n
