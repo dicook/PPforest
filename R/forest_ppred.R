@@ -1,0 +1,31 @@
+#' Vector with predicted values form a PPforest.
+#'
+#' @param data are the data without class we want to predict
+#' @param output.tree trees classifiers from trees_pp function
+#' @return predicted values form PPforest  
+#' @export
+#' @examples
+#'iris.sc <- data.frame(Class = iris[,5], scale(iris[,1:4]))
+#'training <- train_fn2(class=iris[,5] , size.p=0.9)
+#'iris.b <- bootstrap( iris.sc[training$id,], 500) 
+#'training2 <- train_fn2(class=crab[,1] , size.p=0.9)
+#'iris.b2 <- bootstrap( crab[training2$id,], 50) 
+#'output <- trees_pp(iris.b,size.p=0.9,index="LDA") 
+#'forest_ppred( iris.sc[-training$id,2:5] , output)
+
+forest_ppred<- function(data,output.tree, ...){
+    votes <- output.tree %>% 
+              dplyr::do(tr = PP.classify(test.data=data,Tree.result=.$tr, Rule=1)) 
+    #true.class=rep(0,nrow(data))
+    
+  out <- votes %>%  dplyr::do(pred = .$tr[[2]] )
+  
+  vote.mat <- matrix(unlist(out$pred),ncol=dim(data)[[1]],byrow=T)
+  
+  max.vote <- apply(vote.mat, 2, function(x) {
+    t1 <- table(x)
+    names(t1)[which.max(t1)]
+  }
+  )
+  return(max.vote)
+}
