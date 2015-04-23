@@ -1,0 +1,87 @@
+#' Run a Projection Pursuit forest
+#'
+#' @param train is a data frame with the training data with class in the first column
+#' @param testap is TRUE if we want to predict a new data set
+#' @param test is a data frame it the new test data to predict
+#' @param m number of bootstrap replicate
+#' @param index to run the PPtree_plit function, options LDA or PDA, by default it is LDA.
+#' @param size.p proportion of random sample variables in each split.
+#' @param strata identify if the bootrap samples are stratify by class
+#' @param lambda a parameter for PDA index
+#' @return predicted values, error, bootstrap samples, trees ,training set from PPforest  
+#' @export
+#' @examples
+#' 
+#' tr.index <- train_fn2(iris[, 5], 2/3)
+#' te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) %in% (sort(tr.index$id)))]
+#' train <- iris[sort(tr.index$id), 5:1 ]
+#' test <- iris[-tr.index$id, 5:1 ]
+#' ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, index = 'LDA', strata = TRUE)
+#' tr.index2 <- train_fn2(NCI60[,1], 2/3)
+#' te.index2 <- as.vector(1:length(NCI60[, 1]))[!(1:length(NCI60[, 1]) %in% (sort(tr.index2$id)))]
+#' train2 <- NCI60[sort(tr.index2$id), ]
+#' test2 <- NCI60[-tr.index2$id, ] 
+#' ppfr2 <- PPforest( train = train2, testap=TRUE, test= test2, m = 500, size.p = .9, index = 'LDA', strata = TRUE)
+#' ppfr2 <- PPforest(train = train2, testap=TRUE, test= test2, m=500, size.p=.9, index='PDA', strata=TRUE, lambda = .5)
+#' 
+
+PPforest <- function( train, testap = TRUE, test, m, index, size.p, strata = TRUE, lambda) {
+  colnames(train)[1] <- "class"
+  
+  if (strata == TRUE) {
+    data.b <- bootstrap(train, m, strata)
+    output <- trees_pp(data.b, size.p, index)
+    
+  } else {
+    data.b <- bootstrap(train, m, strata = FALSE)
+    output <- trees_pp(data.b, size.p, index, lambda = 0.14)
+    
+  }
+  
+  pred.tr <- forest_ppred(train[, -1], output)
+  pos <- expand.grid(a = 1:dim(train)[1], b = 1:dim(train)[1])
+  cond <- pos[,1] >= pos[,2]
+  tri.low <- pos[cond,]
+  
+  same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[2]]), 2, function(x) x[ tri.low[, 1]] == x[ tri.low[, 2]]))
+  proximity <- data.frame(same.node[, c(1:2)], proxi = apply(same.node[, -c(1:2)], 1, function(x) sum(x == 1))/dim((pred.tr[[2]]))[1])
+  
+  l.train <- 1:nrow(train)
+  index <- lapply(attributes(data.b)$indices, function(x) x + 1)
+  
+  oob.obs <- ldply(index, function(x) (!l.train%in%x))
+  
+  oob.pred <- sapply(X = 1:nrow(train), FUN=function(i) {
+    t1 <- table(pred.tr[[2]][ oob.obs[, i] == TRUE, i]) 
+    names(t1)[which.max(t1)]
+  }
+  )
+  oob.mat <- sapply(X = 1:nrow(train), FUN = function(i) {
+    table(pred.tr[[2]][ oob.obs[, i] == TRUE, i] )
+    
+  }
+  )
+  
+  vote.matrix <- matrix(0, ncol = length(unique(train[, 1])), nrow = nrow(train))
+  colnames(vote.matrix) <- unique(train[, 1])
+  
+  for(i in 1:nrow(train)){ 
+    cond <- colnames(vote.matrix) %in% names(oob.mat[[i]])
+    vote.matrix[i, cond] <- oob.mat[[i]]
+  }
+  
+  oob.error <- 1-sum(diag(table(oob.pred, train[, 1])))/length(train[, 1])
+  
+  error.tr <- 1 - sum(train[, 1] == pred.tr[[3]])/length(pred.tr[[3]])
+  
+  if (testap==TRUE) {
+    pred.test <- forest_ppred(test[, -1], output)
+    error.test <- 1 - sum(test[, 1] == pred.test[[3]])/length(pred.test[[3]])
+  } else {
+    pred.test <- NULL
+    error.test <- NULL
+  }
+  
+  return(list(pred.tr[[3]], error.tr, pred.test[[3]], error.test, data.b, output, proximity, oob.error, vote.matrix))
+  
+} 
