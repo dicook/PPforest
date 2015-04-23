@@ -6,22 +6,23 @@
 #' @export
 #' @examples
 #'iris.sc <- data.frame(Class = iris[, 5], scale(iris[, 1:4]))
-#'training <- train_fn2(class=iris[, 5] , size.p=0.9)
+#'training <- train_fn2(class=iris[, 5] , size.p = 2/3)
 #'iris.b <- bootstrap( iris.sc[training$id, ], 500) 
-#'output <- trees_pp(iris.b, size.p=0.9, index="LDA") 
-#'forest_ppred( iris.sc[-training$id, 2:5] , output)
-forest_ppred<- function(data, output.tree, ...){
+#'output <- trees_pp(iris.b, size.p = 0.9, index="LDA") 
+#'pr <- forest_ppred( iris.sc[-training$id, 2:5] , output)
+forest_ppred <- function(data, output.tree, ...){
     votes <- output.tree %>% 
-              dplyr::do(tr = PP.classify(test.data=data, Tree.result=.$tr, Rule=1)) 
+              dplyr::do(tr = PP.classify(test.data = data, Tree.result = .$tr, Rule = 1)) 
     
   out <- votes %>%  dplyr::do(pred = .$tr[[2]] )
   
-  vote.mat <- matrix(unlist(out$pred), ncol=dim(data)[[1]], byrow=T)
-  
+  vote.mat <- matrix(unlist(out$pred), ncol = dim(data)[[1]], byrow = T)
   max.vote <- apply(vote.mat, 2, function(x) {
     t1 <- table(x)
     names(t1)[which.max(t1)]
   }
   )
-  return(max.vote)
+  
+
+  return(list(out, vote.mat, max.vote))
 }
