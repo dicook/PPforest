@@ -8,7 +8,7 @@
 #'iris.sc <- data.frame(Class = iris[, 5], scale(iris[, 1:4]))
 #'training <- train_fn2(class=iris[, 5] , size.p = 2/3)
 #'iris.b <- bootstrap( iris.sc[training$id, ], 500) 
-#'output <- trees_pp(iris.b, size.p = 0.9, index="LDA") 
+#'output <- trees_pp(iris.b, size.p = 0.9, PPmethod ="LDA") 
 #'pr <- forest_ppred( iris.sc[-training$id, 2:5] , output)
 forest_ppred <- function(data, output.tree, ...){
     votes <- output.tree %>% 

@@ -4,7 +4,7 @@
 #' @param testap is TRUE if we want to predict a new data set
 #' @param test is a data frame it the new test data to predict
 #' @param m number of bootstrap replicate
-#' @param index to run the PPtree_plit function, options LDA or PDA, by default it is LDA.
+#' @param PPmethod to run the PPtree_plit function, options LDA or PDA, by default it is LDA.
 #' @param size.p proportion of random sample variables in each split.
 #' @param strata identify if the bootrap samples are stratify by class
 #' @param lambda a parameter for PDA index
@@ -16,25 +16,25 @@
 #' te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) %in% (sort(tr.index$id)))]
 #' train <- iris[sort(tr.index$id), 5:1 ]
 #' test <- iris[-tr.index$id, 5:1 ]
-#' ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, index = 'LDA', strata = TRUE)
+#' ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
 #' tr.index2 <- train_fn2(NCI60[,1], 2/3)
 #' te.index2 <- as.vector(1:length(NCI60[, 1]))[!(1:length(NCI60[, 1]) %in% (sort(tr.index2$id)))]
 #' train2 <- NCI60[sort(tr.index2$id), ]
 #' test2 <- NCI60[-tr.index2$id, ] 
-#' ppfr2 <- PPforest( train = train2, testap=TRUE, test= test2, m = 500, size.p = .9, index = 'LDA', strata = TRUE)
-#' ppfr2 <- PPforest(train = train2, testap=TRUE, test= test2, m=500, size.p=.9, index='PDA', strata=TRUE, lambda = .5)
+#' ppfr2 <- PPforest( train = train2, testap = TRUE, test = test2, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
+#' ppfr2 <- PPforest(train = train2, testap = TRUE, test = test2, m = 500, size.p = .9, PPmethod = 'PDA', strata = TRUE, lambda = .5)
 #' 
 
-PPforest <- function( train, testap = TRUE, test, m, index, size.p, strata = TRUE, lambda) {
+PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda) {
   colnames(train)[1] <- "class"
   
   if (strata == TRUE) {
     data.b <- bootstrap(train, m, strata)
-    output <- trees_pp(data.b, size.p, index)
+    output <- trees_pp(data.b, size.p, PPmethod)
     
   } else {
     data.b <- bootstrap(train, m, strata = FALSE)
-    output <- trees_pp(data.b, size.p, index, lambda = 0.14)
+    output <- trees_pp(data.b, size.p, PPmethod, lambda = 0.14)
     
   }
   

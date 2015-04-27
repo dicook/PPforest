@@ -6,8 +6,8 @@
 #' @return grouped data frame object with m bootstrap samples
 #' @export
 #' @examples
-#'iris.b <- bootstrap(iris[, 5:1], 30, strata=FALSE) 
-#'index <- lapply(attributes(iris.b)$indices, function(x) x+1)
+#'iris.b <- bootstrap(iris[, 5:1], 30, strata = FALSE) 
+#'index <- lapply(attributes(iris.b)$indices, function(x) x + 1)
 bootstrap <- function(df, m, strata = TRUE) {
     
     n <- nrow(df)
