@@ -8,7 +8,6 @@ var_select(data, size.p)
 }
 \arguments{
   \item{data}{is a data frame without the class variable.}
-
   \item{size.p}{proportion of sample in each class group}
 }
 \value{
@@ -19,7 +18,7 @@ Index id for variables set, sample variables without
 replacement with a sample proportion.
 }
 \examples{
-variables <- var_select(data=iris[,-1],size.p=0.9)
+variables <- var_select(data=iris[,-1], size.p=0.9)
 variables
 }
 

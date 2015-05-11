@@ -24,9 +24,10 @@
 #' @keywords tree
 #' @examples
 #' data(iris)
-#' Tree.result <- PPtree_split(as.formula('Species~.'), data=data1 , std = TRUE,  size.p=0.9)
+#' Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1] , std = TRUE,  size.p=0.9)
 #' Tree.result
-PPtree_split<-function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p = 0.9,r=1,
+#' Tree.result2 <- PPtree_split(as.formula('Type~.'), data=train2 , std = TRUE,  size.p=0.9)
+PPtree_split <- function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p = 0.9,r=1,
                         lambda=0.1,energy=0,maxiter=50000,...){
    TOL<-NULL
    mf <- model.frame(fr, data = data)
@@ -35,7 +36,7 @@ PPtree_split<-function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p = 
    origdata<-as.matrix(origdata)
    
    
-   Find.proj<-function(origclass,origdata,PPmethod,weight,r,lambda,
+   Find.proj <- function(origclass,origdata,PPmethod,weight,r,lambda,
                       maxiter,...){
      
      i.data.ori <- origdata  #original data set
@@ -59,12 +60,12 @@ PPtree_split<-function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p = 
       n<-nrow(origdata)
       p<-ncol(origdata)
       g<-table(origclass)
-      g.name<-as.numeric(names(g))
+      g.name<-(names(g))
       G<-length(g)
       
       origclass<-as.numeric(factor(origclass))
       if(PPmethod=="LDA"){
-         indexbest<-LDAindex(origclass,as.matrix(origdata),weight=weight);
+         indexbest <- LDAindex(origclass,as.matrix(origdata),weight=weight);
       } else if(PPmethod=="PDA"){
          indexbest<-PDAindex(origclass,as.matrix(origdata),weight=weight,
                              lambda=lambda);
@@ -92,9 +93,9 @@ PPtree_split<-function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p = 
       TOL<-energy.temp/1000000
     #  TOL<-0
       if(PPmethod=="LDA"){
-         a<-LDAopt(as.numeric(as.factor(origclass)),origdata,weight,q=1)
+         a <- PPtreeViz::LDAopt(as.numeric(as.factor(origclass)),origdata,weight,q=1)
       } else if(PPmethod=="PDA"){
-         a<-PDAopt(as.numeric(as.factor(origclass)),origdata,weight,q=1,
+         a <- PPtreeViz::PDAopt(as.numeric(as.factor(origclass)),origdata,weight,q=1,
                    lambda=lambda)   
       } else if(PPmethod=="Lr"){
 #         a<-PPopt(as.numeric(as.factor(origclass)),as.matrix(origdata),
@@ -107,7 +108,7 @@ PPtree_split<-function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p = 
 #         a<-PPopt(as.numeric(as.factor(origclass)),as.matrix(origdata),
 #                  PPmethod="ENTROPY",q=1,energy=energy,cooling=0.999,
 #                  TOL=TOL)      
-          a<-PPopt(as.numeric(as.factor(origclass)),as.matrix(origdata),
+          a <- PPtreeViz::PPopt(as.numeric(as.factor(origclass)),as.matrix(origdata),
                    weight,q=1,PPmethod=PPmethod,r=r,energy=energy,cooling=0.999,
                    TOL=TOL) 
       } 
@@ -138,7 +139,7 @@ PPtree_split<-function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p = 
             class<-class+(origclass==m.name[i])
          class<-2-class
          g<-table(class)
-         g.name<-as.numeric(names(g))
+         g.name<-(names(g))
          G<-length(g)
          n<-nrow(origdata)
          class<-as.numeric(factor(class))
@@ -170,13 +171,13 @@ PPtree_split<-function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p = 
          energy.temp<-1-indexbest
          TOL<-energy.temp/1000000
          if(PPmethod=="LDA"){
-            a<-LDAopt(as.numeric(as.factor(class)),as.matrix(origdata),
+            a <- PPtreeViz::LDAopt(as.numeric(as.factor(class)),as.matrix(origdata),
                       weight,q=1)
          } else if(PPmethod=="PDA"){
-            a<-PDAopt(as.numeric(as.factor(class)),as.matrix(origdata),
+            a<-PPtreeViz::PDAopt(as.numeric(as.factor(class)),as.matrix(origdata),
                       weight,q=1,lambda=lambda)   
          } else { 
-            a<-PPopt(as.numeric(as.factor(class)),as.matrix(origdata),
+            a<-PPtreeViz::PPopt(as.numeric(as.factor(class)),as.matrix(origdata),
                      PPmethod=PPmethod,r=r,q=1,energy=energy,cooling=0.999,
                      TOL=TOL)      
          }  
@@ -208,14 +209,16 @@ PPtree_split<-function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p = 
       c8<-ifelse(sum(IQR.LR==0)!=0,c6,(median.LR[1]*(IQR.LR[2]/sqrt(n.LR[2]))+ 
                            median.LR[2]*(IQR.LR[1]/sqrt(n.LR[1])))/
                      ((IQR.LR[1]/sqrt(n.LR[1]))+(IQR.LR[2]/sqrt(n.LR[2]))))
-      sel.proj<-sort(proj.data[which(proj.data>quantile(proj.data,prob=0.25)& 
-                                     proj.data<quantile(proj.data,prob=0.75))])
-      sel.n<-length(sel.proj)
-      temp.cut<-matrix((sel.proj[2:sel.n]+sel.proj[1:(sel.n-1)])/2,ncol=1)
-      c9<-sel.proj[sort.list(apply(temp.cut,1,function(x) 
-                                { temp<-table(class,proj.data>x[1]);
-                                  return(prod(temp[,1])+prod(temp[,2]))}))[1]]
-      C<-c(c1,c2,c3,c4,c5,c6,c7,c8,c9)
+      #sel.proj<-sort(proj.data[which(proj.data>quantile(proj.data,prob=0.25)& 
+       #                              proj.data<quantile(proj.data,prob=0.75))])
+      #sel.n<-length(sel.proj)
+      #temp.cut<-matrix((sel.proj[2:sel.n]+sel.proj[1:(sel.n-1)])/2,ncol=1)
+      
+      
+      #c9<-sel.proj[sort.list(apply(temp.cut,1,function(x) 
+       #                         { temp<-table(class,proj.data>x[1]);
+        #                          return(prod(temp[,1])+prod(temp[,2]))}))[1]]
+      C<-c(c1,c2,c3,c4,c5,c6,c7,c8)
       Index<-a$indexbest
       a1 <- rep(0, pp)  # zeros lenght original variables    
       a1[v.rnd] <- t(a$projbest)  #best.projt with selected variables and 0 in no selected original length      
@@ -312,10 +315,15 @@ PPtree_split<-function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p = 
    colnames(Tree.Struct)<-c("id","L.node.ID","R.F.node.ID","Coef.ID","Index")
    projbest.node<-Tree.final$projbest.node
    splitCutoff.node<-Tree.final$splitCutoff.node
-   colnames(splitCutoff.node)<-paste("Rule",1:9,sep="")
+   colnames(splitCutoff.node)<-paste("Rule",1:8,sep="")
    treeobj<-list(Tree.Struct=Tree.Struct,projbest.node=projbest.node, 
                  splitCutoff.node=splitCutoff.node,origclass=origclass,
                  origdata=origdata)
    class(treeobj)<-append(class(treeobj),"PPtreeclass")
    return(treeobj)
 }
+
+
+
+
+

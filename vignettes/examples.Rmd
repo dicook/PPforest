@@ -10,32 +10,33 @@ vignette: >
   \usepackage[utf8]{inputenc}
  
 ---
-Random forest is a powerful ensemble learning method, which add an additional randomness to bagging. How each tree is constructed in random forest differs to a standard tree. In random forest each split is base in the best split among a subset of o predictors randomly chosen at that node. 
-The error rate in random forest can be reduced increasing the strength of each individual tree in the forest.
-PPforest package implement a random forest for classification that take into account the correlation of the variables in each node partition based on projection pursuit. Projection pursuit basic idea is to find interesting low-dimension linear projections of high-dimensional data optimizing some specified function called projection pursuit index.
- Then using random forest and projection pursuit ideas, node splitting is done with random selected variables and a projection pursuit index is selected using class information to maximize and find the projection with most separated classes. 
+A random forest is an ensemble learning method, built on bagged trees. The bagging provides power for classification because it yields information about variable importance, predictive error and proximity of observations. This research adapts the random forest to utilize combinations of variables in the tree construction, which we call the projection pursuit classification random forest (PPforest). In a random forest each split is based on a single variable, chosen from a subset of predictors. In the PPforest, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The PPforest uses the PPtree algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for PPforest. The methods are implemented into an R package, called PPforest, which is available on CRAN. 
 
 ## Package functions
 This is the second version of the package, it is a more simple and efficient version since we change the previous functions that use `plyr` to `dplyr`.
 
 1. `var_select` random selection of variables to use in each node spliting
-2. `train_fn2` get a random sample by strata a training set with a sample proportion
+2. `train_fn` get a random sample by strata a training set with a sample proportion
 3. `boostrap_pp` bootstrap samples with strata option
-4. `PPtree_split2` projection pursuit tree with random variable spliting in each node
-5. `trees_pp` for each bootstrap sample get a projection pursuit tree
+4. `trees_pp` for each bootstrap sample get a projection pursuit tree
+5. `PPtree_split` Find tree structure using LDA or PDA index in each split. 
 6. `forest_ppred` prediction for the PPforest
+7. `PPforest` Summary results for a projection pursuit forest.
+8. `PPclassify` 
 
 ## Function examples
 I will do the first example with Fisher's Iris data.
 ```{r,echo=FALSE}
+library(devtools)
+library(PPtreeViz)
 library(PPforest)
-library(PPtree)
 library(ggplot2)
+library(plyr)
 library(dplyr)
-library(reshape)
+library(reshape2)
 library(gridExtra)
-
 ```
+
 
 ```{r,fig.show='hold',fig.width = 3 ,fig.height = 3 }
 ggplot( data = iris,aes(x=Sepal.Length, y=Petal.Length, color = Species))+
@@ -58,11 +59,11 @@ names(x.iris[,variables])
 
 ```
 The selected variables are Petal.Length and  Petal.Width, we have to mention that we thake the floor of the sample proportion, this is the resason we got 2 out of 4 variables usen a size.p (sample proportion) of 0.7.
-2. `train_fn2` get a random sample by strata if we want a training set
+2. `train_fn` get a random sample by strata if we want a training set
 
 ```{r,collapse=TRUE}
 set.seed(123)
- training <- train_fn2(class=iris[,5],size.p=0.7)
+ training <- train_fn(class=iris[,5],size.p=0.7)
  with(iris[training$id, c(variables,5)],table(Species))
 ```
 We can see that the sample is stratified by class.
@@ -106,12 +107,13 @@ p5<- ggplot( data = aux1[[4]],aes(x=Petal.Width, y=Petal.Length, color = Species
 grid.arrange(p2, p3,p4,p5,heights=c(.7, .7,.7,.7))
 
 ```
-4.`PPtree_split2` projection pursuit tree with random variable spliting in each node
+4.`PPtree_split` projection pursuit tree with random variable spliting in each node
 ```{r}
- training<-train_fn2(iris[,5],.9)
+ training<-train_fn(iris[,5],.9)
  data1<-iris[,5:1]
- Tree.result <- PPtree_split2("LDA", as.formula('Species~.'), data=data1 ,size.p=0.9)
-Tree.result
+ Tree.result <- PPtree_split(as.formula('Species~.'), data=data1 ,  size.p=0.9)
+
+ Tree.result
 ```
 
 5. `trees_pp` for each bootstrap sample get a projection pursuit tree
@@ -124,15 +126,52 @@ The PPtrees object are in output$tr
 
 ```{r,collapse=TRUE}
 iris.sc <- data.frame(Class = iris[,5], scale(iris[,1:4]))
-training <- train_fn2(class=iris[,5] , size.p=0.9)
+training <- train_fn(class=iris[,5] , size.p=0.9)
 iris.b <- bootstrap( iris.sc[training$id,], 10) 
 output <- trees_pp(iris.b,size.p=0.9,index="LDA") 
 pred <- forest_ppred( iris.sc[-training$id,2:5] , output)
 
-t1 <- table(pred,iris.sc[-training$id,1])
+t1 <- table(pred[[3]],iris.sc[-training$id,1])
 t1
 
 error <-1-sum(diag(t1))/length(iris.sc[-training$id,1])
 error
 ```
 
+
+7. `PPforest` prediction for the PPforest
+```{r,collapse=TRUE,cache=TRUE}
+ tr.index <- train_fn(iris[, 5], 0.9)
+ te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) %in% (sort(tr.index$id)))]
+ train <- iris[sort(tr.index$id), 5:1 ]
+test <- iris[-tr.index$id, 5:1 ]
+
+ ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
+
+```
+
+
+```{r, collapse=TRUE, cache=TRUE, fig.width = 5 ,fig.height = 3}
+ grilla <-expand.grid(x3=seq(0,10,,100), x4=seq(0,10,,100), x1=3, x2=5.8)
+ colnames(grilla)<-colnames(train)[-1]
+ pred <- forest_ppred( grilla , ppfr.iris[[7]] )
+ grilla$pred<-pred[[3]]
+ 
+ p<- ggplot(data = grilla ) + geom_point(aes(x =  Petal.Length, y = Petal.Width, color = as.factor(pred)),alpha = .5) + scale_shape_discrete(name = "Type") + scale_colour_discrete(name  ="Type.bound") 
+ p + geom_point(data = train, aes(x = Petal.Length , y = Petal.Width, shape = as.factor(Species)), size = I(2)  ) +  theme(legend.position = "none")
+
+ 
+ ```
+ 
+ 
+```{r, collapse=TRUE, cache=TRUE, fig.width = 5 ,fig.height = 3}
+ grilla <- expand.grid(x3=1.3, x4=4.4, x1=seq(0,10,,100), x2=seq(0,10,,100))
+ colnames(grilla)<-colnames(train)[-1]
+ pred <- forest_ppred( grilla , ppfr.iris[[7]] )
+ grilla$pred<-pred[[3]]
+ 
+ p<- ggplot(data = grilla ) + geom_point(aes(x =  Sepal.Width, y = Sepal.Length  , color = as.factor(pred)),alpha = .5) + scale_shape_discrete(name = "Type") + scale_colour_discrete(name  ="Type.bound") 
+ p + geom_point(data = train, aes(x =Sepal.Width , y = Sepal.Length, shape = as.factor(Species)), size = I(2)  ) +  theme(legend.position = "none")
+
+ 
+ ```

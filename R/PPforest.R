@@ -12,29 +12,29 @@
 #' @export
 #' @examples
 #' 
-#' tr.index <- train_fn2(iris[, 5], 2/3)
+#' tr.index <- train_fn(iris[, 5], 2/3)
 #' te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) %in% (sort(tr.index$id)))]
 #' train <- iris[sort(tr.index$id), 5:1 ]
 #' test <- iris[-tr.index$id, 5:1 ]
 #' ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-#' tr.index2 <- train_fn2(NCI60[,1], 2/3)
+#' tr.index2 <- train_fn(NCI60[,1], 2/3)
 #' te.index2 <- as.vector(1:length(NCI60[, 1]))[!(1:length(NCI60[, 1]) %in% (sort(tr.index2$id)))]
 #' train2 <- NCI60[sort(tr.index2$id), ]
 #' test2 <- NCI60[-tr.index2$id, ] 
-#' ppfr2 <- PPforest( train = train2, testap = TRUE, test = test2, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-#' ppfr2 <- PPforest(train = train2, testap = TRUE, test = test2, m = 500, size.p = .9, PPmethod = 'PDA', strata = TRUE, lambda = .5)
+#' ppfr2 <- PPforest( train = train2, testap = TRUE, test = test2, m = 10, size.p = .9, PPmethod = 'LDA', strata = TRUE)
+#' ppfr2 <- PPforest(train = train2, testap = TRUE, test = test2, m = 50, size.p = .9, PPmethod = 'PDA', strata = TRUE, lambda=.1)
 #' 
 
-PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda) {
+PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda=.1) {
   colnames(train)[1] <- "class"
   
   if (strata == TRUE) {
     data.b <- bootstrap(train, m, strata)
-    output <- trees_pp(data.b, size.p, PPmethod)
+    output <- trees_pp(data.b, size.p, PPmethod,  lambda = .1)
     
   } else {
     data.b <- bootstrap(train, m, strata = FALSE)
-    output <- trees_pp(data.b, size.p, PPmethod, lambda = 0.14)
+    output <- trees_pp(data.b, size.p, PPmethod, lambda = .1)
     
   }
   
@@ -70,7 +70,7 @@ PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = 
     vote.matrix[i, cond] <- oob.mat[[i]]
   }
   
-  oob.error <- 1-sum(diag(table(oob.pred, train[, 1])))/length(train[, 1])
+ oob.error <- 1-sum(diag(table(oob.pred, train[, 1])))/length(train[, 1])
   
   error.tr <- 1 - sum(train[, 1] == pred.tr[[3]])/length(pred.tr[[3]])
   
@@ -82,6 +82,6 @@ PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = 
     error.test <- NULL
   }
   
-  return(list(pred.tr[[3]], error.tr, pred.test[[3]], error.test, data.b, output, proximity, oob.error, vote.matrix))
+  return(list(pred.tr[[3]], error.tr, pred.test[[3]], error.test,oob.error, data.b, output, proximity, vote.matrix))
   
 } 
