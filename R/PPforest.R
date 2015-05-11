@@ -17,13 +17,13 @@
 #' train <- iris[sort(tr.index$id), 5:1 ]
 #' test <- iris[-tr.index$id, 5:1 ]
 #' ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-#' tr.index2 <- train_fn(NCI60[,1], 2/3)
-#' te.index2 <- as.vector(1:length(NCI60[, 1]))[!(1:length(NCI60[, 1]) %in% (sort(tr.index2$id)))]
-#' train2 <- NCI60[sort(tr.index2$id), ]
-#' test2 <- NCI60[-tr.index2$id, ] 
-#' ppfr2 <- PPforest( train = train2, testap = TRUE, test = test2, m = 10, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-#' ppfr2 <- PPforest(train = train2, testap = TRUE, test = test2, m = 50, size.p = .9, PPmethod = 'PDA', strata = TRUE, lambda=.1)
-#' 
+# tr.index2 <- train_fn(NCI60[,1], 2/3)
+# te.index2 <- as.vector(1:length(NCI60[, 1]))[!(1:length(NCI60[, 1]) %in% (sort(tr.index2$id)))]
+# train2 <- NCI60[sort(tr.index2$id), ]
+# test2 <- NCI60[-tr.index2$id, ] 
+# ppfr2 <- PPforest( train = train2, testap = TRUE, test = test2, m = 10, size.p = .9, PPmethod = 'LDA', strata = TRUE)
+# ppfr2 <- PPforest(train = train2, testap = TRUE, test = test2, m = 50, size.p = .9, PPmethod = 'PDA', strata = TRUE, lambda=.1)
+#’ 
 
 PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda=.1) {
   colnames(train)[1] <- "class"
@@ -49,7 +49,7 @@ PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = 
   l.train <- 1:nrow(train)
   index <- lapply(attributes(data.b)$indices, function(x) x + 1)
   
-  oob.obs <- ldply(index, function(x) (!l.train%in%x))
+  oob.obs <- plyr::ldply(index, function(x) (!l.train%in%x))
   
   oob.pred <- sapply(X = 1:nrow(train), FUN=function(i) {
     t1 <- table(pred.tr[[2]][ oob.obs[, i] == TRUE, i]) 
