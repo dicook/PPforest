@@ -5,15 +5,13 @@
 #' @return predicted values form PPforest  
 #' @export
 #' @examples
+#' data(iris)
 #'iris.sc <- data.frame(Class = iris[, 5], scale(iris[, 1:4]))
 #'training <- train_fn(class=iris[, 5] , size.p = 2/3)
 #'iris.b <- bootstrap( iris.sc[training$id, ], 500) 
 #'output <- trees_pp(iris.b, size.p = 0.9, PPmethod ="LDA") 
 #'pr <- forest_ppred( iris.sc[-training$id, 2:5] , output)
-#'training <- train_fn(class=NCI60[, 1] , size.p = 2/3)
-#'nci.b <- bootstrap( NCI60[training$id, ], 500) 
-#'output.tree <- trees_pp(nci.b, size.p = 0.9, PPmethod ="PDA", lambda=.1) 
-#'pr <- forest_ppred( iris.sc[-training$id, -1] , output.tree)
+
 forest_ppred <- function(data, output.tree, ...){
     votes <- output.tree %>% 
               dplyr::do(tr = PP.classify(test.data = data, Tree.result = .$tr, Rule = 1)) 

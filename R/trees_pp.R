@@ -13,11 +13,7 @@
 #' iris.b <- bootstrap(data1, 500) 
 #' output1 <- trees_pp(iris.b, size.p=.9,  PPmethod = "LDA") 
 #' output2 <- trees_pp(iris.b, size.p=.9, PPmethod ='PDA', lambda=.1) 
-#' tr.index2 <- train_fn(NCI60[,1], 2/3)
-#' dat.b<-  bootstrap(NCI60[tr.index2$id,], 50) 
-#'op <- trees_pp(dat.b, size.p=.9,  PPmethod = "LDA", lambda=.1) 
-#'ppfr2 <- PPforest( train = leukemia [tr.index2$id,], testap = TRUE, test = leukemia[-tr.index2$id,], m = 50, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-#' pr <- forest_ppred( parkinson[-tr.index$id, -1] , op)
+
 trees_pp <- function(data.b, size.p = 0.9, PPmethod = "LDA", lambda=.1, ...) {
     names(data.b)[1] <- "class"
     if (PPmethod == "LDA") {

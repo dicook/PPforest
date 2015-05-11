@@ -27,9 +27,8 @@ This is the second version of the package, it is a more simple and efficient ver
 ## Function examples
 I will do the first example with Fisher's Iris data.
 ```{r,echo=FALSE}
-library(devtools)
-library(PPtreeViz)
 library(PPforest)
+library(PPtreeViz)
 library(ggplot2)
 library(plyr)
 library(dplyr)
@@ -53,7 +52,7 @@ this function return a sample of id variables and has two arguments the data wit
 head(iris[,-1])
 x.iris <- iris[,-1]
 set.seed(123)
-variables <- var_select(data=x.iris,size.p=0.7)
+variables <- PPforest::var_select(data=x.iris,size.p=0.7)
      variables
 names(x.iris[,variables])
 
@@ -63,21 +62,21 @@ The selected variables are Petal.Length and  Petal.Width, we have to mention tha
 
 ```{r,collapse=TRUE}
 set.seed(123)
- training <- train_fn(class=iris[,5],size.p=0.7)
+ training <- PPforest::train_fn(class=iris[,5],size.p=0.7)
  with(iris[training$id, c(variables,5)],table(Species))
 ```
 We can see that the sample is stratified by class.
 ```{r,fig.show='hold',fig.width = 7 ,fig.height = 7}
 train <- iris %>% 
-        slice(as.numeric(training$id)) %>% 
-        mutate(sam="sample")
+        dplyr::slice(as.numeric(training$id)) %>% 
+        dplyr::mutate(sam="sample")
 
 test <- iris %>%
-      slice(-as.numeric(training$id)) %>%
-      mutate(sam="test")
+      dplyr::slice(-as.numeric(training$id)) %>%
+      dplyr::mutate(sam="test")
 
-data.pl <- rbind_list(train,test)
-data.pl.melt <- melt(data.frame(data.pl),id.vars=c("Species","sam"))
+data.pl <- dplyr::rbind_list(train,test)
+data.pl.melt <- reshape2::melt(data.frame(data.pl),id.vars=c("Species","sam"))
 
 
 ggplot( data = data.pl.melt,aes(x=Species, y=value,color = sam))+ ylab("")+
@@ -87,10 +86,10 @@ ggplot( data = data.pl.melt,aes(x=Species, y=value,color = sam))+ ylab("")+
 ```
 3. `boostrap_pp` bootstrap samples with strata option
 ```{r,fig.show='hold',fig.width = 3 ,fig.height = 3}
-iris.b <- bootstrap(iris[,5:1], 5) 
-index <-lapply(attributes(iris.b)$indices ,function(x) x+1)
-boot.dat <- lapply(index,function(x) iris[x,])
-aux1 <- lapply(boot.dat,function(x) melt(x,id.vars=c("Petal.Width","Petal.Length","Species")))
+iris.b <- PPforest::bootstrap(iris[,5:1], 5) 
+index <- base::lapply(attributes(iris.b)$indices ,function(x) x+1)
+boot.dat <- base::lapply(index,function(x) iris[x,])
+aux1 <- base::lapply(boot.dat,function(x) melt(x,id.vars=c("Petal.Width","Petal.Length","Species")))
 
 ```
 ```{r, fig.show='hold',fig.width = 7 ,fig.height = 4,echo=FALSE}
@@ -109,16 +108,15 @@ grid.arrange(p2, p3,p4,p5,heights=c(.7, .7,.7,.7))
 ```
 4.`PPtree_split` projection pursuit tree with random variable spliting in each node
 ```{r}
- training<-train_fn(iris[,5],.9)
+ training <- PPforest::train_fn(iris[,5],.9)
  data1<-iris[,5:1]
- Tree.result <- PPtree_split(as.formula('Species~.'), data=data1 ,  size.p=0.9)
-
+Tree.result <- PPforest::PPtree_split(as.formula('Species~.'), data=data1 , std = TRUE,  size.p=0.9)
  Tree.result
 ```
 
 5. `trees_pp` for each bootstrap sample get a projection pursuit tree
 ```{r}
-output <- trees_pp(iris.b,size.p=.9,index="LDA") 
+output <- PPforest::trees_pp(iris.b,size.p=.9,index="LDA") 
 names(output)
 ```
 The PPtrees object are in output$tr
@@ -126,10 +124,10 @@ The PPtrees object are in output$tr
 
 ```{r,collapse=TRUE}
 iris.sc <- data.frame(Class = iris[,5], scale(iris[,1:4]))
-training <- train_fn(class=iris[,5] , size.p=0.9)
-iris.b <- bootstrap( iris.sc[training$id,], 10) 
-output <- trees_pp(iris.b,size.p=0.9,index="LDA") 
-pred <- forest_ppred( iris.sc[-training$id,2:5] , output)
+training <- PPforest::train_fn(class=iris[,5] , size.p=0.9)
+iris.b <- PPforest::bootstrap( iris.sc[training$id,], 10) 
+output <- PPforest::trees_pp(iris.b,size.p=0.9,index="LDA") 
+pred <- PPforest::forest_ppred( iris.sc[-training$id,2:5] , output)
 
 t1 <- table(pred[[3]],iris.sc[-training$id,1])
 t1
@@ -141,18 +139,18 @@ error
 
 7. `PPforest` prediction for the PPforest
 ```{r,collapse=TRUE,cache=TRUE}
- tr.index <- train_fn(iris[, 5], 0.9)
+ tr.index <- PPforest::train_fn(iris[, 5], 0.9)
  te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) %in% (sort(tr.index$id)))]
  train <- iris[sort(tr.index$id), 5:1 ]
 test <- iris[-tr.index$id, 5:1 ]
 
- ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
+ ppfr.iris <- PPforest::PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
 
 ```
 
 
 ```{r, collapse=TRUE, cache=TRUE, fig.width = 5 ,fig.height = 3}
- grilla <-expand.grid(x3=seq(0,10,,100), x4=seq(0,10,,100), x1=3, x2=5.8)
+ grilla <- base::expand.grid(x3=seq(0,10,,100), x4=seq(0,10,,100), x1=3, x2=5.8)
  colnames(grilla)<-colnames(train)[-1]
  pred <- forest_ppred( grilla , ppfr.iris[[7]] )
  grilla$pred<-pred[[3]]
@@ -165,9 +163,9 @@ test <- iris[-tr.index$id, 5:1 ]
  
  
 ```{r, collapse=TRUE, cache=TRUE, fig.width = 5 ,fig.height = 3}
- grilla <- expand.grid(x3=1.3, x4=4.4, x1=seq(0,10,,100), x2=seq(0,10,,100))
+ grilla <- base::expand.grid(x3=1.3, x4=4.4, x1=seq(0,10,,100), x2=seq(0,10,,100))
  colnames(grilla)<-colnames(train)[-1]
- pred <- forest_ppred( grilla , ppfr.iris[[7]] )
+ pred <- PPforest::forest_ppred( grilla , ppfr.iris[[7]] )
  grilla$pred<-pred[[3]]
  
  p<- ggplot(data = grilla ) + geom_point(aes(x =  Sepal.Width, y = Sepal.Length  , color = as.factor(pred)),alpha = .5) + scale_shape_discrete(name = "Type") + scale_colour_discrete(name  ="Type.bound") 

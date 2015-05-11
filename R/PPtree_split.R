@@ -26,7 +26,6 @@
 #' data(iris)
 #' Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1] , std = TRUE,  size.p=0.9)
 #' Tree.result
-#' Tree.result2 <- PPtree_split(as.formula('Type~.'), data=train2 , std = TRUE,  size.p=0.9)
 PPtree_split <- function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p = 0.9,r=1,
                         lambda=0.1,energy=0,maxiter=50000,...){
    TOL<-NULL
@@ -65,17 +64,17 @@ PPtree_split <- function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p 
       
       origclass<-as.numeric(factor(origclass))
       if(PPmethod=="LDA"){
-         indexbest <- LDAindex(origclass,as.matrix(origdata),weight=weight);
+         indexbest <- PPtreeViz::LDAindex(origclass,as.matrix(origdata),weight=weight);
       } else if(PPmethod=="PDA"){
-         indexbest<-PDAindex(origclass,as.matrix(origdata),weight=weight,
+         indexbest <- PPtreeViz::PDAindex(origclass,as.matrix(origdata),weight=weight,
                              lambda=lambda);
       } else if(PPmethod=="Lr"){
-         indexbest<-Lrindex(origclass,as.matrix(origdata),weight=weight,r=r);
+         indexbest <- PPtreeViz::Lrindex(origclass,as.matrix(origdata),weight=weight,r=r);
       } else if(PPmethod=="GINI"){
          indexbest<-0;
          for(i in 1:p){
             tempdata<-origdata[,i];
-            tempindex<-GINIindex1D(origclass,tempdata);  
+            tempindex <- PPtreeViz::GINIindex1D(origclass,tempdata);  
             if(indexbest<tempindex)
                indexbest<-tempindex;
          }  
@@ -83,7 +82,7 @@ PPtree_split <- function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p 
          indexbest<-0;
          for(i in 1:p){
             tempdata<-origdata[,i];
-            tempindex<-ENTROPYindex1D(origclass,tempdata);  
+            tempindex<-PPtreeViz::ENTROPYindex1D(origclass,tempdata);  
             if(indexbest<tempindex)
                indexbest<-tempindex;
          }  
@@ -144,17 +143,17 @@ PPtree_split <- function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p 
          n<-nrow(origdata)
          class<-as.numeric(factor(class))
          if(PPmethod=="LDA"){
-            indexbest<-LDAindex(class,as.matrix(origdata),weight=weight);
+            indexbest<- PPtreeViz::LDAindex(class,as.matrix(origdata),weight=weight);
          } else if(PPmethod=="PDA"){
-            indexbest<-PDAindex(class,as.matrix(origdata),weight=weight,
+            indexbest<-PPtreeViz::PDAindex(class,as.matrix(origdata),weight=weight,
                                 lambda=lambda);
          } else if(PPmethod=="Lr"){
-            indexbest<-Lrindex(class,as.matrix(origdata),weight=weight,r=r);
+            indexbest<-PPtreeViz::Lrindex(class,as.matrix(origdata),weight=weight,r=r);
          } else if(PPmethod=="GINI"){
             indexbest<-0;
             for(i in 1:p){
                tempdata<-origdata[,i];
-               tempindex<-GINIindex1D(class,as.matrix(tempdata));  
+               tempindex<-PPtreeViz::GINIindex1D(class,as.matrix(tempdata));  
                if(indexbest<tempindex)
                   indexbest<-tempindex;
             }  
@@ -162,7 +161,7 @@ PPtree_split <- function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p 
             indexbest<-0;
             for(i in 1:p){
                tempdata<-origdata[,i];
-               tempindex<-ENTROPYindex1D(class,as.matrix(tempdata));  
+               tempindex<-PPtreeViz::ENTROPYindex1D(class,as.matrix(tempdata));  
                if(indexbest<tempindex)
                   indexbest<-tempindex;
             }  
