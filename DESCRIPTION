@@ -5,14 +5,16 @@ Title: Projection pursuit classification forest
 Author: Natalia da Silva, Eun-Kyung Lee, Di Cook
 Maintainer: Natalia da Silva <ndasilva@iastate.edu>
 Depends:
-    R (>= 3.1.1),
+    R (>= 3.2.0),
 Imports:
-    PPtree,
+    magrittr,
+    plyr,
+    dplyr,
+    gridExtra,
+    PPtreeViz,
     MASS,
     ggplot2,
-    reshape2,
-    plyr,
-    penalizedLDA
+    reshape2  
 Description: Projection pursuit classification tree using LDA, Lr or PDA
     projection pursuit index
 License: LGPL-2.1
