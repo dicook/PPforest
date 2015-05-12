@@ -17,13 +17,6 @@
 #' train <- iris[sort(tr.index$id), 5:1 ]
 #' test <- iris[-tr.index$id, 5:1 ]
 #' ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-# tr.index2 <- train_fn(NCI60[,1], 2/3)
-# te.index2 <- as.vector(1:length(NCI60[, 1]))[!(1:length(NCI60[, 1]) %in% (sort(tr.index2$id)))]
-# train2 <- NCI60[sort(tr.index2$id), ]
-# test2 <- NCI60[-tr.index2$id, ] 
-# ppfr2 <- PPforest( train = train2, testap = TRUE, test = test2, m = 10, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-# ppfr2 <- PPforest(train = train2, testap = TRUE, test = test2, m = 50, size.p = .9, PPmethod = 'PDA', strata = TRUE, lambda=.1)
-#’ 
 
 PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda=.1) {
   colnames(train)[1] <- "class"
