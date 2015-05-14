@@ -7,6 +7,7 @@
 #' @param ... arguments to be passed to methods
 #' @return data frame with tree_pp output for all the bootstraps samples.
 #' @export
+#' @importFrom magrittr %>%
 #' @examples
 #' training <- train_fn(iris[,5], .9)
 #' data1 <- iris[training$id, 5:1]

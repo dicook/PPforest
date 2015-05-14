@@ -5,6 +5,7 @@
 #' @param strata identifies if the bootstrap samples are stratified by class
 #' @return grouped data frame object with m bootstrap samples
 #' @export
+#' @importFrom magrittr %>%
 #' @examples
 #'iris.b <- bootstrap(iris[, 5:1], 30, strata = FALSE) 
 #'index <- lapply(attributes(iris.b)$indices, function(x) x + 1)

@@ -4,6 +4,7 @@
 #' @param output.tree trees classifiers from trees_pp function
 #' @return predicted values form PPforest  
 #' @export
+#' @importFrom magrittr %>%
 #' @examples
 #' data(iris)
 #'iris.sc <- data.frame(Class = iris[, 5], scale(iris[, 1:4]))
