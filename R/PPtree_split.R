@@ -89,7 +89,7 @@ PPtree_split <- function(fr, data,PPmethod = "LDA",weight= TRUE,std = TRUE,size.
       energy <- ifelse(energy == 0, 1-indexbest, energy)
       energy.temp <- 1 - indexbest
       TOL <- energy.temp/1000000
-    #  TOL<-0
+  
       if(PPmethod == "LDA"){
          a <- PPtreeViz::LDAopt(as.numeric(as.factor(origclass)), origdata, weight, q = 1)
       } else if(PPmethod == "PDA"){
@@ -199,76 +199,76 @@ PPtree_split <- function(fr, data,PPmethod = "LDA",weight= TRUE,std = TRUE,size.
                            median.LR[2]*(IQR.LR[1]/sqrt(n.LR[1])))/
                      ((IQR.LR[1]/sqrt(n.LR[1])) + (IQR.LR[2]/sqrt(n.LR[2]))))
       
-      C<-c(c1,c2,c3,c4,c5,c6,c7,c8)
+      C <- c(c1, c2, c3, c4, c5, c6, c7, c8)
       Index<-a$indexbest
       a1 <- rep(0, pp)  # zeros lenght original variables    
       a1[v.rnd] <- t(a$projbest)  #best.projt with selected variables and 0 in no selected original length      
       Alpha <- a1
       
 
-      IOindexR<-NULL
-      IOindexL<-NULL
-      sort.LR<-as.numeric(names(sort(m.LR)))
-      IOindexL<-class==sort.LR[1]
-      IOindexR<-class==sort.LR[2]
-      list(Index=Index,Alpha=Alpha,C=C,IOindexL=IOindexL,IOindexR = IOindexR)
+      IOindexR <- NULL
+      IOindexL <- NULL
+      sort.LR <- as.numeric(names(sort(m.LR)))
+      IOindexL <- class == sort.LR[1]
+      IOindexR <- class == sort.LR[2]
+      list(Index = Index, Alpha = Alpha, C = C, IOindexL = IOindexL, IOindexR = IOindexR)
    }
    
-   Tree.construct<-function(origclass,origdata,Tree.Struct, 
-          id,rep,rep1,rep2,projbest.node,splitCutoff.node,PPmethod,r = NULL, 
-          lambda=NULL,maxiter,...) {
-      origclass<-as.integer(origclass)
-      n<-nrow(origdata)
-      g<-table(origclass)
-      G<-length(g)
-      if(length(Tree.Struct)==0){
-         Tree.Struct<-matrix(1:(2*G-1),ncol=1)
-         Tree.Struct<-cbind(Tree.Struct,0,0,0,0)
+   Tree.construct <- function(origclass, origdata, Tree.Struct, 
+          id, rep, rep1, rep2, projbest.node, splitCutoff.node, PPmethod, r = NULL, 
+          lambda = NULL, maxiter, ...) {
+      origclass <- as.integer(origclass)
+      n <- nrow(origdata)
+      g <- table(origclass)
+      G <- length(g)
+      if(length(Tree.Struct) == 0){
+         Tree.Struct <- matrix(1:(2*G-1), ncol = 1)
+         Tree.Struct <- cbind(Tree.Struct, 0, 0, 0, 0)
       }
-      if(G==1){
-         Tree.Struct[id,3]<-as.numeric(names(g))
-         list(Tree.Struct=Tree.Struct,projbest.node=projbest.node, 
-                splitCutoff.node=splitCutoff.node,rep=rep,rep1=rep1,rep2=rep2)
+      if(G == 1){
+         Tree.Struct[id, 3] <- as.numeric(names(g))
+         list(Tree.Struct = Tree.Struct, projbest.node = projbest.node, 
+                splitCutoff.node = splitCutoff.node, rep = rep, rep1 = rep1, rep2 = rep2)
       } else {
-         Tree.Struct[id,2]<-rep1
-         rep1<-rep1+1
-         Tree.Struct[id,3]<-rep1
-         rep1<-rep1+1
-         Tree.Struct[id,4]<-rep2
-         rep2<-rep2+1
-         a<-Find.proj(origclass,origdata,PPmethod,weight,r,lambda,
+         Tree.Struct[id, 2] <- rep1
+         rep1 <- rep1 + 1
+         Tree.Struct[id, 3] <- rep1
+         rep1 <- rep1 + 1
+         Tree.Struct[id, 4] <- rep2
+         rep2 <- rep2 + 1
+         a <- Find.proj(origclass,origdata,PPmethod,weight,r,lambda,
                       maxiter,...)
-         splitCutoff.node<-rbind(splitCutoff.node,a$C)
-         Tree.Struct[id,5]<-a$Index
-         projbest.node<-rbind(projbest.node,a$Alpha)
-         t.class<-origclass
-         t.data<-origdata
-         t.class<-t.class*a$IOindexL
-         t.n<-length(t.class[t.class==0])
-         t.index<-sort.list(t.class)
-         t.index<-sort(t.index[-(1:t.n)])
-         t.class<-t.class[t.index]
-         t.data<-origdata[t.index,]
-         b<-Tree.construct(t.class,t.data,Tree.Struct, 
-                           Tree.Struct[id, 2],rep,rep1,rep2,projbest.node, 
-                           splitCutoff.node,PPmethod,r,lambda,maxiter,...)
-         Tree.Struct<-b$Tree.Struct
-         projbest.node<-b$projbest.node
-         splitCutoff.node<-b$splitCutoff.node
-         rep<-b$rep
-         rep1<-b$rep1
-         rep2<-b$rep2
-         t.class<-origclass
-         t.data<-origdata
-         t.class<-(t.class*a$IOindexR)
-         t.n<-length(t.class[t.class==0])
-         t.index<-sort.list(t.class)
-         t.index<-sort(t.index[-(1:t.n)])
-         t.class<-t.class[t.index]
-         t.data<-origdata[t.index,]
-         n<-nrow(t.data)
-         G<-length(table(t.class))
-         b<-Tree.construct(t.class,t.data,Tree.Struct, 
+         splitCutoff.node <- rbind(splitCutoff.node,a$C)
+         Tree.Struct[id,5] <- a$Index
+         projbest.node <- rbind(projbest.node,a$Alpha)
+         t.class <- origclass
+         t.data <- origdata
+         t.class <- t.class*a$IOindexL
+         t.n <- length(t.class[t.class == 0] )
+         t.index <- sort.list(t.class)
+         t.index <- sort(t.index[ -(1:t.n)])
+         t.class <- t.class[t.index]
+         t.data <- origdata[t.index, ]
+         b <- Tree.construct(t.class, t.data, Tree.Struct, 
+                           Tree.Struct[id, 2], rep, rep1, rep2, projbest.node, 
+                           splitCutoff.node, PPmethod, r, lambda, maxiter, ...)
+         Tree.Struct <- b$Tree.Struct
+         projbest.node <- b$projbest.node
+         splitCutoff.node <- b$splitCutoff.node
+         rep <- b$rep
+         rep1 <- b$rep1
+         rep2 <- b$rep2
+         t.class <- origclass
+         t.data <- origdata
+         t.class <- (t.class*a$IOindexR)
+         t.n <- length(t.class[t.class==0])
+         t.index <- sort.list(t.class)
+         t.index <- sort(t.index[-(1:t.n)])
+         t.class <- t.class[t.index]
+         t.data <- origdata[t.index, ]
+         n <- nrow(t.data)
+         G <-length(table(t.class))
+         b <- Tree.construct(t.class,t.data,Tree.Struct, 
                 Tree.Struct[id,3],rep,rep1,rep2,projbest.node, 
                 splitCutoff.node,PPmethod,r,lambda,maxiter,...)
          Tree.Struct<-b$Tree.Struct

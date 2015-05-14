@@ -11,13 +11,11 @@
 #' @return predicted values, error, bootstrap samples, trees ,training set from PPforest  
 #' @export
 #' @examples
-#' 
 #' tr.index <- train_fn(iris[, 5], 2/3)
 #' te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) %in% (sort(tr.index$id)))]
 #' train <- iris[sort(tr.index$id), 5:1 ]
 #' test <- iris[-tr.index$id, 5:1 ]
 #' ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-
 PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda=.1) {
   colnames(train)[1] <- "class"
   
@@ -30,11 +28,11 @@ PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = 
     output <- trees_pp(data.b, size.p, PPmethod, lambda = .1)
     
   }
-
+  
   pred.tr <- forest_ppred(train[, -1], output)
   pos <- expand.grid(a = 1:dim(train)[1], b = 1:dim(train)[1])
-  cond <- pos[,1] >= pos[,2]
-  tri.low <- pos[cond,]
+  cond <- pos[,1] >= pos[, 2]
+  tri.low <- pos[cond, ]
   
   same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[2]]), 2, function(x) x[ tri.low[, 1]] == x[ tri.low[, 2]]))
   proximity <- data.frame(same.node[, c(1:2)], proxi = apply(same.node[, -c(1:2)], 1, function(x) sum(x == 1))/dim((pred.tr[[2]]))[1])
@@ -67,9 +65,8 @@ oob.mat <- sapply(X = 1:nrow(train), FUN = function(i) {
   
  oob.error <- 1-sum(diag(table(oob.pred, train[, 1])))/length(train[, 1])
   
-
 oob.err.tree <- sapply(X = 1:m, FUN=function(i) {
-dd <- diag(table( pred.tr[[2]][i,oob.obs[i, ] == TRUE] , train[oob.obs[i, ] == TRUE,1]))
+dd <- diag(table( pred.tr[[2]][i,oob.obs[i, ] == TRUE] , train[oob.obs[i, ] == TRUE, 1]))
 1-sum(dd)/sum(oob.obs[i, ] == TRUE)
 })
 

@@ -14,24 +14,23 @@
 #' ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
 #' PPplot(ppfr.iris, train, k = 2)
 #' PPplot(ppfr.iris, train, k = 3)
-
-
 PPplot <- function(ppfo, train, k) {
   id <- diag(dim(train)[1])
-  id[lower.tri(id, diag=TRUE)] <- ppfo[[9]]$proxi
+  id[lower.tri(id, diag = TRUE)] <- ppfo[[9]]$proxi
   id[upper.tri(id)] <-  t(id)[upper.tri(id)]
-  ggplot2::ggplot(reshape2::melt(id), ggplot2::aes(Var1,Var2, fill=value)) + ggplot2::geom_raster()
+  ggplot2::ggplot( reshape2::melt(id), ggplot2::aes( Var1,Var2, fill = value ) ) + ggplot2::geom_raster()
   
-  rf.mds <- stats::cmdscale(1 - id, eig = TRUE, k = k)
-  colnames(rf.mds$points) <- paste("Dim", 1:k, sep='')
+  rf.mds <- stats::cmdscale( 1 - id, eig = TRUE, k = k  )
+  colnames(rf.mds$points) <- paste( "Dim", 1:k, sep = '')
   nlevs <- nlevels(train[,1])
+  
   if (k <= 2) {
-    df <- data.frame(fac=train[,1], rf.mds$points)
-    ggplot2::ggplot(data= df, ggplot2::aes(x=Dim1, y =Dim2,color= train[,1])) +ggplot2::scale_colour_discrete(name="Class")  + ggplot2::geom_jitter()
+    df <- data.frame( fac = train[,1], rf.mds$points )
+    ggplot2::ggplot( data = df, ggplot2::aes( x = Dim1, y = Dim2,color = train[,1] ) ) +ggplot2::scale_colour_discrete( name = "Class" )  + ggplot2::geom_jitter()
   }
   else {
-    df <- data.frame(fac=train[,1], rf.mds$points)
-    GGally::ggpairs(data=df[,-1], colours=as.factor(train[,1]))
+    df <- data.frame( fac = train[,1], rf.mds$points)
+    GGally::ggpairs(data = df[,-1], colours = as.factor( train[, 1] ) )
   }
   
 }
