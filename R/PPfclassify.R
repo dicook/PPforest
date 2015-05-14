@@ -27,7 +27,7 @@
 #' Tree.result <- PPtree_split(as.formula('class~.'), data=iris.sc[training$id,] ,  size.p=0.9)
 #' PP.classify(Tree.result, iris.sc[-training$id, 2:5], 1, iris.sc[-training$id, 1])
 
-PP.classify<-function(Tree.result,test.data,Rule,true.class=NULL,...) {
+PPPfclassify<-function(Tree.result,test.data,Rule,true.class=NULL,...) {
    test.data<-as.matrix(test.data)
    if(!is.null(true.class)){  
       true.class<-as.matrix(true.class); 
