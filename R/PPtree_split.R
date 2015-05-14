@@ -26,14 +26,13 @@
 #' data(iris)
 #' Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1] , std = TRUE,  size.p=0.9)
 #' Tree.result
-PPtree_split <- function(fr, data,PPmethod="LDA",weight= TRUE,std = TRUE,size.p = 0.9,r=1,
-                        lambda=0.1,energy=0,maxiter=50000,...){
+PPtree_split <- function(fr, data,PPmethod = "LDA",weight= TRUE,std = TRUE,size.p = 0.9,r=1,
+                        lambda=0.1,energy = 0,maxiter=50000,...){
    TOL<-NULL
    mf <- model.frame(fr, data = data)
    origclass <- model.response(mf)
    origdata <- data[, -1]
    origdata <- as.matrix(origdata)
-   
    
    Find.proj <- function(origclass, origdata, PPmethod, weight, r, lambda, 
                       maxiter, ...){

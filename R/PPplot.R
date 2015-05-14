@@ -18,7 +18,7 @@
 
 PPplot <- function(ppfo, train, k) {
   id <- diag(dim(train)[1])
-  id[lower.tri(id, diag=TRUE)] <- ppfo[[8]]$proxi
+  id[lower.tri(id, diag=TRUE)] <- ppfo[[9]]$proxi
   id[upper.tri(id)] <-  t(id)[upper.tri(id)]
   ggplot2::ggplot(reshape2::melt(id), ggplot2::aes(Var1,Var2, fill=value)) + ggplot2::geom_raster()
   

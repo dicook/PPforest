@@ -18,7 +18,7 @@ Index id for variables set, sample variables without
 replacement with a sample proportion.
 }
 \examples{
-variables <- var_select(data=iris[,-1], size.p=0.9)
+variables <- var_select(data=iris[,-5], size.p=0.9)
 variables
 }
 

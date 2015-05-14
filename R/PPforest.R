@@ -30,7 +30,7 @@ PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = 
     output <- trees_pp(data.b, size.p, PPmethod, lambda = .1)
     
   }
-  
+
   pred.tr <- forest_ppred(train[, -1], output)
   pos <- expand.grid(a = 1:dim(train)[1], b = 1:dim(train)[1])
   cond <- pos[,1] >= pos[,2]
@@ -41,7 +41,8 @@ PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = 
   
   l.train <- 1:nrow(train)
   index <- lapply(attributes(data.b)$indices, function(x) x + 1)
-  
+
+
   oob.obs <- plyr::ldply(index, function(x) (!l.train%in%x))
   
   oob.pred <- sapply(X = 1:nrow(train), FUN=function(i) {
@@ -49,7 +50,8 @@ PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = 
     names(t1)[which.max(t1)]
   }
   )
-  oob.mat <- sapply(X = 1:nrow(train), FUN = function(i) {
+  
+oob.mat <- sapply(X = 1:nrow(train), FUN = function(i) {
     table(pred.tr[[2]][ oob.obs[, i] == TRUE, i] )
     
   }
@@ -65,6 +67,12 @@ PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = 
   
  oob.error <- 1-sum(diag(table(oob.pred, train[, 1])))/length(train[, 1])
   
+
+oob.err.tree <- sapply(X = 1:m, FUN=function(i) {
+dd <- diag(table( pred.tr[[2]][i,oob.obs[i, ] == TRUE] , train[oob.obs[i, ] == TRUE,1]))
+1-sum(dd)/sum(oob.obs[i, ] == TRUE)
+})
+
   error.tr <- 1 - sum(train[, 1] == pred.tr[[3]])/length(pred.tr[[3]])
   
   if (testap==TRUE) {
@@ -75,6 +83,6 @@ PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = 
     error.test <- NULL
   }
   
-  return(list(pred.tr[[3]], error.tr, pred.test[[3]], error.test,oob.error, data.b, output, proximity, vote.matrix))
+  return(list(pred.tr[[3]], error.tr, pred.test[[3]], error.test,oob.error, oob.err.tree, data.b, output, proximity, vote.matrix))
   
 } 

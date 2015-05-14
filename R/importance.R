@@ -11,10 +11,10 @@
 #' train <- iris[sort(tr.index$id), 5:1 ]
 #' test <- iris[-tr.index$id, 5:1 ]
 #' ppforest <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-#' varimp_pp(train,ppforest) 
+#' importance(train,ppforest) 
 
-varimp_pp <- function(data,ppforest){
-  mat.vi <- abs(ldply(ppforest[[8]][[2]], function(x) data.frame(dim= 1:dim(x$projbest.node)[1],x$projbest.node)))
+importance <- function(data,ppforest){
+  mat.vi <- abs(plyr::ldply(ppforest[[8]][[2]], function(x) data.frame(dim= 1:dim(x$projbest.node)[1],x$projbest.node)))
   colnames(mat.vi)[-1] <- colnames(data[,-1])
 
   oob.error.tree <- rep(ppforest[[6]], each = length(unique(mat.vi$dim)))

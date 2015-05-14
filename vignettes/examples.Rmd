@@ -1,13 +1,6 @@
 ---
 title: "PPforest"
-author: "Natalia da Silva"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-fig_caption: yes 
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+
  
 ---
 A random forest is an ensemble learning method, built on bagged trees. The bagging provides power for classification because it yields information about variable importance, predictive error and proximity of observations. This research adapts the random forest to utilize combinations of variables in the tree construction, which we call the projection pursuit classification random forest (PPforest). In a random forest each split is based on a single variable, chosen from a subset of predictors. In the PPforest, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The PPforest uses the PPtree algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for PPforest. The methods are implemented into an R package, called PPforest, which is available on CRAN. 
@@ -152,7 +145,7 @@ test <- iris[-tr.index$id, 5:1 ]
 ```{r, collapse=TRUE, cache=TRUE, fig.width = 5 ,fig.height = 3}
  grilla <- base::expand.grid(x3=seq(0,10,,100), x4=seq(0,10,,100), x1=3, x2=5.8)
  colnames(grilla)<-colnames(train)[-1]
- pred <- forest_ppred( grilla , ppfr.iris[[7]] )
+ pred <- forest_ppred( grilla , ppfr.iris[[8]] )
  grilla$pred<-pred[[3]]
  
  p<- ggplot(data = grilla ) + geom_point(aes(x =  Petal.Length, y = Petal.Width, color = as.factor(pred)),alpha = .5) + scale_shape_discrete(name = "Type") + scale_colour_discrete(name  ="Type.bound") 
@@ -165,7 +158,7 @@ test <- iris[-tr.index$id, 5:1 ]
 ```{r, collapse=TRUE, cache=TRUE, fig.width = 5 ,fig.height = 3}
  grilla <- base::expand.grid(x3=1.3, x4=4.4, x1=seq(0,10,,100), x2=seq(0,10,,100))
  colnames(grilla)<-colnames(train)[-1]
- pred <- PPforest::forest_ppred( grilla , ppfr.iris[[7]] )
+ pred <- PPforest::forest_ppred( grilla , ppfr.iris[[8]] )
  grilla$pred<-pred[[3]]
  
  p<- ggplot(data = grilla ) + geom_point(aes(x =  Sepal.Width, y = Sepal.Length  , color = as.factor(pred)),alpha = .5) + scale_shape_discrete(name = "Type") + scale_colour_discrete(name  ="Type.bound") 

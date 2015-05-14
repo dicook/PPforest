@@ -24,7 +24,7 @@ forest_ppred <- function(data, output.tree, ...){
     names(t1)[which.max(t1)]
   }
   )
-  
+
 
   return(list(out, vote.mat, max.vote))
 }

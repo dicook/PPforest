@@ -1,5 +1,5 @@
 #'   Projection persuit trees for bootstrap samples.
-#'
+#' @importFrom magrittr %>%
 #' @param data.b are the bootstrap samples. Class factor in the first column
 #' @param size.p proportion of random sample variables in each split.
 #' @param PPmethod to run the PPtree_plit function, options LDA or PDA, by default it is LDA.
