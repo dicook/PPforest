@@ -15,7 +15,7 @@ Imports:
     MASS,
     ggplot2,
     reshape2  
-Description: Random forest build on Projection pursuit classification tree using LDA or PDA
+Description: Random forest build on projection pursuit classification tree using LDA or PDA
     projection pursuit index
 License: LGPL-2.1
 LazyData: true
