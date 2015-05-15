@@ -8,14 +8,15 @@ PP.Tree.class(origclass, origdata, PPmethod="LDA",weight=TRUE,r=1,lambda=0.1,
               energy=0,maxiter=50000, ...)
 }
 \arguments{
-  \item{PPmethod}{method for projection pursuit; "LDA",
-  "PDA", "Lr", "GINI", and "ENTROPY"} \item{weight}
-  {weight flag in LDA, PDA and Lr index} \item{r}{r in Lr
-  index} \item{lambda}{lambda in PDA index} \item{energy}
-  {energy parameter} \item{maxiter}{number of maximum
-  iteration} \item{...}{arguments to be passed to methods}
-  \item{origclass}{class information vector} \item{origdata}
-  {numeric data matrix without class information}
+  \item{PPmethod}{method for projection pursuit; "LDA","PDA","Lr","GINI", and "ENTROPY"} 
+  \item{weight}{weight flag in LDA, PDA and Lr index} 
+  \item{r}{r in Lrindex} 
+  \item{lambda}{lambda in PDA index} 
+  \item{energy}{energy parameter} 
+  \item{maxiter}{number of maximum iteration} 
+  \item{...}{arguments to be passed to methods}
+  \item{origclass}{class information vector} 
+  \item{origdata}{numeric data matrix without class information}
 }
 \value{
 Tree.Struct Tree structure of projection pursuit
