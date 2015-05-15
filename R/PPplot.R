@@ -5,7 +5,6 @@
 #' @param k number of MDS dimensions to plot
 #' @return proximity matrix plot and MDS plot  
 #' @export
-#' @importFrom magrittr %>%
 #' @examples
 #' tr.index <- train_fn(iris[, 5], 2/3)
 #' te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) %in% (sort(tr.index$id)))]
