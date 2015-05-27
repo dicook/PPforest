@@ -1,8 +1,8 @@
 #' MDS
 #'
-#' @param ppfo  a PPforest object
+#' @param ppfo a PPforest object
 #' @param train is a data frame with the training data with class in the first column
-#' @param k number of MDS dimensions to plot
+#' @param k number of dimensions of the MDS layout 
 #' @return proximity matrix plot and MDS plot  
 #' @export
 #' @examples
@@ -25,7 +25,7 @@ PPplot <- function(ppfo, train, k) {
   
   if (k <= 2) {
     df <- data.frame( fac = train[,1], rf.mds$points )
-    ggplot2::ggplot( data = df, ggplot2::aes( x = Dim1, y = Dim2,color = train[,1] ) ) +ggplot2::scale_colour_discrete( name = "Class" )  + ggplot2::geom_jitter()
+    ggplot2::ggplot( data = df, ggplot2::aes( x = Dim1, y = Dim2,color = train[,1] ) ) + ggplot2::scale_colour_discrete( name = "Class" )  + ggplot2::geom_jitter()
   }
   else {
     df <- data.frame( fac = train[,1], rf.mds$points)

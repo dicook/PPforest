@@ -9,7 +9,7 @@ PPplot(ppfo, train, k)
 \arguments{
   \item{ppfo}{a PPforest object} \item{train}{is a data
   frame with the training data with class in the first
-  column} \item{k}{number of MDS dimensions to plot}
+  column} \item{k}{number of dimensions of the MDS layout}
 }
 \value{
 proximity matrix plot and MDS plot

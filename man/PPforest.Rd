@@ -31,6 +31,6 @@ tr.index <- train_fn(iris[, 5], 2/3)
 te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) \%in\% (sort(tr.index$id)))]
 train <- iris[sort(tr.index$id), 5:1 ]
 test <- iris[-tr.index$id, 5:1 ]
-ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
+ppfr.iris <- PPforest(train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
 }
 

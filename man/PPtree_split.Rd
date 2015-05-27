@@ -4,16 +4,16 @@
 \alias{PPtree_split}
 \title{Projection pursuit classification tree with various PP indices}
 \usage{
-PP.Tree.class(origclass, origdata, PPmethod="LDA",weight=TRUE,r=1,lambda=0.1,
-              energy=0,maxiter=50000, ...)
+PP.Tree.class(origclass, origdata, PPmethod="LDA", weight=TRUE,
+r=1, lambda=0.1, energy=0, maxiter=50000, ...)
 }
 \arguments{
-  \item{PPmethod}{method for projection pursuit; "LDA",
-  "PDA", "Lr", "GINI", and "ENTROPY"} \item{weight}
-  {weight flag in LDA, PDA and Lr index} \item{r}{r in Lr
-  index} \item{lambda}{lambda in PDA index} \item{energy}
-  {energy parameter} \item{maxiter}{number of maximum
-  iteration} \item{...}{arguments to be passed to methods}
+  \item{PPmethod}{index to use for projection pursuit:
+  "LDA", "PDA", "Lr", "GINI", and "ENTROPY"} \item{weight}
+  {weight flag in LDA, PDA and Lr index} \item{r}{power in
+  Lr index} \item{lambda}{tuning parameter in PDA index}
+  \item{energy}{optimization parameter for projection
+  pursuit} \item{maxiter}{number of maximum iteration}
   \item{origclass}{class information vector} \item{origdata}
   {numeric data matrix without class information}
 }
@@ -29,11 +29,11 @@ of classification in each split.
 }
 \examples{
 data(iris)
-Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1] , std = TRUE,  size.p=0.9)
+Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1], std=TRUE, size.p=0.9)
 Tree.result
 }
 \references{
-Lee, YD, Cook, D., Park JW, and Lee, EK(2013) PPtree:
+Lee, YD, Cook, D., Park JW, and Lee, EK (2013) PPtree:
 Projection pursuit classification tree, Electronic Journal
 of Statistics, 7:1369-1386.
 }
