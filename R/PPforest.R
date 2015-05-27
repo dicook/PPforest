@@ -16,7 +16,7 @@
 #' train <- iris[sort(tr.index$id), 5:1 ]
 #' test <- iris[-tr.index$id, 5:1 ]
 #' ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda=.1) {
+PPforest <- function(train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda=.1) {
   colnames(train)[1] <- "class"
   
   if (strata == TRUE) {
@@ -40,35 +40,31 @@ PPforest <- function( train, testap = TRUE, test, m, PPmethod, size.p, strata = 
   l.train <- 1:nrow(train)
   index <- lapply(attributes(data.b)$indices, function(x) x + 1)
 
-
   oob.obs <- plyr::ldply(index, function(x) (!l.train%in%x))
   
   oob.pred <- sapply(X = 1:nrow(train), FUN=function(i) {
     t1 <- table(pred.tr[[2]][ oob.obs[, i] == TRUE, i]) 
     names(t1)[which.max(t1)]
-  }
-  )
+  })
   
-oob.mat <- sapply(X = 1:nrow(train), FUN = function(i) {
-    table(pred.tr[[2]][ oob.obs[, i] == TRUE, i] )
-    
-  }
-  )
+  oob.mat <- sapply(X = 1:nrow(train), FUN = function(i) {
+    table(pred.tr[[2]][ oob.obs[, i] == TRUE, i] )  
+  })
   
   vote.matrix <- matrix(0, ncol = length(unique(train[, 1])), nrow = nrow(train))
   colnames(vote.matrix) <- unique(train[, 1])
   
-  for(i in 1:nrow(train)){ 
+  for (i in 1:nrow(train)){ 
     cond <- colnames(vote.matrix) %in% names(oob.mat[[i]])
     vote.matrix[i, cond] <- oob.mat[[i]]
   }
   
- oob.error <- 1-sum(diag(table(oob.pred, train[, 1])))/length(train[, 1])
+  oob.error <- 1-sum(diag(table(oob.pred, train[, 1])))/length(train[, 1])
   
-oob.err.tree <- sapply(X = 1:m, FUN=function(i) {
-dd <- diag(table( pred.tr[[2]][i,oob.obs[i, ] == TRUE] , train[oob.obs[i, ] == TRUE, 1]))
-1-sum(dd)/sum(oob.obs[i, ] == TRUE)
-})
+  oob.err.tree <- sapply(X = 1:m, FUN=function(i) {
+    dd <- diag(table( pred.tr[[2]][i,oob.obs[i, ] == TRUE] , train[oob.obs[i, ] == TRUE, 1]))
+    1-sum(dd)/sum(oob.obs[i, ] == TRUE)
+  })
 
   error.tr <- 1 - sum(train[, 1] == pred.tr[[3]])/length(pred.tr[[3]])
   
@@ -80,6 +76,5 @@ dd <- diag(table( pred.tr[[2]][i,oob.obs[i, ] == TRUE] , train[oob.obs[i, ] == T
     error.test <- NULL
   }
   
-  return(list(pred.tr[[3]], error.tr, pred.test[[3]], error.test,oob.error, oob.err.tree, data.b, output, proximity, vote.matrix))
-  
+  return(list(pred.tr[[3]], error.tr, pred.test[[3]], error.test, oob.error, oob.err.tree, data.b, output, proximity, vote.matrix))
 } 
