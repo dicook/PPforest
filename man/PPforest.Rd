@@ -8,14 +8,16 @@ PPforest(train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE,
   lambda = 0.1)
 }
 \arguments{
-  \item{train}{is a data frame with the training data with class in the first column} \item{testap}{is TRUE if we want to predict a new data set}
-  \item{test}{is a data frame it the new test data to predict}
-  \item{m}{number of bootstrap replicate} 
-  \item{PPmethod}{to run the PPtree_plit function, options LDA or PDA, by default it is
-  LDA.} 
-  \item{size.p}{proportion of random sample variables in each split.}
-  \item{strata}{identify if the bootrap samples are stratify by class} 
-  \item{lambda}{a parameter for PDA index}
+  \item{train}{is a data frame with the training data with
+  class in the first column} \item{testap}{is TRUE if we
+  want to predict a new data set} \item{test}{is a data
+  frame it the new test data to predict} \item{m}{number
+  of bootstrap replicate} \item{PPmethod}{to run the
+  PPtree_plit function, options LDA or PDA, by default it is
+  LDA.} \item{size.p}{proportion of random sample variables
+  in each split.} \item{strata}{identify if the bootrap
+  samples are stratify by class} \item{lambda}{a parameter
+  for PDA index}
 }
 \value{
 predicted values, error, bootstrap samples, trees ,training
@@ -29,6 +31,7 @@ tr.index <- train_fn(iris[, 5], 2/3)
 te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) \%in\% (sort(tr.index$id)))]
 train <- iris[sort(tr.index$id), 5:1 ]
 test <- iris[-tr.index$id, 5:1 ]
-ppfr.iris <- PPforest(train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
+ppfr.iris <- PPforest(train = train, testap = TRUE, test = test, m = 500, size.p = .9,
+PPmethod = 'LDA', strata = TRUE)
 }
 
