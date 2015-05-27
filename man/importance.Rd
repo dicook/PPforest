@@ -7,9 +7,8 @@
 importance(data, ppforest)
 }
 \arguments{
-  \item{data}{is a data frame with the complete data set.
-  Class factor in the first column} \item{ppforest}{is an
-  object from PPforest}
+  \item{data}{is a data frame with the complete data set. Class factor in the first column} 
+  \item{ppforest}{is an object from PPforest}
 }
 \value{
 a data frame with 1D projection of each split (Alpha.Keep)

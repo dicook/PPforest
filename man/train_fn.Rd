@@ -7,9 +7,8 @@
 train_fn(class = class, size.p = 0.9)
 }
 \arguments{
-  \item{class}{input character vector with class of the
-  data} \item{size.p}{proportion of sample in each class
-  group}
+  \item{class}{input character vector with class of the data} 
+  \item{size.p}{proportion of sample in each class group}
 }
 \value{
 numeric vector with the sample indexes for training data
