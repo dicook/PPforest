@@ -8,7 +8,8 @@ forest_ppred(data, output.tree, ...)
 }
 \arguments{
   \item{data}{are the data without class we want to predict}
-  \item{output.tree}{trees classifiers from trees_pp function}
+  \item{output.tree}{trees classifiers from trees_pp
+  function}
 }
 \value{
 predicted values form PPforest
