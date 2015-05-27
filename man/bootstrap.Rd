@@ -8,9 +8,12 @@ bootstrap(df, m, strata = TRUE)
 }
 \arguments{
   \item{df}{is a data frame with the complete data set and
-  class in the first column.} \item{m}{number of bootstrap
-  replicates} \item{strata}{identifies if the bootstrap
-  samples are stratified by class}
+  class in the first column.}
+
+  \item{m}{number of bootstrap replicates}
+
+  \item{strata}{identifies if the bootstrap samples are
+  stratified by class}
 }
 \value{
 grouped data frame object with m bootstrap samples

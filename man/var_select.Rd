@@ -8,6 +8,7 @@ var_select(data, size.p)
 }
 \arguments{
   \item{data}{is a data frame without the class variable.}
+
   \item{size.p}{proportion of sample in each class group}
 }
 \value{

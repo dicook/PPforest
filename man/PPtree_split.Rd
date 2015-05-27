@@ -9,23 +9,39 @@ r=1, lambda=0.1, energy=0, maxiter=50000, ...)
 }
 \arguments{
   \item{PPmethod}{index to use for projection pursuit:
-  "LDA", "PDA", "Lr", "GINI", and "ENTROPY"} \item{weight}
-  {weight flag in LDA, PDA and Lr index} \item{r}{power in
-  Lr index} \item{lambda}{tuning parameter in PDA index}
+  "LDA", "PDA", "Lr", "GINI", and "ENTROPY"}
+
+  \item{weight}{weight flag in LDA, PDA and Lr index}
+
+  \item{r}{power in Lr index}
+
+  \item{lambda}{tuning parameter in PDA index}
+
   \item{energy}{optimization parameter for projection
-  pursuit} \item{maxiter}{number of maximum iteration}
-  \item{origclass}{class information vector} \item{origdata}
-  {numeric data matrix without class information}
+  pursuit}
+
+  \item{maxiter}{number of maximum iteration}
+
+  \item{origclass}{class information vector}
+
+  \item{origdata}{numeric data matrix without class
+  information}
 }
 \value{
 Tree.Struct Tree structure of projection pursuit
-classification tree projbest.node 1-dim optimal projections
-of each split node splitCutoff.node cutoff values of each
-split node origclass original class origdata original data
+classification tree
+
+projbest.node 1-dim optimal projections of each split node
+
+splitCutoff.node cutoff values of each split node
+
+origclass original class
+
+origdata original data
 }
 \description{
-Find tree structure using various projection pursuit indices
-of classification in each split.
+Find tree structure using various projection pursuit
+indices of classification in each split.
 }
 \examples{
 data(iris)
