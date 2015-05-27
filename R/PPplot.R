@@ -10,10 +10,16 @@
 #' te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) %in% (sort(tr.index$id)))]
 #' train <- iris[sort(tr.index$id), 5:1 ]
 #' test <- iris[-tr.index$id, 5:1 ]
-#' ppfr.iris <- PPforest( train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
+#' ppfr.iris <- PPforest( train = train, testap = TRUE, test = test,
+#'  m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
 #' PPplot(ppfr.iris, train, k = 2)
 #' PPplot(ppfr.iris, train, k = 3)
 PPplot <- function(ppfo, train, k) {
+  value <- NULL
+  Var1 <- NULL
+  Var2 <- NULL
+  Dim1 <- NULL
+  Dim2 <- NULL
   id <- diag(dim(train)[1])
   id[lower.tri(id, diag = TRUE)] <- ppfo[[9]]$proxi
   id[upper.tri(id)] <-  t(id)[upper.tri(id)]

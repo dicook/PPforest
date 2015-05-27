@@ -14,6 +14,7 @@
 #'output <- trees_pp(iris.b, size.p = 0.9, PPmethod ="LDA") 
 #'pr <- forest_ppred( iris.sc[-training$id, 2:5] , output)
 forest_ppred <- function(data, output.tree, ...){
+  . <- NULL
     votes <- output.tree %>% 
               dplyr::do(tr = PPtreeViz::PP.classify(test.data = data, Tree.result = .$tr, Rule = 1)) 
     

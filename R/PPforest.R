@@ -15,7 +15,8 @@
 #' te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) %in% (sort(tr.index$id)))]
 #' train <- iris[sort(tr.index$id), 5:1 ]
 #' test <- iris[-tr.index$id, 5:1 ]
-#' ppfr.iris <- PPforest(train = train, testap = TRUE, test = test, m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
+#' ppfr.iris <- PPforest(train = train, testap = TRUE, test = test, m = 500, size.p = .9, 
+#' PPmethod = 'LDA', strata = TRUE)
 PPforest <- function(train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda=.1) {
   colnames(train)[1] <- "class"
   
