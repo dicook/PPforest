@@ -1,19 +1,22 @@
 #' Projection pursuit classification tree with various PP indices
 #' 
 #' Find tree structure using various projection pursuit indices of classification in each split.
-#' @usage PP.Tree.class(origclass, origdata, PPmethod="LDA", weight=TRUE,
-#' r=1, lambda=0.1, energy=0, maxiter=50000, ...) 
-#' @param origclass class information vector
-#' @param origdata numeric data matrix without class information
+#' @usage PPtree_split(fr, data, PPmethod="LDA", weight=TRUE,
+#'std=TRUE, size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...) 
+#' @param fr is an  object class formula, with the form response~terms
+#' @param data numeric data matrix without class information 
 #' @param PPmethod index to use for projection pursuit: "LDA", "PDA", "Lr", "GINI", and "ENTROPY"
 #' @param weight weight flag in LDA, PDA and Lr index
+#' @param std is TRUE if the data are standarized
+#' @param size.p proportion of variables used in each split
 #' @param r power in Lr index
 #' @param lambda tuning parameter in PDA index
 #' @param energy optimization parameter for projection pursuit
 #' @param maxiter number of maximum iteration
+#' @param ... arguments to be passed to methods
 #' @return Tree.Struct Tree structure of projection pursuit classification tree
 #' @return projbest.node 1-dim optimal projections of each split node
-#' @return splitCutoff.node cutoff values of each split node 
+#' @return splitCutoff.node cutoff values of each split node
 #' @return origclass original class 
 #' @return origdata original data
 #' @references Lee, YD, Cook, D., Park JW, and Lee, EK (2013) 

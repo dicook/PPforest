@@ -10,13 +10,12 @@ Imports:
     magrittr,
     plyr,
     dplyr,
-    gridExtra,
     PPtreeViz,
-    MASS,
     ggplot2,
-    reshape2  
+    reshape2,
+    GGally
 Description: Random forest build on projection pursuit classification tree using LDA or PDA
-    projection pursuit index
+    projection pursuit index.
 License: LGPL-2.1
 LazyData: true
 VignetteBuilder: knitr

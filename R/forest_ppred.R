@@ -2,6 +2,7 @@
 #'
 #' @param data are the data without class we want to predict
 #' @param output.tree trees classifiers from trees_pp function
+#' @param ... arguments to be passed to methods
 #' @return predicted values form PPforest  
 #' @export
 #' @importFrom magrittr %>%
