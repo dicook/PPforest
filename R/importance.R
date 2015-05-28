@@ -1,5 +1,4 @@
 #' Data frame with the 1D projection of each split unweighted and weighted by 1-(oob error rate) for each tree and plots of importance variable for each split.
-
 #' @param data is a data frame with the complete data set. Class factor in the first column
 #' @param ppforest is an object from PPforest 
 #' @return a data frame with 1D projection of each split (Alpha.Keep) and a boxplot with the importance of variable for each split.

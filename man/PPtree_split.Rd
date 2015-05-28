@@ -9,18 +9,16 @@ std=TRUE, size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...)
 }
 \arguments{
   \item{fr}{is an object class formula, with the form
-  response~terms}
-  \item{data}{numeric data matrix without class information}
-  \item{PPmethod}{index to use for projection pursuit: "LDA", "PDA", "Lr", "GINI", and
-  "ENTROPY"}
-  \item{weight}{weight flag in LDA, PDA and Lr index} 
-  \item{std}{is TRUE if the data are standarized}
+  response~terms} \item{data}{numeric data matrix without
+  class information} \item{PPmethod}{index to use for
+  projection pursuit: "LDA", "PDA", "Lr", "GINI", and
+  "ENTROPY"} \item{weight}{weight flag in LDA, PDA and Lr
+  index} \item{std}{is TRUE if the data are standarized}
   \item{size.p}{proportion of variables used in each split}
-  \item{r}{power in Lr index} 
-  \item{lambda}{tuning parameter in PDA index} 
-  \item{energy}{optimization parameter for projection pursuit}
-  \item{maxiter}{number of maximum iteration} 
-  \item{...}{arguments to be passed to methods}
+  \item{r}{power in Lr index} \item{lambda}{tuning parameter
+  in PDA index} \item{energy}{optimization parameter for
+  projection pursuit} \item{maxiter}{number of maximum
+  iteration} \item{...}{arguments to be passed to methods}
 }
 \value{
 Tree.Struct Tree structure of projection pursuit
