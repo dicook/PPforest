@@ -2,7 +2,7 @@
 % Please edit documentation in R/PPtree_split.R
 \name{PPtree_split}
 \alias{PPtree_split}
-\title{Projection pursuit classification tree with various PP indices}
+\title{Projection pursuit classification tree with random variable selection in each split}
 \usage{
 PPtree_split(fr, data, PPmethod="LDA", weight=TRUE,
 std=TRUE, size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...)

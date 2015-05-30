@@ -1,4 +1,4 @@
-#' Projection pursuit classification tree with various PP indices
+#' Projection pursuit classification tree with random variable selection in each split
 #' 
 #' Find tree structure using various projection pursuit indices of classification in each split.
 #' @usage PPtree_split(fr, data, PPmethod="LDA", weight=TRUE,

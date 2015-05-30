@@ -77,5 +77,6 @@ PPforest <- function(train, testap = TRUE, test, m, PPmethod, size.p, strata = T
     error.test <- NULL
   }
   
-  return(list(pred.tr[[3]], error.tr, pred.test[[3]], error.test, oob.error, oob.err.tree, data.b, output, proximity, vote.matrix))
+  return(list(prediction.training = pred.tr[[3]], training.error = error.tr, prediction.test = pred.test[[3]],
+              error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, output.trees = output, proximity = proximity, vote.matrix = vote.matrix))
 } 

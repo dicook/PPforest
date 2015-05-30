@@ -18,8 +18,8 @@ Description: Random forest build on projection pursuit classification tree using
     projection pursuit index.
 License: LGPL-2.1
 LazyData: true
-VignetteBuilder: knitr
 Suggests:
     knitr,
     roxygen2 (>= 3.0.0)
 Roxygen: list(wrap = TRUE)
+VignetteBuilder: knitr
