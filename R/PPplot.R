@@ -20,6 +20,7 @@ PPplot <- function(ppfo, train, k) {
   Var2 <- NULL
   MDS1 <- NULL
   MDS2 <- NULL
+  fac <- NULL
 
   id <- diag(dim(train)[1])
   id[lower.tri(id, diag = TRUE)] <- ppfo[[9]]$proxi

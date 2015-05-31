@@ -4,12 +4,15 @@
 \alias{importance}
 \title{Data frame with the 1D projection of each split unweighted and weighted by 1-(oob error rate) for each tree and plots of importance variable for each split.}
 \usage{
-importance(data, ppforest)
+importance(data, ppforest, global = TRUE, weight = TRUE)
 }
 \arguments{
   \item{data}{is a data frame with the complete data set.
   Class factor in the first column} \item{ppforest}{is an
-  object from PPforest}
+  object from PPforest} \item{global}{is TRUE if we wan to
+  see the global importance of the forest} \item{weight}
+  {is TRUE if we want to see a weighted mesure of the forest
+  importance}
 }
 \value{
 a data frame with 1D projection of each split (Alpha.Keep)
