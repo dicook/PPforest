@@ -12,7 +12,7 @@ PPplot(ppfo, train, k)
   column} \item{k}{number of dimensions of the MDS layout}
 }
 \value{
-proximity matrix plot and MDS plot
+MDS plot
 }
 \description{
 MDS
