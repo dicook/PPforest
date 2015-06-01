@@ -13,7 +13,7 @@
 #' test <- iris[-tr.index$id, 5:1 ]
 #' ppforest <- PPforest( train = train, testap = TRUE, test = test, 
 #' m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-#' importance(train, ppforest) 
+#' importance(train, ppforest,global=TRUE, weight=FALSE) 
 importance <- function(data, ppforest, global=TRUE, weight=TRUE) {
   value <- NULL
   variable <- NULL
@@ -35,32 +35,38 @@ importance <- function(data, ppforest, global=TRUE, weight=TRUE) {
     dplyr::group_by(node,variable) %>%
     dplyr::summarise(mean = mean(value)) %>%
     dplyr::arrange( dplyr::desc(mean)) 
+  import.vi.0$variable <- with(import.vi.0, reorder(variable, mean) )
+  
  
   import.vi.g.0 <- mmat.vi.0 %>%
     dplyr::group_by(variable) %>%
     dplyr::summarise(mean = mean(value)) %>%
     dplyr::arrange( dplyr::desc(mean)) 
+  import.vi.g.0$variable <- with(import.vi.g.0, reorder(variable, mean) )
   
   import.vi.w.0 <- mmat.vi.w.0 %>%
     dplyr::group_by(node,variable) %>%
     dplyr::summarise(mean = mean(value)) %>%
     dplyr::arrange( dplyr::desc(mean)) 
+  import.vi.w.0$variable <- with(import.vi.w.0, reorder(variable, mean) )
   
   import.vi.wg.0 <- mmat.vi.w.0 %>%
     dplyr::group_by(variable) %>%
     dplyr::summarise(mean = mean(value)) %>%
     dplyr::arrange( dplyr::desc(mean)) 
+  import.vi.wg.0$variable <- with(import.vi.wg.0, reorder(variable, mean) )
    
   if(global == TRUE & weight == TRUE){
-  print(ggplot2::ggplot( import.vi.wg.0, ggplot2::aes(x = mean,y = variable)) + 
+  print(ggplot2::ggplot( import.vi.wg.0, ggplot2::aes(x = mean, y = variable)) + 
           ggplot2::geom_point())
    }
   if(global == TRUE & weight==FALSE){
     print(ggplot2::ggplot( import.vi.g.0, ggplot2::aes(x = mean, y = variable)) + 
-            ggplot2::geom_point())
+            ggplot2::geom_point()) 
+    
     }
   if(global == FALSE & weight == FALSE){
-    print(ggplot2::ggplot( import.vi.0, ggplot2::aes(x = mean,y = variable)) +
+    print(ggplot2::ggplot( import.vi.0, ggplot2::aes(x = mean, y = variable)) +
             ggplot2::geom_point() +
             ggplot2::facet_wrap( ~ node) )
   }
@@ -69,11 +75,6 @@ importance <- function(data, ppforest, global=TRUE, weight=TRUE) {
               ggplot2::geom_point() +
               ggplot2::facet_wrap( ~ node))
   }
-  #print(ggplot2::qplot(data=mmat.vi.0,x=variable,y=value,geom="boxplot",facets = ~ node) + 
-   #       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)))
-  
-  #print(ggplot2::qplot(data = mmat.vi.w.0, x = variable,y = value, geom = "boxplot", facets = ~ node) + 
-   #       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)))
-  #return(list(mat.vi, mat.vi.w))
+ 
 }
 
