@@ -1,9 +1,9 @@
 #' Draws bootstrap samples with strata option.
 #'
-#' @param df is a data frame with the complete data set and class in the first column.
-#' @param m number of bootstrap replicates
-#' @param strata identifies if the bootstrap samples are stratified by class
-#' @return grouped data frame object with m bootstrap samples
+#' @param df is a data frame with the complete data set with class variable in the first column.
+#' @param m is the number of bootstrap replicates we want to sample.
+#' @param strata is TRUE if the bootstrap samples are stratified by class variable.
+#' @return data frame object with m bootstrap samples
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
