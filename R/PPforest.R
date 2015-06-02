@@ -12,13 +12,16 @@
 #' @export
 #' @examples
 #' tr.index <- train_fn(iris[, 5], 2/3)
-#' te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) %in% (sort(tr.index$id)))]
 #' train <- iris[sort(tr.index$id), 5:1 ]
 #' test <- iris[-tr.index$id, 5:1 ]
-#' ppfr.iris <- PPforest(train = train, testap = TRUE, test = test, m = 500, size.p = .9, 
+#' ppfr.iris <- PPforest(train = train, testap = TRUE, test = test, m = 50, size.p = .9, 
 #' PPmethod = 'LDA', strata = TRUE)
 PPforest <- function(train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda=.1) {
   colnames(train)[1] <- "class"
+  type="Classification"
+  nam <- colnames(train[,-1])
+  var.num <- 1:length(nam)
+  var.sel <- floor(length(var.num) * size.p)
   
   if (strata == TRUE) {
     data.b <- bootstrap(train, m, strata)
@@ -77,6 +80,19 @@ PPforest <- function(train, testap = TRUE, test, m, PPmethod, size.p, strata = T
     error.test <- NULL
   }
   
-  return(list(prediction.training = pred.tr[[3]], training.error = error.tr, prediction.test = pred.test[[3]],
-              error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, output.trees = output, proximity = proximity, vote.matrix = vote.matrix))
+  tab.tr <- table(Observed=train[,1],Predicted=pred.tr[[3]])
+
+
+  class.error <- 1-diag(tab.tr)/((addmargins(tab.tr,2))[,"Sum"])
+  confusion <- cbind(tab.tr,class.error=round(class.error,2))
+  
+  
+ results <- list(prediction.training = pred.tr[[3]], training.error = error.tr, prediction.test = pred.test[[3]],
+              error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, 
+              output.trees = output, proximity = proximity, vote.matrix = vote.matrix, n.tree = m , n.var=var.sel, 
+              type="Classification", confusion=confusion, call =  match.call())
+class(results) <- "PPforest"
+
+return(results)
+
 } 
