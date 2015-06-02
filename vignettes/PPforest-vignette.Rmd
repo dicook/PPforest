@@ -1,6 +1,6 @@
 ---
 title: "Projection pursuit classification random forest "
-author: "N. da Silva; E. Lee & D. Cook"
+author: "N. da Silva, E. Lee & D. Cook"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -8,17 +8,9 @@ vignette: >
   %\VignetteEngine{knitr::docco_linear}}
   %\VignetteEncoding{UTF-8}
 ---
-
-
-## Abstract
-A random forest is an ensemble learning method, built on bagged trees. The bagging provides power for classification because it yields information about variable importance, predictive error and proximity of observations. This research adapts the random forest to utilize combinations of variables in the tree construction, which we call the projection pursuit classification random forest (PPforest). In a random forest each split is based on a single variable, chosen from a subset of predictors. In the PPforest, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The PPforest uses the PPtree algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for PPforest. The methods are implemented into an R package, called PPforest, which is available on CRAN. 
-
-_Keywords_: Random forest, projection pursuit, supervised classification, exploratory data analysis, data mining, visualization
-
-
 ## Introduction
 
-A random forest to utilize combinations of variables in the tree construction, which we call the projection pursuit classification random forest (PPforest) will be describe. For each split a random sample of variables is selected and a linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The PPforest uses the PPtree algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for PPforest.
+A random forest is an ensemble learning method, built on bagged trees. The bagging provides power for classification because it yields information about variable importance, predictive error and proximity of observations. This research adapts the random forest to utilize combinations of variables in the tree construction, which we call the projection pursuit classification random forest (PPforest). In a random forest each split is based on a single variable, chosen from a subset of predictors. In the PPforest, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The PPforest uses the PPtree algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for PPforest. 
 
 Projection pursuit random forest algorithm description
 
@@ -30,8 +22,8 @@ Projection pursuit random forest algorithm description
 
 We present two examples using real data to show how PPforest package works.
 
-##Usage
-The following table has the PPforest functions with a description.
+##Overview PPforest package
+PPforest package implements a classification random forest using projection pursuit classification trees. The following table present all the functions in PPforest package. 
 
 | Function |Description |
 | ------ | ------ | -----: |
@@ -43,21 +35,90 @@ The following table has the PPforest functions with a description.
 |PPforest|Run a Projection Pursuit forest|
 |forest_ppred|Vector with predicted values from a PPforest|
 
-##Examples
-Data sets:
-
-1. NCI 60: Gene expression data set, contains 61 observations and 30 feature variables. Class variable has 8 different tissue types, 9 breast, 5central nervous system (CNS), 7 colon, 6 leukemia, 8 melanoma, 9 non- small-cell lung carcinoma (NSCLC), 6 ovarian and 9 renal. There are 6830 genes.
+## Australian Crab example
+We will explore PPforest package using Australian crab data set.
+This data set contains measurements on rock crabs of the genus Leptograpsus. There are 200 observations from two species (blue and orange) and for each specie (50 in each one) there are 50 males and 50 females. Class variable has 4 classes with the combinations of specie and sex (BlueMale, BlueFemale, OrangeMale and OrangeFemale). The data were collected on site at Fremantle, Western Australia. For each specimen, five measurements were made, using vernier calipers.
  
-2. Crab: contains 200 observations from two species (blue and orange) and for each specie (50 in each one) there are 50 males and 50 females. Class variable has 4 classes with the combinations of specie and sex (BM, BF, OM and OF). There are 5 continuous feature variables. 
-FL is the size of the frontal lobe, RW is rear width, CL is carapace length, CW width and BD body depth.
+1. FL the size of the frontal lobe length, in mm
+2. RW rear width, in mm
+3. CL length of midline of the carapace, in mm
+4. CW maximum width of carapace, in mm
+5. BD depth of the body; for females, measured after displacement of the abdomen, in mm
 
-The PPforest function runs a projection pursuit random forest, the argument testap=TRUE allows to use test data. In these two examples we split the data in training (2/3) and test (1/3),  using train_fn function we get the index id for training set, this function sample in each class with the same proportion.
+To visualize this data set we use a scatterplot matrix.
 
-###NCI60 Data
+```{r, ig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
+load("../data/crab.rda")
+GGally::ggpairs(crab, 
+    columns= 2:6,
+    colour='Type',
+    lower=list(continuous='points'), 
+    axisLabels='none',  
+    upper=list(continuous='blank')
+)
+```
+
+To run the PPforest we first split the data in training (2/3) and test (1/3).
+To do that we use train_fn function, this function has two arguments, class is a vector with the class variable and size.p is the sample proportion we want. The sample is stratified by each class with the same proportion. This function returns a vector with the sample ids.
+
+
 ```{r}
+training.id <- PPforest::train_fn(crab[, 1], 2/3)
+str(training.id)
+training.id
+```
+If we want all the selected id's we use training.id$id
 
+The PPforest function runs a projection pursuit random forest, the argument testap=TRUE allows to use test data. m is the number of trees in the forest size.p is the sample proportion of the variables used in each node split, PPmethod is the progection pursuit index to be optimized there are two options LDA and PDA. Finally strata=TRUE indicate that the bootstrap samples are stratified by class variable. 
+
+```{r}
+ training.crab <- crab[sort(training.id$id), ]
+ test.crab <- crab[-training.id$id, ]
+ pprf.crab <- PPforest::PPforest(train = training.crab, testap = TRUE, test = test.crab, m = 500, size.p = .7, PPmethod = 'LDA', strata = TRUE)
+str(pprf.crab,max.level=1)
+```
+PPforest function returns the predicted values of the training data, training error,  if test data was provided test error and predicted test values are returned, the forest out of bag error, the out of bag error for each tree, the bootstrap samples, the output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix.
+
+We can get the predicted values for training and test using the output of PPforest 
+```{r}
+ pred.training <- pprf.crab$prediction.training
+ pred.test <- pprf.crab$prediction.test
+ pred.test[1:10]
+```
+
+From PPforest object we can plot a heat map of the proximity matrix using the function proxy_plot.
+```{r,fig.show='hold',fig.width = 4 ,fig.height = 3,echo=FALSE}
+PPforest::pproxy_plot( pprf.crab , training.crab)
+```
+
+We can also plot the MDS of the proximity matrix using the function PPplot.
+If we select k=2 the output plot is as follows:
+
+```{r,fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE}
+PPforest::PPplot(pprf.crab, training.crab, k = 2)
+```
+If we select k>2 
+```{r,fig.show='hold',fig.width = 7 ,fig.height = 7,echo=FALSE}
+PPforest::PPplot(pprf.crab, training.crab, k = 3)
+```
+
+We cancompute a global importance measure for the forest using the function importance.
+```{r}
+PPforest::importance(training.crab, pprf.crab,global=TRUE, weight=TRUE) 
+```
+
+We can see that the most important variable in this example is RW while the less important is CW
+
+
+
+###NCI60 data set
+
+Gene expression data set, contains 61 observations and 30 feature variables. Class variable has 8 different tissue types, 9 breast, 5central nervous system (CNS), 7 colon, 6 leukemia, 8 melanoma, 9 non- small-cell lung carcinoma (NSCLC), 6 ovarian and 9 renal. There are 6830 genes.
+ 
+
+```{r}
+load("../data/NCI60.rda")
 training.id <- PPforest::train_fn(NCI60[, 1], 2/3)
- test.id <- as.vector(1:length(NCI60[, 1]))[!(1:length(NCI60[, 1]) %in% (sort(training.id$id)))]
  training.nci <- NCI60[sort(training.id$id), ]
  test.nci <- NCI60[-training.id$id, ]
  pprf.nci60 <- PPforest::PPforest(train = training.nci, testap = TRUE, test = test.nci, m = 500, size.p = .2, PPmethod = 'PDA', strata = TRUE, lambda=.7)
@@ -70,7 +131,6 @@ PPforest function returns the predicted values of the training data, training er
 str(pprf.nci60,max.level=1)
 ```
 
-From PPforest object we can plot a heat map of the proximity matrix using the function proxy_plot.
 
 ```{r,fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE}
 PPforest::pproxy_plot( pprf.nci60 , training.nci)
@@ -87,27 +147,3 @@ If we select k>2 the graphical display will be:
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 6,echo=FALSE}
 PPforest::PPplot(pprf.nci60, training.nci, k = 3)
 ```
-
-###Crab Data
-```{r}
- training.id <- PPforest::train_fn(crab[, 1], 2/3)
- test.id <- as.vector(1:length(crab[, 1]))[!(1:length(crab[, 1]) %in% (sort(training.id$id)))]
- training.crab <- crab[sort(training.id$id), ]
- test.crab <- crab[-training.id$id, ]
- pprf.crab <- PPforest::PPforest(train = training.crab, testap = TRUE, test = test.crab, m = 500, size.p = .7, PPmethod = 'LDA', strata = TRUE)
-str(pprf.crab,max.level=1)
-```
-
-```{r,fig.show='hold',fig.width = 4 ,fig.height = 3,echo=FALSE}
-PPforest::pproxy_plot( pprf.crab , training.crab)
-```
-
-```{r,fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE}
-PPforest::PPplot(pprf.crab, training.crab, k = 2)
-```
-If we select k>2 
-```{r,fig.show='hold',fig.width = 7 ,fig.height = 7,echo=FALSE}
-PPforest::PPplot(pprf.crab, training.crab, k = 3)
-```
-
-
