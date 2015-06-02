@@ -7,15 +7,15 @@
 trees_pp(data.b, size.p = 0.9, PPmethod = "LDA", lambda = 0.1, ...)
 }
 \arguments{
-  \item{data.b}{are the bootstrap samples. Class factor
-  in the first column} \item{size.p}{proportion of random
-  sample variables in each split.} \item{PPmethod}{to run
-  the PPtree_plit function, options LDA or PDA, by default
+  \item{data.b}{are the bootstrap samples from training
+  set.} \item{size.p}{proportion of random sample variables
+  in each split.} \item{PPmethod}{is the projection pursuit
+  index to be optimized, options LDA or PDA, by default
   it is LDA.} \item{lambda}{a parameter for PDA index}
   \item{...}{arguments to be passed to methods}
 }
 \value{
-data frame with tree_pp output for all the bootstraps
+data frame with trees_pp output for all the bootstraps
 samples.
 }
 \description{

@@ -7,9 +7,10 @@
 forest_ppred(data, output.tree, ...)
 }
 \arguments{
-  \item{data}{are the data without class we want to predict}
-  \item{output.tree}{trees classifiers from trees_pp
-  function} \item{...}{arguments to be passed to methods}
+  \item{data}{are the complete data without the class
+  variable we want to predict} \item{output.tree}{trees
+  classifiers from trees_pp function} \item{...}{arguments
+  to be passed to methods}
 }
 \value{
 predicted values form PPforest

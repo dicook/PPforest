@@ -2,33 +2,32 @@
 % Please edit documentation in R/importance.R
 \name{importance}
 \alias{importance}
-\title{Data frame with the 1D projection of each split unweighted and weighted by 1-(oob error rate) for each tree and plots of importance variable for each split.}
+\title{Global importance variable visualization for a PPForest object}
 \usage{
 importance(data, ppforest, global = TRUE, weight = TRUE)
 }
 \arguments{
-  \item{data}{is a data frame with the complete data set. Class factor in the first column}
-  \item{ppforest}{is an object from PPforest} 
-  \item{global}{is TRUE if we wan to see the global importance of the forest} 
-  \item{weight}{is TRUE if we want to see a weighted mesure of the forest importance}
+  \item{data}{is a data frame with the complete data set.
+  Class factor in the first column} \item{ppforest}{is a
+  PPforest object} \item{global}{is TRUE if we want to see
+  the global importance of the forest} \item{weight}{is
+  TRUE if we want to see a weighted mesure of the forest
+  importance based on out of bag trees errors}
 }
 \value{
-a data frame with 1D projection of each split (Alpha.Keep)
-and a boxplot with the importance of variable for each
-split.
+A dotplot with a global measure of importance variables in
+the PPforest.
 }
 \description{
-Data frame with the 1D projection of each split unweighted
-and weighted by 1-(oob error rate) for each tree and plots
-of importance variable for each split.
+Global importance variable visualization for a PPForest
+object
 }
 \examples{
 tr.index <- train_fn(iris[, 5], 2/3)
-te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) \%in\% (sort(tr.index$id)))]
 train <- iris[sort(tr.index$id), 5:1]
 test <- iris[-tr.index$id, 5:1 ]
 ppforest <- PPforest( train = train, testap = TRUE, test = test,
 m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-importance(train, ppforest)
+importance(train, ppforest,global=TRUE, weight=FALSE)
 }
 
