@@ -1,9 +1,10 @@
-#' Data frame with the 1D projection of each split unweighted and weighted by 1-(oob error rate) for each tree and plots of importance variable for each split.
+#' Global importance variable visualization for a PPForest object
+#'
 #' @param data is a data frame with the complete data set. Class factor in the first column
-#' @param ppforest is an object from PPforest 
+#' @param ppforest is a PPforest object
 #' @param global is TRUE if we want to see the global importance of the forest
-#' @param weight is TRUE if we want to see a weighted mesure of the forest importance
-#' @return a data frame with 1D projection of each split (Alpha.Keep) and a boxplot with the importance of variable for each split.
+#' @param weight is TRUE if we want to see a weighted mesure of the forest importance based on out of bag trees errors
+#' @return  A dotplot with a global measure of importance  variables in the PPforest.
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
@@ -17,13 +18,17 @@ importance <- function(data, ppforest, global=TRUE, weight=TRUE) {
   value <- NULL
   variable <- NULL
   node <- NULL
-  mat.vi <- abs(plyr::ldply(ppforest[[8]][[2]], function(x) data.frame(node =  1:dim(x$projbest.node)[1],x$projbest.node)))
-  colnames(mat.vi)[-1] <- colnames(data[, -1])
+  mat.proj <- abs(plyr::ldply(ppforest[[8]][[2]], function(x) data.frame(node =  1:dim(x$projbest.node)[1],x$projbest.node)))
+  colnames(mat.proj)[-1] <- colnames(data[, -1])
 
-  oob.error.tree <- rep(ppforest[[6]], each = length(unique(mat.vi$node)))
-  imp.weight <- mat.vi[,-1]*(1 - oob.error.tree)
-  mmat.vi <- reshape2::melt(mat.vi, id.vars = "node")
-  mat.vi.w <- data.frame(node=mat.vi$node, imp.weight)
+  index.part <- plyr::ldply(ppforest[[8]][[2]], function(x) data.frame(index = x$Tree.Struct[,5][x$Tree.Struct[,5]!=0]))
+  n.vars <- ncol(mat.proj[,-1])
+  index.mat <- matrix(rep(index.part[,1],n.vars),ncol=n.vars,byrow=F)
+  
+  oob.error.tree <- rep(ppforest[[6]], each = length(unique(mat.proj$node)))
+  imp.weight <- mat.proj[,-1]*index.mat*(1 - oob.error.tree)
+  mmat.vi <- reshape2::melt(mat.proj, id.vars = "node")
+  mat.vi.w <- data.frame(node=mat.proj$node, imp.weight)
   colnames(mat.vi.w)[-1] <- colnames(data[, -1])
   mmat.vi.w <- reshape2::melt(mat.vi.w, id.vars = "node")
   
