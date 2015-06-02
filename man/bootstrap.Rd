@@ -7,13 +7,14 @@
 bootstrap(df, m, strata = TRUE)
 }
 \arguments{
-  \item{df}{is a data frame with the complete data set and
-  class in the first column.} \item{m}{number of bootstrap
-  replicates} \item{strata}{identifies if the bootstrap
-  samples are stratified by class}
+  \item{df}{is a data frame with the complete data set
+  with class variable in the first column.} \item{m}{is
+  the number of bootstrap replicates we want to sample.}
+  \item{strata}{is TRUE if the bootstrap samples are
+  stratified by class variable.}
 }
 \value{
-grouped data frame object with m bootstrap samples
+data frame object with m bootstrap samples
 }
 \description{
 Draws bootstrap samples with strata option.

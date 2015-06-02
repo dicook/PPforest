@@ -1,11 +1,11 @@
 #'   Projection persuit trees for bootstrap samples.
 #' @importFrom magrittr %>%
-#' @param data.b are the bootstrap samples. Class factor in the first column
+#' @param data.b are the bootstrap samples from training set.
 #' @param size.p proportion of random sample variables in each split.
-#' @param PPmethod to run the PPtree_plit function, options LDA or PDA, by default it is LDA.
+#' @param PPmethod is the projection pursuit index to be optimized, options LDA or PDA, by default it is LDA.
 #' @param lambda a parameter for PDA index
 #' @param ... arguments to be passed to methods
-#' @return data frame with tree_pp output for all the bootstraps samples.
+#' @return data frame with trees_pp output for all the bootstraps samples.
 #' @export
 #' @importFrom magrittr %>%
 #' @examples

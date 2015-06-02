@@ -1,6 +1,6 @@
 #' Vector with predicted values from a PPforest.
 #'
-#' @param data are the data without class we want to predict
+#' @param data are the complete data without the class variable we want to predict
 #' @param output.tree trees classifiers from trees_pp function
 #' @param ... arguments to be passed to methods
 #' @return predicted values form PPforest  

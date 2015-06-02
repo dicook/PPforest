@@ -1,14 +1,13 @@
 #' Data frame with the 1D projection of each split unweighted and weighted by 1-(oob error rate) for each tree and plots of importance variable for each split.
 #' @param data is a data frame with the complete data set. Class factor in the first column
 #' @param ppforest is an object from PPforest 
-#' @param global is TRUE if we wan to see the global importance of the forest
+#' @param global is TRUE if we want to see the global importance of the forest
 #' @param weight is TRUE if we want to see a weighted mesure of the forest importance
 #' @return a data frame with 1D projection of each split (Alpha.Keep) and a boxplot with the importance of variable for each split.
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
 #' tr.index <- train_fn(iris[, 5], 2/3)
-#' te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) %in% (sort(tr.index$id)))]
 #' train <- iris[sort(tr.index$id), 5:1]
 #' test <- iris[-tr.index$id, 5:1 ]
 #' ppforest <- PPforest( train = train, testap = TRUE, test = test, 

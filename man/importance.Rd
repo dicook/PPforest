@@ -7,9 +7,9 @@
 importance(data, ppforest, global = TRUE, weight = TRUE)
 }
 \arguments{
-  \item{data}{is a data frame with the complete data set. Class factor in the first column} 
+  \item{data}{is a data frame with the complete data set. Class factor in the first column}
   \item{ppforest}{is an object from PPforest} 
-  \item{global}{is TRUE if we wan to see the global importance of the forest}
+  \item{global}{is TRUE if we wan to see the global importance of the forest} 
   \item{weight}{is TRUE if we want to see a weighted mesure of the forest importance}
 }
 \value{
