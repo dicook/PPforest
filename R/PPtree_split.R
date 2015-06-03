@@ -6,8 +6,7 @@
 #' @param fr is an  object class formula, with the form response~terms
 #' @param data numeric data matrix without class information 
 #' @param PPmethod index to use for projection pursuit: "LDA", "PDA", "Lr", "GINI", and "ENTROPY"
-#' @param weight weight flag in LDA, PDA and Lr index
-#' @param std is TRUE if the data are standarized
+#' @param weight  flag in LDA, PDA and Lr index
 #' @param size.p proportion of variables used in each split
 #' @param r power in Lr index
 #' @param lambda tuning parameter in PDA index
@@ -42,7 +41,7 @@ PPtree_split <- function(fr, data, PPmethod="LDA", weight=TRUE, std=TRUE,
     i.data.ori <- origdata  #original data set
      
     pp <- ncol(origdata)
-    if (std) {
+
       # remove the variable with zero variance same as in PP.optimize anneal remove <- (1:pp) *apply( (apply(i.data,2,
       # function(x) tapply(x, i.class, sd)) == 0),2,function(x) sum(x)!=0)
       remove <- (1:pp) * (apply(origdata, 2, sd) == 0)
@@ -50,7 +49,7 @@ PPtree_split <- function(fr, data, PPmethod="LDA", weight=TRUE, std=TRUE,
       if (length(remove) != 0) {
         origdata <- origdata[, -remove]
       }
-    }
+    
      
     v.rnd <- var_select(origdata, size.p)  # random variable selection
     vari <- dim(i.data.ori)[2]  # number of variables

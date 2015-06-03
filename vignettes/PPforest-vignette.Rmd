@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::docco_linear}}
+  %\VignetteEngine{knitr::docco_linear}
   %\VignetteEncoding{UTF-8}
 ---
 ## Introduction
@@ -69,15 +69,24 @@ training.id
 ```
 If we want all the selected id's we use training.id$id
 
-The PPforest function runs a projection pursuit random forest, the argument testap=TRUE allows to use test data. m is the number of trees in the forest size.p is the sample proportion of the variables used in each node split, PPmethod is the progection pursuit index to be optimized there are two options LDA and PDA. Finally strata=TRUE indicate that the bootstrap samples are stratified by class variable. 
+The PPforest function runs a projection pursuit random forest, the argument testap=TRUE allows to use test data. m is the number of trees in the forest size.p is the sample proportion of the variables used in each node split, PPmethod is the projection pursuit index to be optimized there are two options LDA and PDA. Finally strata=TRUE indicate that the bootstrap samples are stratified by class variable. 
 
 ```{r}
+set.seed(123)
  training.crab <- crab[sort(training.id$id), ]
  test.crab <- crab[-training.id$id, ]
  pprf.crab <- PPforest::PPforest(train = training.crab, testap = TRUE, test = test.crab, m = 500, size.p = .7, PPmethod = 'LDA', strata = TRUE)
 str(pprf.crab,max.level=1)
+ pprf.crab 
 ```
 PPforest function returns the predicted values of the training data, training error,  if test data was provided test error and predicted test values are returned, the forest out of bag error, the out of bag error for each tree, the bootstrap samples, the output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix.
+
+If we compare the results with the \code{randomForest} function for this data set the results are the following:
+```{r}
+rf.crab <- randomForest::randomForest(Type~.,data=crab)
+rf.crab
+```
+We can see that for this data set the \code{PPforest} performance is much better than using \code{randomForest}.
 
 We can get the predicted values for training and test using the output of PPforest 
 ```{r}
@@ -86,28 +95,32 @@ We can get the predicted values for training and test using the output of PPfore
  pred.test[1:10]
 ```
 
-From PPforest object we can plot a heat map of the proximity matrix using the function proxy_plot.
+From PPforest object we can plot a heat map of the proximity matrix using the function \code{proxy_plot}.
+
 ```{r,fig.show='hold',fig.width = 4 ,fig.height = 3,echo=FALSE}
 PPforest::pproxy_plot( pprf.crab , training.crab)
 ```
 
 We can also plot the MDS of the proximity matrix using the function PPplot.
+
 If we select k=2 the output plot is as follows:
 
 ```{r,fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE}
 PPforest::PPplot(pprf.crab, training.crab, k = 2)
 ```
+
 If we select k>2 
+
 ```{r,fig.show='hold',fig.width = 7 ,fig.height = 7,echo=FALSE}
 PPforest::PPplot(pprf.crab, training.crab, k = 3)
 ```
 
-We cancompute a global importance measure for the forest using the function importance.
+We cancompute a global importance measure for the forest using the function \code{importance}.
 ```{r}
 PPforest::importance(training.crab, pprf.crab,global=TRUE, weight=TRUE) 
 ```
 
-We can see that the most important variable in this example is RW while the less important is CW
+We can see that the most important variable in this example is RW while the less important is CL
 
 
 

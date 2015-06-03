@@ -2,40 +2,42 @@
 % Please edit documentation in R/PPforest.R
 \name{PPforest}
 \alias{PPforest}
-\title{Run a Projection Pursuit forest}
+\title{Projection Pursuit Random Forest}
 \usage{
 PPforest(train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE,
   lambda = 0.1)
 }
 \arguments{
-  \item{train}{is a data frame with the training data with class in the first column} 
-  \item{testap}{is TRUE if we want to predict a new data set} 
-  \item{test}{is a data frame it the new test data to predict}
-  \item{m}{number of bootstrap replicate} 
-  \item{PPmethod}{to run the PPtree_plit function, options LDA or PDA, by default it is LDA.}                 \item{size.p}{proportion of random sample variables in each split.} 
-  \item{strata}{identify if the bootrap samples are stratify by class} 
+  \item{train}{is a data frame with the training data with class variable in the first column} 
+  \item{testap}{If set to \code{TRUE}(default) indicate a test data will be provided to predict} 
+  \item{test}{is a data frame with we want to to predict, if \code{testap} is \code{TRUE} we have to include \code{test} data} 
+  \item{m}{is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this number no too small.}
+  \item{PPmethod}{is the projection pursuit index to optimize in each classification tree. The
+  options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.} 
+  \item{size.p}{proportion of variables randomly sampled in each split.} 
+  \item{strata}{if set \code{TRUE} then the bootstrap samples are stratified by class}
   \item{lambda}{a parameter for PDA index}
-}
-\value{
-An object of class \code{PPforest} with components
-\item{prediction.training}{predicted values for training data set} 
-\item{training.error}{error of the training data set}
+  }
+\value{ An object of class \code{PPforest} with components
+\item{prediction.training}{predicted values for training data set}
+\item{training.error}{error of the training data set} 
 \item{prediction.test}{predicted values for the test data set} 
 \item{error.test}{error of the test data set}
 \item{oob.error.forest}{out of bag error in the forest}
 \item{oob.error.tree}{out of bag error for each tree}
-\item{boot.samp}{bootrap samples} 
+\item{boot.samp}{bootstrap samples} 
 \item{output.trees}{output from a trees_pp} 
-\item{proximity}{Proximity matrix} 
-\item{vote.matrix}{Marix with votes for each class on each observation} 
-\item{n.tree}{number of trees in \code{PPforest}} 
-\item{n.var}{number of variables selected to use in each node split} 
-\item{type}{classification}
-\item{confusion}{confusion matrix} 
-\item{call}{the original call to \code{forest}}
+\item{proximity}{Proximity matrix}
+\item{vote.matrix}{Matrix with votes for each class on each observation} 
+\item{n.tree}{number of trees grown in \code{PPforest}} 
+\item{n.var}{number of predictor variables selected to use for splitting at each node} 
+\item{type}{classification} 
+\item{confusion}{confusion matrix of the prediction (based on OOb data)} 
+\item{call}{the original call to \code{PPforest}}
 }
 \description{
-Run a Projection Pursuit forest
+\code{PPforest} implements a random forest using projection
+pursuit trees algorithm (based on \code{PPtreeViz} package.
 }
 \examples{
 tr.index <- train_fn(iris[, 5], 2/3)
