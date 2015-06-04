@@ -11,21 +11,21 @@
 #' @param strata if set \code{TRUE} then the bootrap samples are stratifyed by class
 #' @param lambda a parameter for PDA index
 #' @return An object of class \code{PPforest} with components
-#'   \item{prediction.training}{predicted values for training data set}
-#'   \item{training.error}{error of the training data set}
-#'   \item{prediction.test}{predicted values for the test data set}
-#'   \item{error.test}{error of the test data set}
-#'   \item{oob.error.forest}{out of bag error in the forest}
-#'   \item{oob.error.tree}{out of bag error for each tree}
-#'   \item{boot.samp}{bootrap samples}
-#'   \item{output.trees}{output from a trees_pp}
-#'   \item{proximity}{Proximity matrix} 
-#'   \item{vote.matrix}{Marix with votes for each class on each observation}
-#'   \item{n.tree}{number of trees grown in \code{PPforest}}
-#'   \item{n.var}{number of predictor variables selected to use for spliting at each node}
-#'   \item{type}{classification}
-#'   \item{confusion}{confusion matrix of the prediction (based on OOb data)}
-#'   \item{call}{the original call to \code{PPforest}}
+#' @return prediction.training predicted values for training data set
+#' @return training.error error of the training data set
+#' @return prediction.test predicted values for the test data set
+#' @return error.test error of the test data set
+#' @return oob.error.forest out of bag error in the forest
+#' @return oob.error.tree out of bag error for each tree
+#' @return boot.samp bootrap samples
+#' @return output.trees output from a trees_pp
+#' @return proximity Proximity matrix
+#' @return vote.matrix Marix with votes for each class on each observation
+#' @return n.tree number of trees grown in \code{PPforest}
+#' @return n.var number of predictor variables selected to use for spliting at each node
+#' @return type classification
+#' @return confusion confusion matrix of the prediction (based on OOb data)
+#' @return call the original call to \code{PPforest}
 #' @export
 #' @examples
 #' tr.index <- train_fn(iris[, 5], 2/3)

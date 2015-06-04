@@ -83,7 +83,8 @@ PPforest function returns the predicted values of the training data, training er
 
 If we compare the results with the \code{randomForest} function for this data set the results are the following:
 ```{r}
-rf.crab <- randomForest::randomForest(Type~.,data=crab)
+
+rf.crab <- randomForest::randomForest(Type~.,data=crab,proximity=TRUE)
 rf.crab
 ```
 We can see that for this data set the \code{PPforest} performance is much better than using \code{randomForest}.

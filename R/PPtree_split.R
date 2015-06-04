@@ -1,8 +1,8 @@
 #' Projection pursuit classification tree with random variable selection in each split
 #' 
 #' Find tree structure using various projection pursuit indices of classification in each split.
-#' @usage PPtree_split(fr, data, PPmethod="LDA", weight=TRUE,
-#'std=TRUE, size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...) 
+#' @usage PPtree_split(fr, data, PPmethod="LDA", weight=TRUE, 
+#' size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...) 
 #' @param fr is an  object class formula, with the form response~terms
 #' @param data numeric data matrix without class information 
 #' @param PPmethod index to use for projection pursuit: "LDA", "PDA", "Lr", "GINI", and "ENTROPY"
@@ -25,9 +25,9 @@
 #' @keywords tree
 #' @examples
 #' data(iris)
-#' Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1], std=TRUE, size.p=0.9)
+#' Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1], size.p=0.9)
 #' Tree.result
-PPtree_split <- function(fr, data, PPmethod="LDA", weight=TRUE, std=TRUE,
+PPtree_split <- function(fr, data, PPmethod="LDA", weight=TRUE, 
      size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...) {
   TOL <- NULL
   mf <- model.frame(fr, data = data)

@@ -5,15 +5,14 @@
 \title{Projection pursuit classification tree with random variable selection in each split}
 \usage{
 PPtree_split(fr, data, PPmethod="LDA", weight=TRUE,
-std=TRUE, size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...)
+size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...)
 }
 \arguments{
   \item{fr}{is an object class formula, with the form
   response~terms} \item{data}{numeric data matrix without
   class information} \item{PPmethod}{index to use for
   projection pursuit: "LDA", "PDA", "Lr", "GINI", and
-  "ENTROPY"} \item{weight}{weight flag in LDA, PDA and Lr
-  index} \item{std}{is TRUE if the data are standarized}
+  "ENTROPY"} \item{weight}{flag in LDA, PDA and Lr index}
   \item{size.p}{proportion of variables used in each split}
   \item{r}{power in Lr index} \item{lambda}{tuning parameter
   in PDA index} \item{energy}{optimization parameter for
@@ -32,7 +31,7 @@ of classification in each split.
 }
 \examples{
 data(iris)
-Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1], std=TRUE, size.p=0.9)
+Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1], size.p=0.9)
 Tree.result
 }
 \references{
