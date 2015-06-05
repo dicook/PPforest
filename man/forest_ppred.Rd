@@ -4,13 +4,13 @@
 \alias{forest_ppred}
 \title{Vector with predicted values from a PPforest.}
 \usage{
-forest_ppred(data, output.tree, ...)
+forest_ppred(newdata, output.tree, ...)
 }
 \arguments{
-  \item{data}{are the complete data without the class
+  \item{newdata}{are the complete data without the class
   variable we want to predict} \item{output.tree}{trees
-  classifiers from trees_pp function} \item{...}{arguments
-  to be passed to methods}
+  classifiers from trees_pp function or PPforest object}
+  \item{...}{arguments to be passed to methods}
 }
 \value{
 predicted values form PPforest

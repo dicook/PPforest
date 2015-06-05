@@ -7,30 +7,30 @@
 PPforest(train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda=.1)
 }
 \arguments{
-  \item{train}{is a data frame with the training data with
-  class variable in the first column} \item{testap}{If
-  set to \code{TRUE}(default) indicate a test data will
-  be provided to predict} \item{test}{is a data frame with
-  we want to to predict, if \code{testap} is \code{TRUE}
-  we have to include \code{test} data} \item{m}{is the
-  number of bootstrap replicates, this corresponds with the
-  number of trees to grow. To ensure that each observation
-  is predicted a few times we have to select this nunber
-  no too small.} \item{PPmethod}{is the projection pursuit
-  index to optimize in each classification tree. The
-  options are \code{LDA} and \code{PDA}, linear discriminant
-  and penalized linear discriminant. By default it is
-  \code{LDA}.} \item{size.p}{proportion of variables
-  randomly sampled in each split.} \item{strata}{if set
-  \code{TRUE} then the bootrap samples are stratifyed by
-  class} \item{lambda}{a parameter for PDA index}
+  \item{data}{is a data frame with the class variable in
+  the first column} \item{size.tr}{is the size proportion
+  of the training if we want to split the data in training
+  and test.} \item{testap}{If set to \code{TRUE}(default)
+  indicate a test data will be used of size 1-size.tr}
+  \item{m}{is the number of bootstrap replicates, this
+  corresponds with the number of trees to grow. To ensure
+  that each observation is predicted a few times we have
+  to select this nunber no too small.} \item{PPmethod}
+  {is the projection pursuit index to optimize in each
+  classification tree. The options are \code{LDA} and
+  \code{PDA}, linear discriminant and penalized linear
+  discriminant. By default it is \code{LDA}.} \item{size.p}
+  {proportion of variables randomly sampled in each split.}
+  \item{strata}{if set \code{TRUE} then the bootrap samples
+  are stratifyed by class} \item{lambda}{a parameter for PDA
+  index}
 }
 \value{
 An object of class \code{PPforest} with components
 prediction.training predicted values for training
 data set training.error error of the training data set
 prediction.test predicted values for the test data set
-error.test error of the test data set oob.error.forest out
+error.test error of the test data set oob.error.forest}{out
 of bag error in the forest oob.error.tree out of bag error
 for each tree boot.samp bootrap samples output.trees output
 from a trees_pp proximity Proximity matrix vote.matrix
@@ -39,17 +39,17 @@ number of trees grown in \code{PPforest} n.var number of
 predictor variables selected to use for spliting at each
 node type classification confusion confusion matrix of the
 prediction (based on OOb data) call the original call to
-\code{PPforest}
+\code{PPforest} mean.x is the mean of predictor variables
+from data sd.x is the standard deviation of predictor
+variables from data std is TRUE if the data were stundarized
+train is the training data test is the test data
 }
 \description{
 \code{PPforest} implements a random forest using projection
 pursuit trees algorithm (based on \code{PPtreeViz} package.
 }
 \examples{
-tr.index <- train_fn(iris[, 5], 2/3)
-train <- iris[sort(tr.index$id), 5:1 ]
-test <- iris[-tr.index$id, 5:1 ]
-ppfr.iris <- PPforest(train = train, testap = TRUE, test = test, m = 500, size.p = .9,
+ppfr.iris <- PPforest(data = iris[,5:1], size.tr=2/3, testap = TRUE, m = 500, size.p = .9,
 PPmethod = 'LDA', strata = TRUE)
 }
 

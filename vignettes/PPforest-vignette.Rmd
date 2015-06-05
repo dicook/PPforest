@@ -75,8 +75,8 @@ The PPforest function runs a projection pursuit random forest, the argument test
 set.seed(123)
  training.crab <- crab[sort(training.id$id), ]
  test.crab <- crab[-training.id$id, ]
- pprf.crab <- PPforest::PPforest(train = training.crab, testap = TRUE, test = test.crab, m = 500, size.p = .7, PPmethod = 'LDA', strata = TRUE)
-str(pprf.crab,max.level=1)
+ pprf.crab <- PPforest::PPforest(data = crab, size.tr = 2/3, testap = TRUE, m = 500, size.p = .7, PPmethod = 'LDA', strata = TRUE, std = TRUE)
+str(pprf.crab, max.level = 1)
  pprf.crab 
 ```
 PPforest function returns the predicted values of the training data, training error,  if test data was provided test error and predicted test values are returned, the forest out of bag error, the out of bag error for each tree, the bootstrap samples, the output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix.
@@ -135,7 +135,7 @@ load("../data/NCI60.rda")
 training.id <- PPforest::train_fn(NCI60[, 1], 2/3)
  training.nci <- NCI60[sort(training.id$id), ]
  test.nci <- NCI60[-training.id$id, ]
- pprf.nci60 <- PPforest::PPforest(train = training.nci, testap = TRUE, test = test.nci, m = 500, size.p = .2, PPmethod = 'PDA', strata = TRUE, lambda=.7)
+ pprf.nci60 <- PPforest::PPforest(data = NCI60, size.tr = 2/3, testap = TRUE, , m = 500, size.p = .2, PPmethod = 'PDA', strata = TRUE, lambda=.7)
 
 ```
 
