@@ -22,5 +22,4 @@ Suggests:
     knitr,
     randomForest,
     roxygen2 (>= 3.0.0)
-Roxygen: list(wrap = TRUE)
 VignetteBuilder: knitr
