@@ -17,6 +17,7 @@
 
 trees_pp <- function(data.b, size.p = 0.9, PPmethod = "LDA", lambda=.1, ...) {
   . <- NULL
+  
     names(data.b)[1] <- "class"
     if (PPmethod == "LDA") {
         trees <- data.b %>% dplyr::do(tr = PPtree_split(as.formula("class~."), PPmethod = "LDA", data = ., size.p = size.p,...))

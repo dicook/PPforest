@@ -6,20 +6,10 @@
 #' @return MDS plot  
 #' @export
 #' @examples
-#' tr.index <- train_fn(iris[, 5], 2/3)
-#' train <- iris[sort(tr.index$id), 5:1 ]
-#' test <- iris[-tr.index$id, 5:1 ]
-#' ppfr.iris <- PPforest( train = train, testap = TRUE, test = test,
-#'  m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
+#' ppfr.iris <- PPforest( data = iris, size.tr=2/3, testap = TRUE, 
+#'  m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE, std=TRUE)
 #' PPplot(ppfr.iris, train, k = 2)
 #' PPplot(ppfr.iris, train, k = 3)
-#' tr.index <- train_fn(lymphoma[, 1], 2/3)
-#' train <- lymphoma[sort(tr.index$id),  ]
-#' test <- lymphoma[-tr.index$id, ]
-#' ppfr.lymphoma <- PPforest( train = train, testap = TRUE, test = test,
-#'  m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-#' PPplot(ppfr.iris, train, k = 2)
-
 PPplot <- function(ppfo, train, k) {
   value <- NULL
   Var1 <- NULL

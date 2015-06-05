@@ -2,9 +2,9 @@
 #'
 #' \code{PPforest} implements a random forest using projection pursuit trees algorithm (based on \code{PPtreeViz} package.
 #' @usage PPforest(train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda=.1)
-#' @param train is a data frame with the training data with class variable in the first column
-#' @param testap If set to \code{TRUE}(default) indicate a test data will be provided to predict
-#' @param test is a data frame with we want to to predict, if \code{testap} is \code{TRUE} we have to include \code{test} data
+#' @param data is a data frame with the class variable in the first column
+#' @param size.tr is the size proportion of the training if we want to split the data in training and test.
+#' @param testap If set to \code{TRUE}(default) indicate a test data will be used of size 1-size.tr
 #' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small.
 #' @param PPmethod is the projection pursuit index to optimize in each classification tree. The options are \code{LDA}  and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.
 #' @param size.p proportion of variables randomly sampled in each split.
@@ -15,7 +15,7 @@
 #' @return training.error error of the training data set
 #' @return prediction.test predicted values for the test data set
 #' @return error.test error of the test data set
-#' @return oob.error.forest out of bag error in the forest
+#' @return oob.error.forest}{out of bag error in the forest
 #' @return oob.error.tree out of bag error for each tree
 #' @return boot.samp bootrap samples
 #' @return output.trees output from a trees_pp
@@ -26,15 +26,28 @@
 #' @return type classification
 #' @return confusion confusion matrix of the prediction (based on OOb data)
 #' @return call the original call to \code{PPforest}
+#' @return mean.x is the mean of predictor variables from data
+#' @return sd.x  is the standard deviation of predictor variables from data
+#' @return std is TRUE if the data were stundarized
+#' @return train is the training data 
+#' @return test is the test data
 #' @export
 #' @examples
-#' tr.index <- train_fn(iris[, 5], 2/3)
-#' train <- iris[sort(tr.index$id), 5:1 ]
-#' test <- iris[-tr.index$id, 5:1 ]
-#' ppfr.iris <- PPforest(train = train, testap = TRUE, test = test, m = 500, size.p = .9, 
+#' ppfr.iris <- PPforest(data = iris[,5:1], size.tr=2/3, testap = TRUE, m = 500, size.p = .9, 
 #' PPmethod = 'LDA', strata = TRUE)
 #' 
-PPforest <- function(train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda=.1) {
+PPforest <- function(data, size.tr=2/3, testap = TRUE, m, PPmethod, size.p, strata = TRUE, std=TRUE, lambda=.1) {
+  mean.x <- NULL
+  sd.x <- NULL
+  
+  if(std==TRUE){
+    mean.x <- apply(data[,-1], 2, mean)
+    sd.x <- apply(data[,-1],2, sd)
+    data <- data.frame(data[,1],scale(data[,-1]))
+  }
+  tr.index <- train_fn(data[, 1], size.tr)
+  train <- data[sort(tr.index$id), ]
+
   colnames(train)[1] <- "class"
   type="Classification"
   nam <- colnames(train[,-1])
@@ -94,8 +107,9 @@ PPforest <- function(train, testap = TRUE, test, m, PPmethod, size.p, strata = T
   error.tr <- 1 - sum(train[, 1] == pred.tr[[3]])/length(pred.tr[[3]])
   
   if (testap==TRUE) {
-    pred.test <- forest_ppred(test[, -1], output)
-    error.test <- 1 - sum(test[, 1] == pred.test[[3]])/length(pred.test[[3]])
+    test <- data[-tr.index$id, -1 ]
+    pred.test <- forest_ppred(test , output)
+    error.test <- 1 - sum(data[-tr.index$id, 1] == pred.test[[3]])/length(pred.test[[3]])
   } else {
     pred.test <- NULL
     error.test <- NULL
@@ -111,9 +125,10 @@ PPforest <- function(train, testap = TRUE, test, m, PPmethod, size.p, strata = T
  results <- list(prediction.training = pred.tr[[3]], training.error = error.tr, prediction.test = pred.test[[3]],
               error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, 
               output.trees = output, proximity = proximity, vote.matrix = vote.matrix.prop, n.tree = m , n.var=var.sel, 
-              type="Classification", confusion=confusion, call =  match.call())
+              type="Classification", confusion=confusion, call =  match.call(), mean.x = mean.x, sd.x = sd.x, std, train=train, test=test)
 class(results) <- "PPforest"
 
 return(results)
 
 } 
+
