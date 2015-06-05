@@ -8,12 +8,9 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
-#' tr.index <- train_fn(iris[, 5], 2/3)
-#' train <- iris[sort(tr.index$id), 5:1]
-#' test <- iris[-tr.index$id, 5:1 ]
-#' ppforest <- PPforest( train = train, testap = TRUE, test = test, 
-#' m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-#' importance(train, ppforest,global=TRUE, weight=FALSE) 
+#' ppforest <- PPforest( data = iris[,5:1], size.tr = 2/3, testap = TRUE,  
+#' m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE, std = TRUE)
+#' importance(iris[,5:1], ppforest, global = TRUE, weight = FALSE) 
 importance <- function(data, ppforest, global=TRUE, weight=TRUE) {
   value <- NULL
   variable <- NULL

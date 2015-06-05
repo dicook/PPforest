@@ -1,23 +1,24 @@
 #' Projection pursuit classification tree with random variable selection in each split
 #' 
 #' Find tree structure using various projection pursuit indices of classification in each split.
-#' @usage PPtree_split(fr, data, PPmethod="LDA", weight=TRUE, 
+#' @usage PPtree_split(formula, data, PPmethod="LDA", weight=TRUE, 
 #' size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...) 
-#' @param fr is an  object class formula, with the form response~terms
-#' @param data numeric data matrix without class information 
+#' @param formula a formula describing the model to be fitted, with the form \code{response~predictors}
+#' @param data is a data frame with the class variable in the first column
 #' @param PPmethod index to use for projection pursuit: "LDA", "PDA", "Lr", "GINI", and "ENTROPY"
 #' @param weight  flag in LDA, PDA and Lr index
-#' @param size.p proportion of variables used in each split
+#' @param size.p proportion of variables randomly sampled in each split.
 #' @param r power in Lr index
 #' @param lambda tuning parameter in PDA index
 #' @param energy optimization parameter for projection pursuit
 #' @param maxiter number of maximum iteration
 #' @param ... arguments to be passed to methods
-#' @return Tree.Struct Tree structure of projection pursuit classification tree
-#' @return projbest.node 1-dim optimal projections of each split node
-#' @return splitCutoff.node cutoff values of each split node
-#' @return origclass original class 
-#' @return origdata original data
+#' @return An object of class \code{PPtreeclass} with components
+#' \item{Tree.Struct}{Tree structure of projection pursuit classification tree}
+#' \item{projbest.node}{1-dim optimal projections of each split node}
+#' \item{splitCutoff.node}{cutoff values of each split node}
+#' \item{origclass}{original class} 
+#' \item{origdata}{original data}
 #' @references Lee, YD, Cook, D., Park JW, and Lee, EK (2013) 
 #' PPtree: Projection pursuit classification tree, 
 #' Electronic Journal of Statistics, 7:1369-1386.
@@ -27,10 +28,10 @@
 #' data(iris)
 #' Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1], size.p=0.9)
 #' Tree.result
-PPtree_split <- function(fr, data, PPmethod="LDA", weight=TRUE, 
+PPtree_split <- function(formula, data, PPmethod="LDA", weight=TRUE, 
      size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...) {
   TOL <- NULL
-  mf <- model.frame(fr, data = data)
+  mf <- model.frame(formula, data = data)
   origclass <- model.response(mf)
   origdata <- data[, -1]
   origdata <- as.matrix(origdata)
@@ -42,18 +43,16 @@ PPtree_split <- function(fr, data, PPmethod="LDA", weight=TRUE,
      
     pp <- ncol(origdata)
 
-      # remove the variable with zero variance same as in PP.optimize anneal remove <- (1:pp) *apply( (apply(i.data,2,
-      # function(x) tapply(x, i.class, sd)) == 0),2,function(x) sum(x)!=0)
+      # remove the variable with zero variance 
       remove <- (1:pp) * (apply(origdata, 2, sd) == 0)
       remove <- remove[remove != 0]
       if (length(remove) != 0) {
         origdata <- origdata[, -remove]
       }
-    
      
-    v.rnd <- var_select(origdata, size.p)  # random variable selection
-    vari <- dim(i.data.ori)[2]  # number of variables
-    origdata <- origdata[, v.rnd]  # data with selected variables 
+    v.rnd <- var_select(origdata, size.p) 
+    vari <- dim(i.data.ori)[2] 
+    origdata <- origdata[, v.rnd]  
      
     n <- nrow(origdata)
     p <- ncol(origdata)
