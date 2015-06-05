@@ -9,7 +9,7 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' ppforest <- PPforest( data = iris[,5:1], size.tr = 2/3, testap = TRUE,  
-#' m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE, std = TRUE)
+#' m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
 #' importance(iris[,5:1], ppforest, global = TRUE, weight = FALSE) 
 importance <- function(data, ppforest, global=TRUE, weight=TRUE) {
   value <- NULL
