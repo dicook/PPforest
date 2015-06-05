@@ -7,16 +7,15 @@
 train_fn(class = class, size.p = 0.9)
 }
 \arguments{
-  \item{class}{input character vector with class of the
-  data} \item{size.p}{proportion of sample in each class
-  group}
+\item{class}{input character vector with class of the data}
+
+\item{size.p}{proportion of sample in each class group}
 }
 \value{
-numeric vector with the sample indexes for training data
+numeric vector  with the sample indexes for training data
 }
 \description{
-Index id for training set, sample in each class with the
-same proportion.
+Index id for training set, sample in each class with the same proportion.
 }
 \examples{
 data(iris)

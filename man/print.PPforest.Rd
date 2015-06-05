@@ -7,8 +7,9 @@
 \method{print}{PPforest}(x, ...)
 }
 \arguments{
-  \item{x}{is a PPforest class object} \item{...}{additional
-  parameter}
+\item{x}{is a PPforest class object}
+
+\item{...}{additional parameter}
 }
 \value{
 printed results for PPforest object

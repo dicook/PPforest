@@ -4,49 +4,48 @@
 \alias{PPforest}
 \title{Projection Pursuit Random Forest}
 \usage{
-PPforest(train, testap = TRUE, test, m, PPmethod, size.p, strata = TRUE, lambda=.1)
+PPforest(data, size.tr, testap = TRUE, m, PPmethod, size.p,
+strata = TRUE, std = TRUE, lambda=.1)
 }
 \arguments{
-  \item{data}{is a data frame with the class variable in
-  the first column} \item{size.tr}{is the size proportion
-  of the training if we want to split the data in training
-  and test.} \item{testap}{If set to \code{TRUE}(default)
-  indicate a test data will be used of size 1-size.tr}
-  \item{m}{is the number of bootstrap replicates, this
-  corresponds with the number of trees to grow. To ensure
-  that each observation is predicted a few times we have
-  to select this nunber no too small.} \item{PPmethod}
-  {is the projection pursuit index to optimize in each
-  classification tree. The options are \code{LDA} and
-  \code{PDA}, linear discriminant and penalized linear
-  discriminant. By default it is \code{LDA}.} \item{size.p}
-  {proportion of variables randomly sampled in each split.}
-  \item{strata}{if set \code{TRUE} then the bootrap samples
-  are stratifyed by class} \item{lambda}{a parameter for PDA
-  index}
+\item{data}{a data frame with the class variable in the first column.}
+
+\item{size.tr}{is the size proportion of the training if we want to split the data in training and test.}
+
+\item{testap}{If set to \code{TRUE}(default) indicate a test data will be used of size \code{1-size.tr}.}
+
+\item{m}{is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small.}
+
+\item{PPmethod}{is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.}
+
+\item{size.p}{proportion of variables randomly sampled in each split.}
+
+\item{strata}{if set \code{TRUE} then the bootrap samples are stratifyed by class variable.}
+
+\item{lambda}{a parameter for \code{PDA} index.}
 }
 \value{
-An object of class \code{PPforest} with components
-prediction.training predicted values for training
-data set training.error error of the training data set
-prediction.test predicted values for the test data set
-error.test error of the test data set oob.error.forest}{out
-of bag error in the forest oob.error.tree out of bag error
-for each tree boot.samp bootrap samples output.trees output
-from a trees_pp proximity Proximity matrix vote.matrix
-Marix with votes for each class on each observation n.tree
-number of trees grown in \code{PPforest} n.var number of
-predictor variables selected to use for spliting at each
-node type classification confusion confusion matrix of the
-prediction (based on OOb data) call the original call to
-\code{PPforest} mean.x is the mean of predictor variables
-from data sd.x is the standard deviation of predictor
-variables from data std is TRUE if the data were stundarized
-train is the training data test is the test data
+An object of class \code{PPforest} with components.
+\item{prediction.training}{predicted values for training data set.}
+\item{training.error}{error of the training data set.}
+\item{prediction.test}{predicted values for the test data set if \code{testap = TRUE}(default).}
+\item{error.test}{error of the test data set if \code{testap = TRUE}(default).}
+\item{oob.error.forest}{out of bag error in the forest.}
+\item{oob.error.tree}{out of bag error for each tree in the forest.}
+\item{boot.samp}{information of bootrap samples.}
+\item{output.trees}{output from a \code{trees_pp} for each bootrap sample.}
+\item{proximity}{Proximity matrix, if two cases are classified in the same terminal node then the proximity matrix is increased by one in \code{PPforest} there are one terminal node per class.}
+\item{votes}{ a matrix with one row for each input data point and one column for each class, giving the fraction of (OOB) votes from the \code{PPforest}.}
+\item{n.tree}{number of trees grown in \code{PPforest}.}
+\item{n.var}{number of predictor variables selected to use for spliting at each node.}
+\item{type}{classification.}
+\item{confusion}{confusion matrix of the prediction (based on OOb data).}
+\item{call}{the original call to \code{PPforest}.}
+\item{train}{is the training data based on \code{size.tr} sample proportion}
+\item{test}{is the test data based on \code{1-size.tr} sample proportion}
 }
 \description{
-\code{PPforest} implements a random forest using projection
-pursuit trees algorithm (based on \code{PPtreeViz} package.
+\code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
 }
 \examples{
 ppfr.iris <- PPforest(data = iris[,5:1], size.tr=2/3, testap = TRUE, m = 500, size.p = .9,

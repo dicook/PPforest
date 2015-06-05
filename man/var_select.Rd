@@ -7,15 +7,15 @@
 var_select(data, size.p)
 }
 \arguments{
-  \item{data}{is a data frame without the class variable.}
-  \item{size.p}{proportion of variables used in each split}
+\item{data}{is a data frame without the class variable.}
+
+\item{size.p}{proportion of variables used in each split}
 }
 \value{
 a vector giving the names of the selected variables
 }
 \description{
-Index id for variables set, sample variables without
-replacement with a sample proportion.
+Index id for variables set, sample variables without replacement with a sample proportion.
 }
 \examples{
 variables <- var_select(data=iris[,-5], size.p=0.9)

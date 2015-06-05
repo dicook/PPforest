@@ -9,14 +9,13 @@
 data(parkinson)
 }
 \description{
-A data set containing 195 observations from 2 parkinson
-types.
+A data set containing 195 observations from 2 parkinson types.
 }
 \details{
-\itemize{ \item{Type}{ Class variable has 2 classes, there
-are 48 cases of healthy people and 147 cases with Parkinson.
-The feature variables are biomedical voice measures}.
-\item{X1 to X22}{Check vbles} }
+\itemize{
+  \item{Type}{  Class variable has 2 classes, there are 48 cases of healthy people and 147 cases with Parkinson. The feature variables are biomedical voice measures}.
+  \item{X1 to X22}{Check vbles}
+}
 }
 \keyword{datasets}
 

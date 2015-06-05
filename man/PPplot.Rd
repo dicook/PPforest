@@ -4,12 +4,12 @@
 \alias{PPplot}
 \title{MDS}
 \usage{
-PPplot(ppfo, train, k)
+PPplot(ppfo, k)
 }
 \arguments{
-  \item{ppfo}{a PPforest object} \item{train}{is a data
-  frame with the training data with class in the first
-  column} \item{k}{number of dimensions of the MDS layout}
+\item{ppfo}{a PPforest object}
+
+\item{k}{number of dimensions of the MDS layout}
 }
 \value{
 MDS plot
@@ -18,9 +18,9 @@ MDS plot
 MDS
 }
 \examples{
-ppfr.iris <- PPforest( data = iris, size.tr=2/3, testap = TRUE,
- m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE, std=TRUE)
-PPplot(ppfr.iris, train, k = 2)
-PPplot(ppfr.iris, train, k = 3)
+ppfr.iris <- PPforest(data = iris[,5:1], size.tr = 2/3, testap = TRUE, m = 500, size.p = .9,
+ PPmethod = 'LDA', strata = TRUE)
+ PPplot(ppfr.iris, k = 2)
+ PPplot(ppfr.iris, k = 3)
 }
 

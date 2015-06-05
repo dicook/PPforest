@@ -7,10 +7,11 @@
 forest_ppred(newdata, output.tree, ...)
 }
 \arguments{
-  \item{newdata}{are the complete data without the class
-  variable we want to predict} \item{output.tree}{trees
-  classifiers from trees_pp function or PPforest object}
-  \item{...}{arguments to be passed to methods}
+\item{newdata}{are the complete data without the class variable we want to predict}
+
+\item{output.tree}{trees classifiers from trees_pp function or PPforest object}
+
+\item{...}{arguments to be passed to methods}
 }
 \value{
 predicted values form PPforest
@@ -20,10 +21,9 @@ Vector with predicted values from a PPforest.
 }
 \examples{
 data(iris)
-iris.sc <- data.frame(Class = iris[, 5], scale(iris[, 1:4]))
 training <- train_fn(class = iris[, 5], size.p = 2/3)
-iris.b <- bootstrap( iris.sc[training$id, ], 500)
+iris.b <- bootstrap( iris[training$id, 5:1], 500)
 output <- trees_pp(iris.b, size.p = 0.9, PPmethod ="LDA")
-pr <- forest_ppred( iris.sc[-training$id, 2:5] , output)
+pr <- forest_ppred( iris[-training$id, 1:4] , output)
 }
 

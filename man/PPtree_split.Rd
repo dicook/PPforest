@@ -4,30 +4,40 @@
 \alias{PPtree_split}
 \title{Projection pursuit classification tree with random variable selection in each split}
 \usage{
-PPtree_split(fr, data, PPmethod="LDA", weight=TRUE,
+PPtree_split(formula, data, PPmethod="LDA", weight=TRUE,
 size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...)
 }
 \arguments{
-  \item{fr}{is an object class formula, with the form
-  response~terms} \item{data}{numeric data matrix without
-  class information} \item{PPmethod}{index to use for
-  projection pursuit: "LDA", "PDA", "Lr", "GINI", and
-  "ENTROPY"} \item{weight}{flag in LDA, PDA and Lr index}
-  \item{size.p}{proportion of variables used in each split}
-  \item{r}{power in Lr index} \item{lambda}{tuning parameter
-  in PDA index} \item{energy}{optimization parameter for
-  projection pursuit} \item{maxiter}{number of maximum
-  iteration} \item{...}{arguments to be passed to methods}
+\item{formula}{a formula describing the model to be fitted, with the form \code{response~predictors}}
+
+\item{data}{is a data frame with the class variable in the first column}
+
+\item{PPmethod}{index to use for projection pursuit: "LDA", "PDA", "Lr", "GINI", and "ENTROPY"}
+
+\item{weight}{flag in LDA, PDA and Lr index}
+
+\item{size.p}{proportion of variables randomly sampled in each split.}
+
+\item{r}{power in Lr index}
+
+\item{lambda}{tuning parameter in PDA index}
+
+\item{energy}{optimization parameter for projection pursuit}
+
+\item{maxiter}{number of maximum iteration}
+
+\item{...}{arguments to be passed to methods}
 }
 \value{
-Tree.Struct Tree structure of projection pursuit
-classification tree projbest.node 1-dim optimal projections
-of each split node splitCutoff.node cutoff values of each
-split node origclass original class origdata original data
+An object of class \code{PPtreeclass} with components
+\item{Tree.Struct}{Tree structure of projection pursuit classification tree}
+\item{projbest.node}{1-dim optimal projections of each split node}
+\item{splitCutoff.node}{cutoff values of each split node}
+\item{origclass}{original class}
+\item{origdata}{original data}
 }
 \description{
-Find tree structure using various projection pursuit indices
-of classification in each split.
+Find tree structure using various projection pursuit indices of classification in each split.
 }
 \examples{
 data(iris)
@@ -35,9 +45,9 @@ Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1], size.p=0.9
 Tree.result
 }
 \references{
-Lee, YD, Cook, D., Park JW, and Lee, EK (2013) PPtree:
-Projection pursuit classification tree, Electronic Journal
-of Statistics, 7:1369-1386.
+Lee, YD, Cook, D., Park JW, and Lee, EK (2013)
+PPtree: Projection pursuit classification tree,
+Electronic Journal of Statistics, 7:1369-1386.
 }
 \keyword{tree}
 

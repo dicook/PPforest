@@ -69,21 +69,22 @@ training.id
 ```
 If we want all the selected id's we use training.id$id
 
-The PPforest function runs a projection pursuit random forest, the argument testap=TRUE allows to use test data. m is the number of trees in the forest size.p is the sample proportion of the variables used in each node split, PPmethod is the projection pursuit index to be optimized there are two options LDA and PDA. Finally strata=TRUE indicate that the bootstrap samples are stratified by class variable. 
+PPforest function runs a projection pursuit random forest,  using this function we have the option to split the data in training and test using size.tr and testap=TRUE. size.tr is the size proportion of the training. If we want to use test data we have to specify  testap=TRUE and the proportion of this will be 1- sixe.tr.
+The number of trees in the forest is specified using the argument m. size.p is the sample proportion of the variables used in each node split, PPmethod is the projection pursuit index to be optimized there are two options LDA and PDA. Finally strata=TRUE indicate that the bootstrap samples are stratified by class variable. 
 
 ```{r}
-set.seed(123)
- training.crab <- crab[sort(training.id$id), ]
- test.crab <- crab[-training.id$id, ]
- pprf.crab <- PPforest::PPforest(data = crab, size.tr = 2/3, testap = TRUE, m = 500, size.p = .7, PPmethod = 'LDA', strata = TRUE, std = TRUE)
+pprf.crab <- PPforest::PPforest(data = crab, size.tr = 2/3, testap = TRUE, m = 500, size.p = .7,    PPmethod = 'LDA', strata = TRUE)
 str(pprf.crab, max.level = 1)
- pprf.crab 
 ```
-PPforest function returns the predicted values of the training data, training error,  if test data was provided test error and predicted test values are returned, the forest out of bag error, the out of bag error for each tree, the bootstrap samples, the output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix.
+PPforest function returns the predicted values of the training data, training error,  if testap=TRUE then test error and predicted test values are returned, the forest out of bag error, the out of bag error for each tree, the bootstrap samples, the output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix,  number of trees grown in the forest, number of predictor variables selected to use for spliting at each node. Confusion matrix of the prediction (based on OOb data), Mean of predictor variables from the original data set, Standard deviation of predictor variables from the original data, if the data  were standarized, the training data and test data.
 
-If we compare the results with the \code{randomForest} function for this data set the results are the following:
+The printed version of a PPforest object follows the randomForest printed version to make them comparables
 ```{r}
+pprf.crab
+```
 
+If we compare the results with the randomForest function for this data set the results are the following:
+```{r}
 rf.crab <- randomForest::randomForest(Type~.,data=crab,proximity=TRUE)
 rf.crab
 ```
@@ -99,7 +100,7 @@ We can get the predicted values for training and test using the output of PPfore
 From PPforest object we can plot a heat map of the proximity matrix using the function \code{proxy_plot}.
 
 ```{r,fig.show='hold',fig.width = 4 ,fig.height = 3,echo=FALSE}
-PPforest::pproxy_plot( pprf.crab , training.crab)
+PPforest::pproxy_plot( pprf.crab)
 ```
 
 We can also plot the MDS of the proximity matrix using the function PPplot.
@@ -107,18 +108,18 @@ We can also plot the MDS of the proximity matrix using the function PPplot.
 If we select k=2 the output plot is as follows:
 
 ```{r,fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE}
-PPforest::PPplot(pprf.crab, training.crab, k = 2)
+PPforest::PPplot(pprf.crab, k = 2)
 ```
 
 If we select k>2 
 
-```{r,fig.show='hold',fig.width = 7 ,fig.height = 7,echo=FALSE}
-PPforest::PPplot(pprf.crab, training.crab, k = 3)
+```{r,fig.show='hold',fig.width = 7 ,fig.height = 7,echo = FALSE}
+PPforest::PPplot(pprf.crab, k = 3)
 ```
 
 We cancompute a global importance measure for the forest using the function \code{importance}.
 ```{r}
-PPforest::importance(training.crab, pprf.crab,global=TRUE, weight=TRUE) 
+PPforest::importance(crab, pprf.crab, global = TRUE, weight = TRUE) 
 ```
 
 We can see that the most important variable in this example is RW while the less important is CL
@@ -135,7 +136,11 @@ load("../data/NCI60.rda")
 training.id <- PPforest::train_fn(NCI60[, 1], 2/3)
  training.nci <- NCI60[sort(training.id$id), ]
  test.nci <- NCI60[-training.id$id, ]
- pprf.nci60 <- PPforest::PPforest(data = NCI60, size.tr = 2/3, testap = TRUE, , m = 500, size.p = .2, PPmethod = 'PDA', strata = TRUE, lambda=.7)
+```
+
+
+```{r}
+pprf.nci60 <- PPforest::PPforest(data = NCI60, size.tr = 2/3, testap = TRUE,  m = 500, size.p = .2, PPmethod = 'PDA', strata = TRUE, lambda=.7)
 
 ```
 
@@ -143,21 +148,23 @@ PPforest function returns the predicted values of the training data, training er
 
 ```{r}
 str(pprf.nci60,max.level=1)
+pprf.nci60
 ```
 
 
 ```{r,fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE}
-PPforest::pproxy_plot( pprf.nci60 , training.nci)
+PPforest::pproxy_plot( pprf.nci60 )
 ```
 
 We can also plot the MDS of the proximity matrix using the function PPplot.
 If we select k=2 the output plot is as follows:
 
 ```{r,fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE}
-PPforest::PPplot(pprf.nci60, training.nci, k = 2)
+PPforest::PPplot(pprf.nci60, k = 2)
 ```
 If we select k>2 the graphical display will be:
 
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 6,echo=FALSE}
-PPforest::PPplot(pprf.nci60, training.nci, k = 3)
+PPforest::PPplot(pprf.nci60, k = 3)
 ```
+

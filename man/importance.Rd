@@ -7,27 +7,23 @@
 importance(data, ppforest, global = TRUE, weight = TRUE)
 }
 \arguments{
-  \item{data}{is a data frame with the complete data set.
-  Class factor in the first column} \item{ppforest}{is a
-  PPforest object} \item{global}{is TRUE if we want to see
-  the global importance of the forest} \item{weight}{is
-  TRUE if we want to see a weighted mesure of the forest
-  importance based on out of bag trees errors}
+\item{data}{is a data frame with the complete data set. Class factor in the first column}
+
+\item{ppforest}{is a PPforest object}
+
+\item{global}{is TRUE if we want to see the global importance of the forest}
+
+\item{weight}{is TRUE if we want to see a weighted mesure of the forest importance based on out of bag trees errors}
 }
 \value{
-A dotplot with a global measure of importance variables in
-the PPforest.
+A dotplot with a global measure of importance  variables in the PPforest.
 }
 \description{
-Global importance variable visualization for a PPForest
-object
+Global importance variable visualization for a PPForest object
 }
 \examples{
-tr.index <- train_fn(iris[, 5], 2/3)
-train <- iris[sort(tr.index$id), 5:1]
-test <- iris[-tr.index$id, 5:1 ]
-ppforest <- PPforest( train = train, testap = TRUE, test = test,
+ppforest <- PPforest( data = iris[,5:1], size.tr = 2/3, testap = TRUE,
 m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-importance(train, ppforest,global=TRUE, weight=FALSE)
+importance(iris[,5:1], ppforest, global = TRUE, weight = FALSE)
 }
 

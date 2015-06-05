@@ -4,12 +4,10 @@
 \alias{pproxy_plot}
 \title{Proximity matrix heat map plot}
 \usage{
-pproxy_plot(ppfo, train)
+pproxy_plot(ppfo)
 }
 \arguments{
-  \item{ppfo}{a PPforest object} \item{train}{is a data
-  frame with the training data with class in the first
-  column}
+\item{ppfo}{a PPforest object}
 }
 \value{
 proximity matrix plot
@@ -18,12 +16,8 @@ proximity matrix plot
 Proximity matrix heat map plot
 }
 \examples{
-tr.index <- train_fn(iris[, 5], 2/3)
-te.index <- as.vector(1:length(iris[, 5]))[!(1:length(iris[, 5]) \%in\% (sort(tr.index$id)))]
-train <- iris[sort(tr.index$id), 5:1 ]
-test <- iris[-tr.index$id, 5:1 ]
-ppfr.iris <- PPforest( train = train, testap = TRUE, test = test,
- m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-pproxy_plot(ppfr.iris, train)
+ppfr.iris <- PPforest(data = iris[,5:1], size.tr=2/3, testap = TRUE, m = 500, size.p = .9,
+PPmethod = 'LDA', strata = TRUE)
+pproxy_plot(ppfr.iris)
 }
 

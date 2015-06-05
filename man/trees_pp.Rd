@@ -7,16 +7,18 @@
 trees_pp(data.b, size.p = 0.9, PPmethod = "LDA", lambda = 0.1, ...)
 }
 \arguments{
-  \item{data.b}{are the bootstrap samples from training
-  set.} \item{size.p}{proportion of random sample variables
-  in each split.} \item{PPmethod}{is the projection pursuit
-  index to be optimized, options LDA or PDA, by default
-  it is LDA.} \item{lambda}{a parameter for PDA index}
-  \item{...}{arguments to be passed to methods}
+\item{data.b}{are the bootstrap samples from training set.}
+
+\item{size.p}{proportion of random sample variables in each split.}
+
+\item{PPmethod}{is the projection pursuit index to be optimized, options LDA or PDA, by default it is LDA.}
+
+\item{lambda}{a parameter for PDA index}
+
+\item{...}{arguments to be passed to methods}
 }
 \value{
-data frame with trees_pp output for all the bootstraps
-samples.
+data frame with trees_pp output for all the bootstraps samples.
 }
 \description{
 Projection persuit trees for bootstrap samples.
