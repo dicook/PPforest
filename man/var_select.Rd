@@ -2,7 +2,7 @@
 % Please edit documentation in R/var_select.R
 \name{var_select}
 \alias{var_select}
-\title{Index id for variables set, sample variables without replacement with a sample proportion.}
+\title{Random selection of variables}
 \usage{
 var_select(data, size.p)
 }
@@ -15,7 +15,7 @@ var_select(data, size.p)
 a vector giving the names of the selected variables
 }
 \description{
-Index id for variables set, sample variables without replacement with a sample proportion.
+Index id for variables set, sample variables without replacement.
 }
 \examples{
 variables <- var_select(data=iris[,-5], size.p=0.9)

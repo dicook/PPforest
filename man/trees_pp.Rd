@@ -2,7 +2,7 @@
 % Please edit documentation in R/trees_pp.R
 \name{trees_pp}
 \alias{trees_pp}
-\title{Projection persuit trees for bootstrap samples.}
+\title{Grow a PPtree for each bootstrap sample}
 \usage{
 trees_pp(data.b, size.p = 0.9, PPmethod = "LDA", lambda = 0.1, ...)
 }
@@ -21,7 +21,7 @@ trees_pp(data.b, size.p = 0.9, PPmethod = "LDA", lambda = 0.1, ...)
 data frame with trees_pp output for all the bootstraps samples.
 }
 \description{
-Projection persuit trees for bootstrap samples.
+For each bootstrap sample grow a projection persuit tree (PPtree object).
 }
 \examples{
 training <- train_fn(iris[,5], .9)

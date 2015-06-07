@@ -2,7 +2,7 @@
 % Please edit documentation in R/forest_ppred.R
 \name{forest_ppred}
 \alias{forest_ppred}
-\title{Vector with predicted values from a PPforest.}
+\title{Obtain predicted class for new data using PPforest}
 \usage{
 forest_ppred(newdata, output.tree, ...)
 }

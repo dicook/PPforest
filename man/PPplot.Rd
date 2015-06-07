@@ -2,7 +2,7 @@
 % Please edit documentation in R/PPplot.R
 \name{PPplot}
 \alias{PPplot}
-\title{MDS}
+\title{Proximity matrix visualization}
 \usage{
 PPplot(ppfo, k)
 }
@@ -15,7 +15,7 @@ PPplot(ppfo, k)
 MDS plot
 }
 \description{
-MDS
+MDS plot using proximity matrix inforation.
 }
 \examples{
 ppfr.iris <- PPforest(data = iris[,5:1], size.tr = 2/3, testap = TRUE, m = 500, size.p = .9,

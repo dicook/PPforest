@@ -2,7 +2,7 @@
 % Please edit documentation in R/train_fn.R
 \name{train_fn}
 \alias{train_fn}
-\title{Index id for training set, sample in each class with the same proportion.}
+\title{Obtain stratified sample of the data}
 \usage{
 train_fn(class = class, size.p = 0.9)
 }
