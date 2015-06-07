@@ -27,11 +27,11 @@ PPforest package implements a classification random forest using projection purs
 
 | Function |Description |
 | ------ | ------ | -----: |
-|  var_select  |Index id for variables set, sample variables without replacement with constant sample proportion |
+|var_select  |Index id for variables set, sample variables without replacement with constant sample proportion |
 |  train_fn |Index id for training set, sample in each class with constant sample proportion. |
 |PPtree_split|Projection pursuit classification tree with random variable selection in each split|
 |trees_pp| Projection pursuit trees for bootstrap samples|
-|importance|Data frame with the 1D projection of each split unweighted and weighted by 1-(oob error rate) for each tree and plots of importance variable for each split.|
+|importance| Plot a global measure of imortance in PPforest.|
 |PPforest|Run a Projection pursuit random forest|
 |forest_ppred|Vector with predicted values from a PPforest object.|
 |bootstrap| Draws bootstrap samples with strata option.|
@@ -76,7 +76,9 @@ PPforest function runs a projection pursuit random forest,  using this function 
 The number of trees in the forest is specified using the argument m. size.p is the sample proportion of the variables used in each node split, PPmethod is the projection pursuit index to be optimized there are two options LDA and PDA. Finally strata=TRUE indicate that the bootstrap samples are stratified by class variable. 
 
 ```{r}
-pprf.crab <- PPforest::PPforest(data = crab, size.tr = 2/3, testap = TRUE, m = 500, size.p = .7,    PPmethod = 'LDA', strata = TRUE)
+pprf.crab <- PPforest::PPforest(data = crab, size.tr = 2/3,
+              testap = TRUE, m = 500, size.p = .7,  
+              PPmethod = 'LDA', strata = TRUE)
 str(pprf.crab, max.level = 1)
 ```
 PPforest function returns the predicted values of the training data, training error,  if testap=TRUE then test error and predicted test values are returned. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix,  number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data are also returned.
