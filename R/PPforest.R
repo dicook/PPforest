@@ -32,7 +32,7 @@
 #' @export
 #' @examples
 #' ppfr.iris <- PPforest(data = iris[,5:1], size.tr=2/3, testap = TRUE, m = 500, size.p = .9, 
-#' PPmethod = 'LDA', strata = TRUE)
+#' PPmethod = 'PDA', strata = TRUE)
  PPforest <- function(data, size.tr=2/3, testap = TRUE, m, PPmethod, size.p, strata = TRUE, lambda=.1) {
 
   tr.index <- train_fn(data[, 1], size.tr)
