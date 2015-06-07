@@ -1,5 +1,6 @@
-#' Index id for variables set, sample variables without replacement with a sample proportion.
-#'
+#' Random selection of variables
+#' 
+#' Index id for variables set, sample variables without replacement.
 #' @param data is a data frame without the class variable. 
 #' @param size.p proportion of variables used in each split
 #' @return a vector giving the names of the selected variables 

@@ -10,7 +10,7 @@
 #' @param PPmethod is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.
 #' @param size.p proportion of variables randomly sampled in each split.
 #' @param strata if set \code{TRUE} then the bootrap samples are stratifyed by class variable.
-#' @param lambda a parameter for \code{PDA} index.
+#' @param lambda penalty parameter in PDA index and is between 0 to 1 . If \code{lambda = 0}, no penalty parameter is added and the PDA index is the same as LDA index. If \code{lambda = 1} all variables are treated as uncorrelated. The default value is \code{lambda = 0.1}.
 #' @return An object of class \code{PPforest} with components.
 #' \item{prediction.training}{predicted values for training data set.}
 #' \item{training.error}{error of the training data set.}
@@ -111,7 +111,7 @@
   
  results <- list(prediction.training = pred.tr[[3]], training.error = error.tr, prediction.test = pred.test[[3]],
               error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, 
-              output.trees = output, proximity = proximity, votes= vote.matrix.prop, n.tree = m , n.var = var.sel, 
+              output.trees = output, proximity = proximity, votes= vote.matrix.prop, prediction.oob = oob.pred, n.tree = m , n.var = var.sel, 
               type="Classification", confusion=confusion, call =  match.call(), train = train, test = test)
 class(results) <- "PPforest"
 

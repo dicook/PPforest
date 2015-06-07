@@ -1,5 +1,6 @@
-#' Index id for training set, sample in each class with the same proportion.
+#' Obtain stratified sample of the data 
 #' 
+#' Index id for training set, sample in each class with the same proportion.
 #' @param class input character vector with class of the data
 #' @param size.p proportion of sample in each class group
 #' @return numeric vector  with the sample indexes for training data

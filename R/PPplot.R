@@ -1,5 +1,6 @@
-#' MDS
+#' Proximity matrix visualization 
 #'
+#' MDS plot using proximity matrix inforation.
 #' @param ppfo a PPforest object
 #' @param k number of dimensions of the MDS layout 
 #' @return MDS plot  

@@ -1,4 +1,6 @@
-#'   Projection persuit trees for bootstrap samples.
+#' Grow a PPtree for each bootstrap sample
+#' 
+#' For each bootstrap sample grow a projection persuit tree (PPtree object).
 #' @importFrom magrittr %>%
 #' @param data.b are the bootstrap samples from training set.
 #' @param size.p proportion of random sample variables in each split.
