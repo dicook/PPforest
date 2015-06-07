@@ -5,7 +5,7 @@
 \title{Projection Pursuit Random Forest}
 \usage{
 PPforest(data, size.tr, testap = TRUE, m, PPmethod, size.p,
-strata = TRUE, std = TRUE, lambda=.1)
+strata = TRUE, lambda=.1)
 }
 \arguments{
 \item{data}{a data frame with the class variable in the first column.}
@@ -49,6 +49,6 @@ An object of class \code{PPforest} with components.
 }
 \examples{
 ppfr.iris <- PPforest(data = iris[,5:1], size.tr=2/3, testap = TRUE, m = 500, size.p = .9,
-PPmethod = 'LDA', strata = TRUE)
+PPmethod = 'PDA', strata = TRUE)
 }
 

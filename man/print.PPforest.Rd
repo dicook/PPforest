@@ -2,7 +2,7 @@
 % Please edit documentation in R/print.PPforest.R
 \name{print.PPforest}
 \alias{print.PPforest}
-\title{print PPForest object}
+\title{print PPforest object}
 \usage{
 \method{print}{PPforest}(x, ...)
 }
@@ -15,6 +15,6 @@
 printed results for PPforest object
 }
 \description{
-print PPForest object
+print PPforest object
 }
 
