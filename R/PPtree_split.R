@@ -8,10 +8,10 @@
 #' @param PPmethod index to use for projection pursuit: "LDA", "PDA", "Lr", "GINI", and "ENTROPY"
 #' @param weight  flag in LDA, PDA and Lr index
 #' @param size.p proportion of variables randomly sampled in each split.
-#' @param r power in Lr index
-#' @param lambda tuning parameter in PDA index
-#' @param energy optimization parameter for projection pursuit
-#' @param maxiter number of maximum iteration
+#' @param r is a positive integer value, it is the power in Lr index. The default value is 1.
+#' @param lambda penalty parameter in PDA index and is between 0 to 1 . If \code{lambda = 0}, no penalty parameter is added and the PDA index is the same as LDA index. If \code{lambda = 1} all variables are treated as uncorrelated. The default value is \code{lambda = 0.1}.
+#' @param energy optimization parameter for projection pursuit. Is the parameter for the probability to take a new projection. The smaller \code{energy} the higher the probability to take a new projection, by default is 0.
+#' @param maxiter number of maximum iterations. 
 #' @param ... arguments to be passed to methods
 #' @return An object of class \code{PPtreeclass} with components
 #' \item{Tree.Struct}{Tree structure of projection pursuit classification tree}
