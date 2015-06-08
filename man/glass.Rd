@@ -3,7 +3,7 @@
 \docType{data}
 \name{glass}
 \alias{glass}
-\title{The glass data set}
+\title{Glass data set}
 \format{A data frame with 214 rows and 10 variables}
 \usage{
 data(glass)

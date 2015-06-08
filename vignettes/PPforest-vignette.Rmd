@@ -14,11 +14,13 @@ A random forest is an ensemble learning method, built on bagged trees. The baggi
 
 Projection pursuit random forest algorithm description
 
-1. Let N the number of cases in the training set, bootstrap samples from the training set are taking (samples of size N with replacement)
+1. Let N the number of cases in the training set, $B$ bootstrap samples from the training set are drawn (samples of size N with replacement)
 
-2. For each bootstrap sample a PPtree type algorithm is grown to the largest extent possible. The original PPtree algorithm select in each node the optimal one-dimension projection for separating all classes in the data. PPforest need a modification of PPtree algorithm,  we select for each split a random sample instead of using all the variables and after that in each node we select the optimal one-dimension projection for separating all classes.
+2. For each bootstrap sample a PPtree type algorithm is grown to the largest extent possible.
 
 3. Let M the number of input variables, a number of $m<<M$ variables are selected at random at each node and each split is based on a linear combination of these randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes.
+4.  Predict the classes of each case not included in the bootstrap sample.
+5. Based on majority vote predict the class
 
 We present two examples using real data to show how PPforest package works.
 
@@ -28,7 +30,7 @@ PPforest package implements a classification random forest using projection purs
 | Function |Description |
 | ------ | ------ | -----: |
 |var_select  |Index id for variables set, sample variables without replacement with constant sample proportion |
-|  train_fn |Index id for training set, sample in each class with constant sample proportion. |
+|train_fn |Index id for training set, sample in each class with constant sample proportion. |
 |PPtree_split|Projection pursuit classification tree with random variable selection in each split|
 |trees_pp| Projection pursuit trees for bootstrap samples|
 |importance| Plot a global measure of imortance in PPforest.|
@@ -36,6 +38,7 @@ PPforest package implements a classification random forest using projection purs
 |forest_ppred|Vector with predicted values from a PPforest object.|
 |bootstrap| Draws bootstrap samples with strata option.|
 |PPplot|Proximity matrix visualization using MDS|
+|proxy.plot| Proximity matrix heat map plot|
 |print.PPforest| Print PPforest object|
 
 ## Australian Crab example
@@ -76,12 +79,11 @@ PPforest function runs a projection pursuit random forest,  using this function 
 The number of trees in the forest is specified using the argument m. size.p is the sample proportion of the variables used in each node split, PPmethod is the projection pursuit index to be optimized there are two options LDA and PDA. Finally strata=TRUE indicate that the bootstrap samples are stratified by class variable. 
 
 ```{r}
-pprf.crab <- PPforest::PPforest(data = crab, size.tr = 2/3,
-              testap = TRUE, m = 500, size.p = .7,  
+pprf.crab <- PPforest::PPforest(data = crab, size.tr = 2/3, m = 500, size.p = .7,  
               PPmethod = 'LDA', strata = TRUE)
 str(pprf.crab, max.level = 1)
 ```
-PPforest function returns the predicted values of the training data, training error,  if testap=TRUE then test error and predicted test values are returned. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix,  number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data are also returned.
+PPforest function returns the predicted values of the training data, training error, test error and predicted test values are returned. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix,  number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data are also returned.
 
 The printed version of a PPforest object follows the randomForest printed version to make them comparable
 ```{r}
@@ -152,6 +154,7 @@ We can explore the optimal projection for classification in q-dimensional space.
 
 
 ```{r}
+
 #PPtreeViz::PPopt.Viz(PPtreeViz::LDAopt(NCI60[, 1], NCI60[, -1], q = 1))
 #PPtreeViz::PPopt.Viz(PPtreeViz::PDAopt(NCI60[, 1], as.matrix(NCI60[, -1]), q = 1))
 
@@ -159,7 +162,7 @@ We can explore the optimal projection for classification in q-dimensional space.
 
 ```{r}
 set.seed(143)
-pprf.nci60 <- PPforest::PPforest(data = NCI60, size.tr = 2/3, testap = TRUE,  m = 500, size.p = .2, PPmethod = 'PDA', strata = TRUE, lambda=.3)
+pprf.nci60 <- PPforest::PPforest(data = NCI60, size.tr = 2/3, m = 500, size.p = .2, PPmethod = 'PDA', strata = TRUE, lambda=.3)
 
 ```
 

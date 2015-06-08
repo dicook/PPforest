@@ -1,4 +1,4 @@
-#' The glass data set
+#' Glass data set
 #' 
 #'Contains measurements 214 observations of 6 types of glass; defined in terms of their oxide content.
 #' \itemize{

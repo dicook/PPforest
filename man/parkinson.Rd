@@ -3,7 +3,7 @@
 \docType{data}
 \name{parkinson}
 \alias{parkinson}
-\title{parkinson data set}
+\title{Parkinson data set}
 \format{A data frame with 195 rows and 23 variables}
 \usage{
 data(parkinson)

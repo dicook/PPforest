@@ -3,7 +3,7 @@
 \docType{data}
 \name{wine}
 \alias{wine}
-\title{wine data set}
+\title{Wine data set}
 \format{A data frame with 178 rows and 14 variables}
 \usage{
 data(wine)

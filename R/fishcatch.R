@@ -1,4 +1,4 @@
-#' The Fish catch data set 
+#' Fish catch data set 
 #' 
 #'   There are 159 fishes of 7 species are caught and measured. Altogether there are
 #'   7 variables.  All the fishes are caught from the same lake(Laengelmavesi) near Tampere in Finland.

@@ -1,4 +1,4 @@
-#' print PPforest object
+#' Print PPforest object
 #'
 #' @param x is a PPforest class object
 #' @param ... additional parameter
