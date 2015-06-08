@@ -3,18 +3,16 @@
 \docType{data}
 \name{leukemia}
 \alias{leukemia}
-\title{Leukemia gene expession data set}
+\title{Leukemia data set}
 \format{A data frame with 72 rows and 41 variables}
 \usage{
 data(leukemia)
 }
 \description{
-A data set containing 72 observations from 3 leukemia types classes.
-}
-\details{
+This dataset comes from a study of gene expression in two types of acute leukemias, acute lymphoblastic leukemia (ALL) and acute myeloid leukemia (AML). Gene expression levels were measured using Affymetrix high density oligonucleotide arrays containing 6817 human genes. A data set containing 72 observations from 3 leukemia types classes.
 \itemize{
   \item{Type}{ has 3 classes with 38 cases of B-cell ALL, 25 cases of AML and 9 cases of T-cell ALL.}
-  \item{Gene1 to Gen 40}{ gene expression}
+  \item{Gene1 to Gen 40}{ gene expression levels}
 }
 }
 \keyword{datasets}

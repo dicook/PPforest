@@ -22,7 +22,7 @@ A dotplot with a global measure of importance  variables in the PPforest.
 Importance variable visualization
 }
 \examples{
-ppforest <- PPforest( data = iris[,5:1], size.tr = 2/3, testap = TRUE,
+ppforest <- PPforest( data = iris[,5:1], size.tr = 2/3,
 m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
 importance(iris[,5:1], ppforest, global = TRUE, weight = FALSE)
 }

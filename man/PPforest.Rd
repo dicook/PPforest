@@ -4,14 +4,12 @@
 \alias{PPforest}
 \title{Projection Pursuit Random Forest}
 \usage{
-PPforest(data, size.tr, testap = TRUE, m, PPmethod, size.p, strata = TRUE, lambda=.1)
+PPforest(data, size.tr, m, PPmethod, size.p, strata = TRUE, lambda=.1)
 }
 \arguments{
 \item{data}{a data frame with the class variable in the first column.}
 
 \item{size.tr}{is the size proportion of the training if we want to split the data in training and test.}
-
-\item{testap}{If set to \code{TRUE}(default) indicate a test data will be used of size \code{1-size.tr}.}
 
 \item{m}{is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small. \code{m = 500} is by default.}
 
@@ -47,7 +45,7 @@ An object of class \code{PPforest} with components.
 \code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
 }
 \examples{
-ppfr.iris <- PPforest(data = iris[,5:1], size.tr=2/3, testap = TRUE, m = 500, size.p = .9,
+ppfr.iris <- PPforest(data = iris[,5:1], size.tr = .9, m = 500, size.p = .9,
 PPmethod = 'PDA', strata = TRUE)
 }
 
