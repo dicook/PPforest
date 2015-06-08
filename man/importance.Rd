@@ -2,7 +2,7 @@
 % Please edit documentation in R/importance.R
 \name{importance}
 \alias{importance}
-\title{Global importance variable visualization for a PPForest object}
+\title{Importance variable visualization}
 \usage{
 importance(data, ppforest, global = TRUE, weight = TRUE)
 }
@@ -19,7 +19,7 @@ importance(data, ppforest, global = TRUE, weight = TRUE)
 A dotplot with a global measure of importance  variables in the PPforest.
 }
 \description{
-Global importance variable visualization for a PPForest object
+Importance variable visualization
 }
 \examples{
 ppforest <- PPforest( data = iris[,5:1], size.tr = 2/3, testap = TRUE,

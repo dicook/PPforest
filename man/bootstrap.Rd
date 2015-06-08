@@ -4,7 +4,7 @@
 \alias{bootstrap}
 \title{Draws bootstrap samples with strata option.}
 \usage{
-bootstrap(df, m, strata = TRUE)
+bootstrap(df, m = 500, strata = TRUE)
 }
 \arguments{
 \item{df}{is a data frame with the complete data set with class variable in the first column.}
@@ -20,7 +20,7 @@ data frame object with m bootstrap samples
 Draws bootstrap samples with strata option.
 }
 \examples{
-iris.b <- bootstrap(iris[, 5:1], 30, strata = FALSE)
+iris.b <- bootstrap(iris[, 5:1], 500, strata = FALSE)
 index <- lapply(attributes(iris.b)$indices, function(x) x + 1)
 }
 

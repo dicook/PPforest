@@ -4,8 +4,7 @@
 \alias{PPforest}
 \title{Projection Pursuit Random Forest}
 \usage{
-PPforest(data, size.tr, testap = TRUE, m, PPmethod, size.p,
-strata = TRUE, lambda=.1)
+PPforest(data, size.tr, testap = TRUE, m, PPmethod, size.p, strata = TRUE, lambda=.1)
 }
 \arguments{
 \item{data}{a data frame with the class variable in the first column.}
@@ -14,7 +13,7 @@ strata = TRUE, lambda=.1)
 
 \item{testap}{If set to \code{TRUE}(default) indicate a test data will be used of size \code{1-size.tr}.}
 
-\item{m}{is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small.}
+\item{m}{is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small. \code{m = 500} is by default.}
 
 \item{PPmethod}{is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.}
 
