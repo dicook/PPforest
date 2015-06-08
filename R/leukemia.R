@@ -4,7 +4,7 @@
 #' 
 #' \itemize{
 #'   \item{Type}{ has 3 classes with 38 cases of B-cell ALL, 25 cases of AML and 9 cases of T-cell ALL.} 
-#'   \item{Gene1 to Gen 40}{gene expression}
+#'   \item{Gene1 to Gen 40}{ gene expression}
 
 #' }
 #' @docType data

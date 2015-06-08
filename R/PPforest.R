@@ -1,12 +1,11 @@
 #' Projection Pursuit Random Forest
 #'
 #'\code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
-#' @usage PPforest(data, size.tr, testap = TRUE, m, PPmethod, size.p, 
-#' strata = TRUE, lambda=.1)
+#' @usage PPforest(data, size.tr, testap = TRUE, m, PPmethod, size.p, strata = TRUE, lambda=.1)
 #' @param data a data frame with the class variable in the first column.
 #' @param size.tr is the size proportion of the training if we want to split the data in training and test.
 #' @param testap If set to \code{TRUE}(default) indicate a test data will be used of size \code{1-size.tr}.
-#' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small.
+#' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small. \code{m = 500} is by default.
 #' @param PPmethod is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.
 #' @param size.p proportion of variables randomly sampled in each split.
 #' @param strata if set \code{TRUE} then the bootrap samples are stratifyed by class variable.
@@ -33,7 +32,8 @@
 #' @examples
 #' ppfr.iris <- PPforest(data = iris[,5:1], size.tr=2/3, testap = TRUE, m = 500, size.p = .9, 
 #' PPmethod = 'PDA', strata = TRUE)
- PPforest <- function(data, size.tr=2/3, testap = TRUE, m, PPmethod, size.p, strata = TRUE, lambda=.1) {
+#' 
+ PPforest <- function(data, size.tr=2/3, testap = TRUE, m=500, PPmethod, size.p, strata = TRUE, lambda = .1) {
 
   tr.index <- train_fn(data[, 1], size.tr)
   train <- data[sort(tr.index$id), ]

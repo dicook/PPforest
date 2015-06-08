@@ -7,9 +7,9 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
-#'iris.b <- bootstrap(iris[, 5:1], 30, strata = FALSE) 
+#'iris.b <- bootstrap(iris[, 5:1], 500, strata = FALSE) 
 #'index <- lapply(attributes(iris.b)$indices, function(x) x + 1)
-bootstrap <- function(df, m, strata = TRUE) { 
+bootstrap <- function(df, m=500, strata = TRUE) { 
   . <- NULL
   samp <- NULL
     n <- nrow(df)

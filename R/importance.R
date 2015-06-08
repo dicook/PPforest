@@ -1,10 +1,10 @@
-#' Global importance variable visualization for a PPForest object
-#'
+#' Importance variable visualization 
+#' 
 #' @param data is a data frame with the complete data set. Class factor in the first column
 #' @param ppforest is a PPforest object
 #' @param global is TRUE if we want to see the global importance of the forest
 #' @param weight is TRUE if we want to see a weighted mesure of the forest importance based on out of bag trees errors
-#' @return  A dotplot with a global measure of importance  variables in the PPforest.
+#' @return A dotplot with a global measure of importance  variables in the PPforest.
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
