@@ -6,7 +6,7 @@
 #' @return MDS plot  
 #' @export
 #' @examples
-#' ppfr.iris <- PPforest(data = iris[,5:1], size.tr = 2/3, testap = TRUE, m = 500, size.p = .9, 
+#' ppfr.iris <- PPforest(data = iris[,5:1], size.tr = 2/3, m = 500, size.p = .9, 
 #'  PPmethod = 'LDA', strata = TRUE)
 #'  PPplot(ppfr.iris, k = 2)
 #'  PPplot(ppfr.iris, k = 3)

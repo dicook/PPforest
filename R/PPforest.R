@@ -1,10 +1,9 @@
 #' Projection Pursuit Random Forest
 #'
 #'\code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
-#' @usage PPforest(data, size.tr, testap = TRUE, m, PPmethod, size.p, strata = TRUE, lambda=.1)
+#' @usage PPforest(data, size.tr, m, PPmethod, size.p, strata = TRUE, lambda=.1)
 #' @param data a data frame with the class variable in the first column.
 #' @param size.tr is the size proportion of the training if we want to split the data in training and test.
-#' @param testap If set to \code{TRUE}(default) indicate a test data will be used of size \code{1-size.tr}.
 #' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small. \code{m = 500} is by default.
 #' @param PPmethod is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.
 #' @param size.p proportion of variables randomly sampled in each split.
@@ -30,10 +29,10 @@
 #' \item{test}{is the test data based on \code{1-size.tr} sample proportion}
 #' @export
 #' @examples
-#' ppfr.iris <- PPforest(data = iris[,5:1], size.tr=2/3, testap = TRUE, m = 500, size.p = .9, 
+#' ppfr.iris <- PPforest(data = iris[,5:1], size.tr = .9, m = 500, size.p = .9, 
 #' PPmethod = 'PDA', strata = TRUE)
 #' 
- PPforest <- function(data, size.tr=2/3, testap = TRUE, m=500, PPmethod, size.p, strata = TRUE, lambda = .1) {
+ PPforest <- function(data, size.tr=2/3,  m=500, PPmethod, size.p, strata = TRUE, lambda = .1) {
 
   tr.index <- train_fn(data[, 1], size.tr)
   train <- data[sort(tr.index$id), ]
@@ -93,15 +92,16 @@
   })
 
   error.tr <- 1 - sum(train[, 1] == pred.tr[[3]])/length(pred.tr[[3]])
+  test <- data[-tr.index$id, -1 ]
   
-  if(testap == TRUE) {
-    test <- data[-tr.index$id, -1 ]
+  if(dim(test)[1]!=0) {
     pred.test <- forest_ppred(test , output)
     error.test <- 1 - sum(data[-tr.index$id, 1] == pred.test[[3]])/length(pred.test[[3]])
   } 
   else{
     pred.test <- NULL
     error.test <- NULL
+    test <- NULL
   }
   
   tab.tr <- table(Observed=train[,1],Predicted=oob.pred)
