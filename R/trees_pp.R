@@ -13,7 +13,7 @@
 #' @examples
 #' training <- train_fn(iris[,5], .9)
 #' data1 <- iris[training$id, 5:1]
-#' iris.b <- bootstrap(data1, 500) 
+#' iris.b <- ppf_bootstrap(data1, 500) 
 #' output1 <- trees_pp(iris.b, size.p=.9,  PPmethod = "LDA") 
 #' output2 <- trees_pp(iris.b, size.p=.9, PPmethod ='PDA', lambda=.1) 
 trees_pp <- function(data.b, size.p = 0.9, PPmethod = "LDA", lambda=.1, ...) {
