@@ -44,11 +44,11 @@
   var.sel <- floor(length(var.num) * size.p)
   
   if (strata == TRUE) {
-    data.b <- bootstrap(train, m, strata)
+    data.b <- ppf_bootstrap(train, m, strata)
     output <- trees_pp(data.b, size.p, PPmethod, lambda = .1)
     } 
   else{
-    data.b <- bootstrap(train, m, strata = FALSE)
+    data.b <- ppf_bootstrap(train, m, strata = FALSE)
     output <- trees_pp(data.b, size.p, PPmethod, lambda = .1)
     }
   
