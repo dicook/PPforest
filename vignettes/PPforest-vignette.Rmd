@@ -33,10 +33,10 @@ PPforest package implements a classification random forest using projection purs
 |train_fn |Index id for training set, sample in each class with constant sample proportion. |
 |PPtree_split|Projection pursuit classification tree with random variable selection in each split|
 |trees_pp| Projection pursuit trees for bootstrap samples|
-|importance| Plot a global measure of imortance in PPforest.|
+|ppf_importance| Plot a global measure of imortance in PPforest.|
 |PPforest|Run a Projection pursuit random forest|
 |forest_ppred|Vector with predicted values from a PPforest object.|
-|bootstrap| Draws bootstrap samples with strata option.|
+|ppf_bootstrap| Draws bootstrap samples with strata option.|
 |PPplot|Proximity matrix visualization using MDS|
 |proxy.plot| Proximity matrix heat map plot|
 |print.PPforest| Print PPforest object|
@@ -83,6 +83,7 @@ pprf.crab <- PPforest::PPforest(data = crab, size.tr = 2/3, m = 500, size.p = .7
               PPmethod = 'LDA', strata = TRUE)
 str(pprf.crab, max.level = 1)
 ```
+
 PPforest function returns the predicted values of the training data, training error, test error and predicted test values are returned. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix,  number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data are also returned.
 
 The printed version of a PPforest object follows the randomForest printed version to make them comparable
@@ -126,10 +127,10 @@ PPforest::PPplot(pprf.crab, k = 3)
 
 A global measure of importance is computed. In PPtree the projection coefficient of each node represent the importance of variables to class separation in each node. To get a global measure in PPforest we need to take into account the importance in each node and combine the results for all the trees in the forest. The importance measure of PPforest is a  weighted mean of the absolute value of the projection coefficients across all nodes in every tree. The weights are  the projection pursuit index in each nide, and 1-the out of bag error of each tree.
 
-Using the \code{importance} function we can plot the global variable importance measure in PPforest.
+Using the \code{ppf_importance} function we can plot the global variable importance measure in PPforest.
 
 ```{r}
-PPforest::importance(crab, pprf.crab, global = TRUE, weight = TRUE) 
+PPforest::ppf_importance(crab, pprf.crab, global = TRUE, weight = TRUE) 
 ```
 
 We can see that the most important variable in this example is RW while the less important is CL
@@ -150,15 +151,15 @@ training.id <- PPforest::train_fn(NCI60[, 1], 2/3)
 ```
 Since this data set present a considerable big number of predictive variables we will explore the data set using PPTreeViz package.
 
-We can explore the optimal projection for classification in q-dimensional space. 
+We can explore the optimal projection for classification in q-dimensional space. We select q=1 and  PDA  projection pursuit indexe.
 
 
-```{r}
+```{r, fig.show='hold',fig.width = 7 ,fig.height = 4,echo = FALSE}
+library(ggplot2)
 
-#PPtreeViz::PPopt.Viz(PPtreeViz::LDAopt(NCI60[, 1], NCI60[, -1], q = 1))
-#PPtreeViz::PPopt.Viz(PPtreeViz::PDAopt(NCI60[, 1], as.matrix(NCI60[, -1]), q = 1))
-
+PPtreeViz::PPopt.Viz(PPtreeViz::PDAopt(NCI60[, 1], as.matrix(NCI60[, -1]), q = 1))
 ```
+We can see that leukemia cases are separated from the rest.
 
 ```{r}
 set.seed(143)
@@ -201,7 +202,7 @@ And finally the global importance measure plot:
 
 
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 6,echo=FALSE}
-PPforest::importance(NCI60, pprf.nci60, global = TRUE, weight = TRUE) 
+PPforest::ppf_importance(NCI60, pprf.nci60, global = TRUE, weight = TRUE) 
 ```
 
 We can observe that the most important variables are Gene28, Gene14 and Gene25 while Gene9 and Gene15 are the less important for the classification PPforest.
