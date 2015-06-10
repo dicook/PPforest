@@ -22,7 +22,7 @@ Vector with predicted values from a PPforest.
 \examples{
 data(iris)
 training <- train_fn(class = iris[, 5], size.p = 2/3)
-iris.b <- bootstrap( iris[training$id, 5:1], 500)
+iris.b <- ppf_bootstrap( iris[training$id, 5:1], 500)
 output <- trees_pp(iris.b, size.p = 0.9, PPmethod ="LDA")
 pr <- forest_ppred( iris[-training$id, 1:4] , output)
 }
