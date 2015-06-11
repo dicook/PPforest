@@ -52,7 +52,7 @@
     output <- trees_pp(data.b, size.p, PPmethod, lambda = .1)
     }
   
-  pred.tr <- forest_ppred(train[, -1], output)
+  pred.tr <- tree_ppred(train[, -1], output)
   pos <- expand.grid(a = 1:dim(train)[1], b = 1:dim(train)[1])
   cond <- pos[,1] >= pos[, 2]
   tri.low <- pos[cond, ]
@@ -95,7 +95,7 @@
   test <- data[-tr.index$id, -1 ]
   
   if(dim(test)[1]!=0) {
-    pred.test <- forest_ppred(test , output)
+    pred.test <- tree_ppred(test , output)
     error.test <- 1 - sum(data[-tr.index$id, 1] == pred.test[[3]])/length(pred.test[[3]])
   } 
   else{
