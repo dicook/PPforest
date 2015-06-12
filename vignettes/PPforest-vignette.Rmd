@@ -35,7 +35,7 @@ PPforest package implements a classification random forest using projection purs
 |trees_pp| Projection pursuit trees for bootstrap samples|
 |ppf_importance| Plot a global measure of imortance in PPforest.|
 |PPforest|Run a Projection pursuit random forest|
-|forest_ppred|Vector with predicted values from a PPforest object.|
+|tree_ppred|Vector with predicted values from a PPtree object.|
 |ppf_bootstrap| Draws bootstrap samples with strata option.|
 |PPplot|Proximity matrix visualization using MDS|
 |proxy.plot| Proximity matrix heat map plot|
