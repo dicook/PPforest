@@ -9,9 +9,9 @@
 #' @examples
 #'iris.b <- ppf_bootstrap(iris[, 5:1], 500, strata = FALSE) 
 #'index <- lapply(attributes(iris.b)$indices, function(x) x + 1)
-ppf_bootstrap <- function(df, m=500, strata = TRUE) { 
-  . <- NULL
-  samp <- NULL
+ppf_bootstrap <- function(df, m = 500, strata = TRUE) {
+    . <- NULL
+    samp <- NULL
     n <- nrow(df)
     class.id <- data.frame(id = 1:n, class = df[, 1])
     if (strata == TRUE) {
