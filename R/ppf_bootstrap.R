@@ -13,7 +13,7 @@ ppf_bootstrap <- function(df, m = 500, strata = TRUE) {
     . <- NULL
     samp <- NULL
     n <- nrow(df)
-    class.id <- data.frame(id = 1:n, class = df[, 1])
+    class.id <- dplyr::data_frame(id = 1:n, class = df[, 1])
     if (strata == TRUE) {
         samp.g <- replicate(m, class.id %>% dplyr::group_by(class) %>% dplyr::do(samp = sort(sample(.$id, replace = TRUE))) %>% 
             dplyr::ungroup() %>% dplyr::select(samp), simplify = FALSE)
@@ -26,7 +26,7 @@ ppf_bootstrap <- function(df, m = 500, strata = TRUE) {
     attr(df, "drop") <- TRUE
     attr(df, "group_sizes") <- rep(n, m)
     attr(df, "biggest_group_size") <- n
-    attr(df, "labels") <- data.frame(replicate = 1:m)
+    attr(df, "labels") <- dplyr::data_frame(replicate = 1:m)
     attr(df, "vars") <- list(quote(replicate))
     class(df) <- c("grouped_df", "tbl_df", "tbl", "data.frame")
     
