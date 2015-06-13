@@ -13,7 +13,7 @@
 train_fn <- function(class = class, size.p = 0.9) {
     id <- NULL
     n <- length(class)
-    class.id <- data.frame(id = 1:n, class = class)
+    class.id <- dplyr::data_frame(id = 1:n, class = class)
     class.id %>% dplyr::group_by(class) %>% dplyr::sample_frac(size.p) %>% dplyr::arrange(id) %>% dplyr::ungroup() %>% 
         dplyr::select(id)
 } 
