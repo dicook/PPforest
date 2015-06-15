@@ -14,11 +14,11 @@
 #' PPmethod = 'PDA', strata = TRUE)
 #' pr <- predict( object = pprf.iris, test.data = pprf.iris$test)
 #' pr
-predict.PPforest <- function(object, test.data,  Rule, true.class=NULL, ...) {
+predict.PPforest <- function(object, test.data, Rule, true.class = NULL, ...) {
     . <- NULL
     
-    votes <- object[[8]] %>% dplyr::do(tr = PPtreeViz::PP.classify(test.data = object$test, Tree.result = .$tr, 
-        Rule = 1, ...))
+    votes <- object[[8]] %>% dplyr::do(tr = PPtreeViz::PP.classify(test.data = object$test, Tree.result = .$tr, Rule = 1, 
+        ...))
     
     out <- votes %>% dplyr::do(pred = .$tr[[2]])
     

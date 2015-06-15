@@ -29,7 +29,7 @@
 #' \item{test}{is the test data based on \code{1-size.tr} sample proportion}
 #' @export
 #' @examples
-#' ppfr.iris <- PPforest(data = iris[,5:1], size.tr = .9, m = 500, size.p = .9, 
+#' pprf.iris <- PPforest(data = iris[,5:1], size.tr = .9, m = 500, size.p = .9, 
 #' PPmethod = 'PDA', strata = TRUE)
 #' 
 PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
@@ -56,11 +56,9 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     cond <- pos[, 1] >= pos[, 2]
     tri.low <- pos[cond, ]
     
-    same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[2]]), 2, function(x) x[tri.low[, 1]] == x[tri.low[, 
-        2]]))
+    same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[2]]), 2, function(x) x[tri.low[, 1]] == x[tri.low[, 2]]))
     
-    proximity <- data.frame(same.node[, c(1:2)], proxi = apply(same.node[, -c(1:2)], 1, function(x) sum(x == 
-        1))/dim((pred.tr[[2]]))[1])
+    proximity <- data.frame(same.node[, c(1:2)], proxi = apply(same.node[, -c(1:2)], 1, function(x) sum(x == 1))/dim((pred.tr[[2]]))[1])
     
     l.train <- 1:nrow(train)
     index <- lapply(attributes(data.b)$indices, function(x) x + 1)
@@ -90,7 +88,7 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     
     oob.err.tree <- sapply(X = 1:m, FUN = function(i) {
         dd <- diag(table(pred.tr[[2]][i, oob.obs[i, ] == TRUE], train[oob.obs[i, ] == TRUE, 1]))
-       1 - sum(dd)/sum(oob.obs[i, ] == TRUE)
+        1 - sum(dd)/sum(oob.obs[i, ] == TRUE)
     })
     
     error.tr <- 1 - sum(train[, 1] == pred.tr[[3]])/length(pred.tr[[3]])
@@ -111,13 +109,11 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     confusion <- cbind(tab.tr, class.error = round(class.error, 2))
     
     results <- list(prediction.training = pred.tr[[3]], training.error = error.tr, prediction.test = pred.test[[3]], 
-        error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, 
-        output.trees = output, proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, 
-        n.var = var.sel, type = "Classification", confusion = confusion, call = match.call(), train = train, 
-        test = test)
+        error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, output.trees = output, 
+        proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, n.var = var.sel, type = "Classification", 
+        confusion = confusion, call = match.call(), train = train, test = test, vote.mat = pred.tr[[2]])
     class(results) <- "PPforest"
     
     return(results)
     
-}
- 
+} 

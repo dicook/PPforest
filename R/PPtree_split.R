@@ -156,8 +156,8 @@ PPtree_split <- function(formula, data, PPmethod = "LDA", weight = TRUE, size.p 
             } else if (PPmethod == "PDA") {
                 a <- PPtreeViz::PDAopt(as.numeric(as.factor(class)), as.matrix(origdata), weight, q = 1, lambda = lambda)
             } else {
-                a <- PPtreeViz::PPopt(as.numeric(as.factor(class)), as.matrix(origdata), PPmethod = PPmethod, 
-                  r = r, q = 1, energy = energy, cooling = 0.999, TOL = TOL)
+                a <- PPtreeViz::PPopt(as.numeric(as.factor(class)), as.matrix(origdata), PPmethod = PPmethod, r = r, 
+                  q = 1, energy = energy, cooling = 0.999, TOL = TOL)
             }
             if (sign != sign(a$projbest[index])) 
                 a$projbest <- -a$projbest
@@ -208,8 +208,8 @@ PPtree_split <- function(formula, data, PPmethod = "LDA", weight = TRUE, size.p 
         }
         if (G == 1) {
             Tree.Struct[id, 3] <- as.numeric(names(g))
-            list(Tree.Struct = Tree.Struct, projbest.node = projbest.node, splitCutoff.node = splitCutoff.node, 
-                rep = rep, rep1 = rep1, rep2 = rep2)
+            list(Tree.Struct = Tree.Struct, projbest.node = projbest.node, splitCutoff.node = splitCutoff.node, rep = rep, 
+                rep1 = rep1, rep2 = rep2)
         } else {
             Tree.Struct[id, 2] <- rep1
             rep1 <- rep1 + 1
@@ -229,8 +229,8 @@ PPtree_split <- function(formula, data, PPmethod = "LDA", weight = TRUE, size.p 
             t.index <- sort(t.index[-(1:t.n)])
             t.class <- t.class[t.index]
             t.data <- origdata[t.index, ]
-            b <- Tree.construct(t.class, t.data, Tree.Struct, Tree.Struct[id, 2], rep, rep1, rep2, projbest.node, 
-                splitCutoff.node, PPmethod, r, lambda, maxiter, ...)
+            b <- Tree.construct(t.class, t.data, Tree.Struct, Tree.Struct[id, 2], rep, rep1, rep2, projbest.node, splitCutoff.node, 
+                PPmethod, r, lambda, maxiter, ...)
             Tree.Struct <- b$Tree.Struct
             projbest.node <- b$projbest.node
             splitCutoff.node <- b$splitCutoff.node
@@ -247,8 +247,8 @@ PPtree_split <- function(formula, data, PPmethod = "LDA", weight = TRUE, size.p 
             t.data <- origdata[t.index, ]
             n <- nrow(t.data)
             G <- length(table(t.class))
-            b <- Tree.construct(t.class, t.data, Tree.Struct, Tree.Struct[id, 3], rep, rep1, rep2, projbest.node, 
-                splitCutoff.node, PPmethod, r, lambda, maxiter, ...)
+            b <- Tree.construct(t.class, t.data, Tree.Struct, Tree.Struct[id, 3], rep, rep1, rep2, projbest.node, splitCutoff.node, 
+                PPmethod, r, lambda, maxiter, ...)
             Tree.Struct <- b$Tree.Struct
             projbest.node <- b$projbest.node
             splitCutoff.node <- b$splitCutoff.node

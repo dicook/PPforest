@@ -10,8 +10,10 @@
 #' pprf.crab <- PPforest(data = crab, size.tr = 1, m = 500, size.p = .5, 
 #' PPmethod = 'LDA',  strata = TRUE)
 #' ppf_oob_error(pprf.crab, nsplit = 20)
-#' 
 ppf_oob_error <- function(ppfo, nsplit) {
+    ntree <- NULL
+    value <- NULL
+    variable <- NULL
     error.cum <- function(ppfo, m) {
         l.train <- 1:nrow(ppfo$train)
         index2 <- lapply(attributes(ppfo$boot.samp)$indices[1:m], function(x) x + 1)
@@ -20,7 +22,7 @@ ppf_oob_error <- function(ppfo, nsplit) {
         pred.mtree <- ppfo$vote.mat[1:m, ]
         
         oob.pred <- sapply(X = 1:nrow(ppfo$train), FUN = function(i) {
-            t1 <- table( pred.mtree[oob.obs[, i] == TRUE, i] )
+            t1 <- table(pred.mtree[oob.obs[, i] == TRUE, i])
             names(t1)[which.max(t1)]
         })
         
@@ -29,8 +31,7 @@ ppf_oob_error <- function(ppfo, nsplit) {
         })
         
         aux <- unlist(lapply(oob.pred, is.null))
-        oob.all <- 1 - sum(diag(table(unlist(oob.pred[!aux]), ppfo$train[!aux, 1])))/length(ppfo$train[!aux, 
-            1])
+        oob.all <- 1 - sum(diag(table(unlist(oob.pred[!aux]), ppfo$train[!aux, 1])))/length(ppfo$train[!aux, 1])
         tab.err <- table(unlist(oob.pred[!aux]), ppfo$train[!aux, 1])
         oob.class <- 1 - diag(tab.err)/apply(tab.err, 2, sum)
         c(oob.all, oob.class)
@@ -43,12 +44,12 @@ ppf_oob_error <- function(ppfo, nsplit) {
     oob.pl <- reshape2::melt(oob.err.sp, id.vars = "ntree")
     
     if (max(oob.pl$value) < 0.5) {
-        ggpplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + ggplot2::geom_line() + ylim(0, 
-            0.5)
+        ggplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + 
+            ggplot2::geom_line() + ggplot2::ylim(0, 0.5)
         
     } else {
-        ggplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + ggplot2::geom_line() + ylim(0, 
-            1)
+        ggplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + 
+            ggplot2::geom_line() + ggplot2::ylim(0, 1)
         
     }
 } 

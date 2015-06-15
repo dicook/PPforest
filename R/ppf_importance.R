@@ -15,8 +15,7 @@ ppf_importance <- function(data, ppforest, global = TRUE, weight = TRUE) {
     value <- NULL
     variable <- NULL
     node <- NULL
-    mat.proj <- abs(plyr::ldply(ppforest[[8]][[2]], function(x) data.frame(node = 1:dim(x$projbest.node)[1], 
-        x$projbest.node)))
+    mat.proj <- abs(plyr::ldply(ppforest[[8]][[2]], function(x) data.frame(node = 1:dim(x$projbest.node)[1], x$projbest.node)))
     colnames(mat.proj)[-1] <- colnames(data[, -1])
     
     index.part <- plyr::ldply(ppforest[[8]][[2]], function(x) data.frame(index = x$Tree.Struct[, 5][x$Tree.Struct[, 
@@ -34,20 +33,17 @@ ppf_importance <- function(data, ppforest, global = TRUE, weight = TRUE) {
     mmat.vi.0 <- subset(mmat.vi, value != 0)
     mmat.vi.w.0 <- subset(mmat.vi.w, value != 0)
     
-    import.vi.0 <- mmat.vi.0 %>% dplyr::group_by(node, variable) %>% dplyr::summarise(mean = mean(value)) %>% 
-        dplyr::arrange(dplyr::desc(mean))
+    import.vi.0 <- mmat.vi.0 %>% dplyr::group_by(node, variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
     import.vi.0$variable <- with(import.vi.0, reorder(variable, mean))
     
     
     import.vi.g.0 <- mmat.vi.0 %>% dplyr::group_by(variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
     import.vi.g.0$variable <- with(import.vi.g.0, reorder(variable, mean))
     
-    import.vi.w.0 <- mmat.vi.w.0 %>% dplyr::group_by(node, variable) %>% dplyr::summarise(mean = mean(value)) %>% 
-        dplyr::arrange(dplyr::desc(mean))
+    import.vi.w.0 <- mmat.vi.w.0 %>% dplyr::group_by(node, variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
     import.vi.w.0$variable <- with(import.vi.w.0, reorder(variable, mean))
     
-    import.vi.wg.0 <- mmat.vi.w.0 %>% dplyr::group_by(variable) %>% dplyr::summarise(mean = mean(value)) %>% 
-        dplyr::arrange(dplyr::desc(mean))
+    import.vi.wg.0 <- mmat.vi.w.0 %>% dplyr::group_by(variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
     import.vi.wg.0$variable <- with(import.vi.wg.0, reorder(variable, mean))
     
     if (global == TRUE & weight == TRUE) {
@@ -61,9 +57,7 @@ ppf_importance <- function(data, ppforest, global = TRUE, weight = TRUE) {
         print(ggplot2::ggplot(import.vi.0, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::facet_wrap(~node))
     }
     if (global == FALSE & weight == TRUE) {
-        print(ggplot2::ggplot(import.vi.w.0, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + 
-            ggplot2::facet_wrap(~node))
+        print(ggplot2::ggplot(import.vi.w.0, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::facet_wrap(~node))
     }
     
-}
- 
+} 

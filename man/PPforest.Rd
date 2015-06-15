@@ -45,7 +45,7 @@ An object of class \code{PPforest} with components.
 \code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
 }
 \examples{
-ppfr.iris <- PPforest(data = iris[,5:1], size.tr = .9, m = 500, size.p = .9,
+pprf.iris <- PPforest(data = iris[,5:1], size.tr = .9, m = 500, size.p = .9,
 PPmethod = 'PDA', strata = TRUE)
 }
 

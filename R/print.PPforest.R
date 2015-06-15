@@ -15,6 +15,4 @@ print.PPforest <- function(x, ...) {
     cat("Confusion matrix:\n")
     print(x$confusion)
     
-}
-
- 
+} 

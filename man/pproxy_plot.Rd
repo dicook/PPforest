@@ -22,7 +22,7 @@ Proximity matrix visualization
 \examples{
 ppfr.iris <- PPforest(data = iris[,5:1], size.tr=2/3, m = 500, size.p = .9,
 PPmethod = 'LDA', strata = TRUE)
-pproxy_plot(ppfr.iris, type="heat")
-pproxy_plot(ppfr.iris, type="MDS", k=2)
+pproxy_plot(ppfr.iris, type='heat')
+pproxy_plot(ppfr.iris, type='MDS', k=2)
 }
 
