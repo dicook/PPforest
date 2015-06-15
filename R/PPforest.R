@@ -58,6 +58,7 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     
     same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[2]]), 2, function(x) x[tri.low[, 1]] == x[tri.low[, 
         2]]))
+    
     proximity <- data.frame(same.node[, c(1:2)], proxi = apply(same.node[, -c(1:2)], 1, function(x) sum(x == 
         1))/dim((pred.tr[[2]]))[1])
     
@@ -89,7 +90,7 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     
     oob.err.tree <- sapply(X = 1:m, FUN = function(i) {
         dd <- diag(table(pred.tr[[2]][i, oob.obs[i, ] == TRUE], train[oob.obs[i, ] == TRUE, 1]))
-        1 - sum(dd)/sum(oob.obs[i, ] == TRUE)
+       1 - sum(dd)/sum(oob.obs[i, ] == TRUE)
     })
     
     error.tr <- 1 - sum(train[, 1] == pred.tr[[3]])/length(pred.tr[[3]])

@@ -22,10 +22,13 @@ tree_ppred <- function(newdata, output.tree, ...) {
     out <- votes %>% dplyr::do(pred = .$tr[[2]])
     
     vote.mat <- matrix(unlist(out$pred), ncol = dim(newdata)[[1]], byrow = T)
+
+    
     max.vote <- apply(vote.mat, 2, function(x) {
         t1 <- table(x)
         names(t1)[which.max(t1)]
-    })
+   }
+   )
     
     
     return(list(out, vote.mat, max.vote))

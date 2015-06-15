@@ -3,7 +3,6 @@
 S3method(predict,PPforest)
 S3method(print,PPforest)
 export(PPforest)
-export(PPplot)
 export(PPtree_split)
 export(ppf_bootstrap)
 export(ppf_importance)

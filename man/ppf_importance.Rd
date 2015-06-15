@@ -24,6 +24,6 @@ Importance variable visualization
 \examples{
 ppforest <- PPforest( data = iris[,5:1], size.tr = 2/3,
 m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-ppf_importance(iris[,5:1], ppforest, global = TRUE, weight = FALSE)
+ppf_importance(iris[,5:1], ppforest, global = FALSE, weight = TRUE)
 }
 
