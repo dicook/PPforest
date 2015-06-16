@@ -3,14 +3,21 @@ title: "Projection pursuit classification random forest "
 author: "N. da Silva, E. Lee & D. Cook"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+bibliography: biblio.bib
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::docco_linear}
-  %\VignetteEncoding{UTF-8}
+  \VignetteIndexEntry{Vignette Title}
+  \VignetteEngine{knitr::docco_linear}
+  \VignetteEncoding{UTF-8}
 ---
-## Introduction
+## Abstract
 
 A random forest is an ensemble learning method, built on bagged trees. The bagging provides power for classification because it yields information about variable importance, predictive error and proximity of observations. This research adapts the random forest to utilize combinations of variables in the tree construction, which we call the projection pursuit classification random forest (PPforest). In a random forest each split is based on a single variable, chosen from a subset of predictors. In the PPforest, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The PPforest uses the PPtree algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for PPforest. 
+
+##Introduction
+Random Forest was proposed by Leo Bieman (2001), there are two main concept used in random forest, bootstrap aggregation  and random feature selection  to individual classification or regression trees for prediction.  The most popular random forest implementations use univariate decision trees (CART or C4.5), these tees select a single feature variable in each split. A not very popular version of random forest that is also presented in the original paper consists in use  oblique trees where the feature space is selected by random selected hyperplanes.
+
+The approach presented here goes in the spirit of the lees popular random fores approach. The motivation for this approach is because when the data are collinear with correlated features hyperplanes that are oblique to the axis maybe do a better work in separeate the feature space.
+
 
 Projection pursuit random forest algorithm description
 
@@ -37,8 +44,7 @@ PPforest package implements a classification random forest using projection purs
 |PPforest|Run a Projection pursuit random forest|
 |tree_ppred|Vector with predicted values from a PPtree object.|
 |ppf_bootstrap| Draws bootstrap samples with strata option.|
-|PPplot|Proximity matrix visualization using MDS|
-|proxy.plot| Proximity matrix heat map plot|
+|pproxy_plot| Proximity matrix visualization|
 |print.PPforest| Print PPforest object|
 
 ## Australian Crab example
@@ -105,24 +111,24 @@ We can get the predicted values for training and test using the output of PPfore
  pred.test[1:10]
 ```
 
-From PPforest object we can plot a heat map of the proximity matrix using the function \code{proxy_plot}.
+From PPforest object we can plot a heat map of the proximity matrix using the function \code{pproxy_plot}.
 
 ```{r,fig.show='hold',fig.width = 4 ,fig.height = 3,echo=FALSE}
-PPforest::pproxy_plot( pprf.crab)
+PPforest::pproxy_plot(pprf.crab, type="heat")
 ```
 
-We can also plot the MDS using proximity matrix information with the function PPplot.
+We can also plot the MDS using proximity matrix information with the function \code{pproxy_plot}.
 
 If we select k=2 the output plot is as follows:
 
 ```{r,fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE}
-PPforest::PPplot(pprf.crab, k = 2)
+PPforest::pproxy_plot(pprf.crab, type="MDS", k=2)
 ```
 
 If we select k>2 
 
 ```{r,fig.show='hold',fig.width = 7 ,fig.height = 7,echo = FALSE}
-PPforest::PPplot(pprf.crab, k = 3)
+PPforest::pproxy_plot(pprf.crab, type="MDS",k = 3)
 ```
 
 A global measure of importance is computed. In PPtree the projection coefficient of each node represent the importance of variables to class separation in each node. To get a global measure in PPforest we need to take into account the importance in each node and combine the results for all the trees in the forest. The importance measure of PPforest is a  weighted mean of the absolute value of the projection coefficients across all nodes in every tree. The weights are  the projection pursuit index in each nide, and 1-the out of bag error of each tree.
@@ -183,20 +189,20 @@ rf.nci60
 In this case PPforest also shows a better performance than randomForest.
 
 ```{r,fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE}
-PPforest::pproxy_plot( pprf.nci60 )
+PPforest::pproxy_plot( pprf.nci60, type="heat" )
 ```
 
-We can also plot the MDS of the proximity matrix using the function PPplot.
+We can also plot the MDS of the proximity matrix using the function \code{pproxy_plot}.
 
 If we select k=2 the output plot is as follows:
 
 ```{r,fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE}
-PPforest::PPplot(pprf.nci60, k = 2)
+PPforest::pproxy_plot(pprf.nci60, type="MDS",k = 2)
 ```
 If we select k>2 the graphical display will be:
 
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 6,echo=FALSE}
-PPforest::PPplot(pprf.nci60, k = 3)
+PPforest::pproxy_plot(pprf.nci60, type="MDS", k = 3)
 ```
 And finally the global importance measure plot:
 
