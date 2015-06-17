@@ -21,5 +21,8 @@ LazyData: true
 Suggests:
     knitr,
     randomForest,
+    rpart,
+    gridExtra,
+    rpart.plot,
     roxygen2 (>= 3.0.0)
 VignetteBuilder: knitr
