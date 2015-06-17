@@ -7,7 +7,7 @@
 #' @return a plot with the cumulative oob error rate
 #' @export
 #' @examples
-#' pprf.crab <- PPforest(data = crab, size.tr = 1, m = 500, size.p = .5, 
+#' pprf.crab <- PPforest(data = crab, size.tr = 1, m = 200, size.p = .5, 
 #' PPmethod = 'LDA',  strata = TRUE)
 #' ppf_oob_error(pprf.crab, nsplit = 20)
 ppf_oob_error <- function(ppfo, nsplit) {
@@ -44,12 +44,13 @@ ppf_oob_error <- function(ppfo, nsplit) {
     oob.pl <- reshape2::melt(oob.err.sp, id.vars = "ntree")
     
     if (max(oob.pl$value) < 0.5) {
-        ggplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + 
-            ggplot2::geom_line() + ggplot2::ylim(0, 0.5)
+        p1 <- ggplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + 
+            ggplot2::geom_line() + ggplot2::scale_y_continuous(name = "OOB error rate", limits=c(0, 0.5)) + ggplot2::scale_x_continuous(name = "Number of trees") 
+          p1 + ggplot2::scale_colour_discrete(name = "Class")
         
     } else {
-        ggplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + 
-            ggplot2::geom_line() + ggplot2::ylim(0, 1)
-        
+        p1<-ggplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + 
+            ggplot2::geom_line() + ggplot2::scale_y_continuous(name = "OOB error rate", limits=c(0, 1)) + ggplot2::scale_x_continuous(name = "Number of trees")
+        p1 + ggplot2::scale_colour_discrete(name = "Class")
     }
 } 

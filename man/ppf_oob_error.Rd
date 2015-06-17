@@ -18,7 +18,7 @@ a plot with the cumulative oob error rate
 \code{ppf_oob_error} Plot the cummulative oob error as a function of number of trees
 }
 \examples{
-pprf.crab <- PPforest(data = crab, size.tr = 1, m = 500, size.p = .5,
+pprf.crab <- PPforest(data = crab, size.tr = 1, m = 200, size.p = .5,
 PPmethod = 'LDA',  strata = TRUE)
 ppf_oob_error(pprf.crab, nsplit = 20)
 }
