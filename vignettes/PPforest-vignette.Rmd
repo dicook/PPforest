@@ -216,19 +216,6 @@ The oob-error rate decrease when we increase the numbers of trees but gets const
 
 Gene expression data set, contains 61 observations and 30 feature variables. Class variable has 8 different tissue types, 9 breast, 5central nervous system (CNS), 7 colon, 6 leukemia, 8 melanoma, 9 non- small-cell lung carcinoma (NSCLC), 6 ovarian and 9 renal. There are 6830 genes.
 
-To visualize this data set we use a scatterplot matrix selecting some of the variables.
-
-```{r, ig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
-load("../data/NCI60.rda")
-GGally::ggpairs(NCI60, 
-    columns= 2:6,
-    colour='Type',
-    lower=list(continuous='points'), 
-    axisLabels='none',
-    upper=list(continuous='blank')
-)
-```
-
 Since this data set present a considerable big number of predictive variables we will explore the data set using `PPTreeViz` package first.
 
 We can explore the optimal projection for classification in q-dimensional space. We select q=1 and  PDA  projection pursuit index. Whith q=1 `PPopt.Viz` returns an histogram with the projected data and the plot  with the coefficients of projection. 
@@ -241,6 +228,18 @@ PPtreeViz::PPopt.Viz(PPtreeViz::PDAopt(NCI60[, 1], as.matrix(NCI60[, -1]), q = 1
 
 ```
 In the histogram we can observe each class distribution and we can observe that leukemia is separate from the other classes. In the plot with the coefficient values we can observe that Gene 30 and Gene 28 are the most important to separate the leukemia class in this view.  
+
+We can use a scatterplot matrix with some of these Gene variables that are important for the separation. We can see in this plot that the data are correlated and the green class is different from the rest (leukemia).
+```{r, ig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
+load("../data/NCI60.rda")
+GGally::ggpairs(NCI60, 
+    columns= 27:31,
+    colour='Type',
+    lower=list(continuous='points'), 
+    axisLabels='none',
+    upper=list(continuous='blank')
+)
+```
 
 If we select q=2, `PPopt.Viz shows the best 2 dimensional projection coefficients and the scatter plot of the projected data. We can observe that colon and leukemia are separable.
 ```{r, fig.show='hold',fig.width = 7 ,fig.height = 4, message=FALSE}
