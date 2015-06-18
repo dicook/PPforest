@@ -37,7 +37,7 @@ ppf_oob_error <- function(ppfo, nsplit) {
         c(oob.all, oob.class)
     }
     
-    oob.err.sp <- plyr::mdply(data.frame(m = round(seq(2, ppfo$n.tree, , nsplit))), error.cum, ppfo = ppfo)
+    oob.err.sp <- plyr::mdply(data.frame(m = round(seq(2, ppfo$n.tree, nsplit))), error.cum, ppfo = ppfo)
     
     names(oob.err.sp)[1:2] <- c("ntree", "all")
     
