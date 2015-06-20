@@ -37,7 +37,8 @@ GGally::ggpairs(crab,
     colour='Type',
     lower=list(continuous='points'), 
     axisLabels='none',  
-    upper=list(continuous='blank')
+    upper=list(continuous='blank') 
+     
 )
 ```
 
@@ -55,12 +56,24 @@ rpart.pred <- predict(rpart.crab, newdata = grilla, type="class")
 ```
 To better understand the main characteristics of `PPtree` algorithm we will use a subset of crab data. We have selected two feature variables, RW and BD. With this reduced data set we run a `rpart` and a `PPtree` and we plot the decision boundaries for each tree.
 
-```{r, fig.show='hold',fig.width = 7, fig.height = 4, echo=FALSE}
-p<- ggplot2::ggplot(data = grilla ) + ggplot2::geom_point(ggplot2::aes(x =RW, y = BD  , color = as.factor(ppred)),alpha = .5) + ggplot2::scale_shape_discrete(name = "Type") + ggplot2::scale_colour_discrete(name  ="Type.bound") 
-pl.pp <- p + ggplot2::geom_point(data = crab2, ggplot2::aes(x =RW , y = BD, shape = as.factor(Type)), size = I(2)  ) +  ggplot2::theme(legend.position = "none")
+```{r, fig.show='hold',fig.width = 7, fig.height = 4, echo=FALSE, message=FALSE}
+p<- ggplot2::ggplot(data = grilla ) + ggplot2::geom_point(ggplot2::aes(x =RW, y = BD  , color = as.factor(ppred)),alpha = .20)+ ggplot2::scale_colour_brewer(type="qual",palette="Set1") + ggplot2::theme_bw() 
+  
 
- p2 <- ggplot2::ggplot(data = grilla ) + ggplot2::geom_point(ggplot2::aes(x =RW, y = BD  , color = as.factor(rpart.pred)),alpha = .5) + ggplot2::scale_shape_discrete(name = "Type") + ggplot2::scale_colour_discrete(name  ="Type.bound") 
- pl.rpart <- p2 + ggplot2::geom_point(data = crab2, ggplot2::aes(x =RW , y = BD, shape = as.factor(Type)), size = I(2)  ) +  ggplot2::theme(legend.position = "none")
+
+pl.pp <- p + ggplot2::geom_point(data = crab2, ggplot2::aes(x =RW , y = BD, group=Type,shape = Type, color=Type), size = I(3)  ) +  ggplot2::scale_shape_manual(name = "Class", labels = levels(crab2$Type),values = c(19, 18, 15, 17)) + ggplot2::scale_colour_manual(name = "Class",
+                      labels = levels(crab2$Type),
+                      values = c("#e41a1c", "#377eb8", "#4daf4a", "#984ea3")) + theme(legend.position = "bottom", legend.text = element_text(size = 6))
+
+
+ p2 <- ggplot2::ggplot(data = grilla ) + ggplot2::geom_point(ggplot2::aes(x =RW, y = BD  , color = as.factor(rpart.pred)), alpha = .2) + ggplot2::scale_colour_brewer(type="qual",palette="Set1") + ggplot2::theme_bw() 
+  
+
+ pl.rpart <- p2 + ggplot2::geom_point(data = crab2, ggplot2::aes(x =RW , y = BD, group=Type,shape = Type, color=Type), size = I(3)  ) +  ggplot2::scale_shape_manual(name = "Class", labels = levels(crab2$Type),values = c(19, 18, 15, 17)) + ggplot2::scale_colour_manual(name = "Class",
+                      labels = levels(crab2$Type),
+                      values = c("#e41a1c", "#377eb8", "#4daf4a", "#984ea3")) + theme(legend.position = "bottom",legend.text = element_text(size = 6))
+
+
 
 gridExtra::grid.arrange(pl.rpart,pl.pp, nrow=1)
 ```
@@ -146,9 +159,12 @@ set.seed(146)
 pprf.crab <- PPforest::PPforest(data = crab, size.tr = 2/3, m = 500, size.p = .7,  
               PPmethod = 'LDA', strata = TRUE)
 str(pprf.crab, max.level = 1)
+
+
+
 ```
 
-`PPforest` function returns the predicted values of the training data, training error, test error and predicted test values are returned. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix,  number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned.
+`PPforest` function returns the predicted values of the training data, training error, test error and predicted test values are returned. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix, number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned.
 
 The printed version of a `PPforest` object follows the `randomForest` printed version to make them comparable. Based on confusion matrix, we can observe that the biggest error is for BlueMale class. Most of the wrong classified values are between BlueFemale and BlueMale.
 ```{r}
@@ -223,7 +239,7 @@ We can explore the optimal projection for classification in q-dimensional space.
 
 ```{r, fig.show='hold',fig.width = 7 ,fig.height = 4, message=FALSE}
 library(ggplot2)
-
+load("../data/NCI60.rda")
 PPtreeViz::PPopt.Viz(PPtreeViz::PDAopt(NCI60[, 1], as.matrix(NCI60[, -1]), q = 1))
 
 ```
@@ -231,7 +247,7 @@ In the histogram we can observe each class distribution and we can observe that 
 
 We can use a scatterplot matrix with some of these Gene variables that are important for the separation. We can see in this plot that the data are correlated and the green class is different from the rest (leukemia).
 ```{r, ig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
-load("../data/NCI60.rda")
+
 GGally::ggpairs(NCI60, 
     columns= 27:31,
     colour='Type',
