@@ -7,7 +7,7 @@
 #' @return a plot with the cumulative oob error rate
 #' @export
 #' @examples
-#' pprf.crab <- PPforest(data = crab, size.tr = 1, m = 200, size.p = .5, 
+#' pprf.crab <- PPforest(data = crab, size.tr = 1, m = 500, size.p = .5, 
 #' PPmethod = 'LDA',  strata = TRUE)
 #' ppf_oob_error(pprf.crab, nsplit = 20)
 ppf_oob_error <- function(ppfo, nsplit) {
@@ -25,6 +25,7 @@ ppf_oob_error <- function(ppfo, nsplit) {
             t1 <- table(pred.mtree[oob.obs[, i] == TRUE, i])
             names(t1)[which.max(t1)]
         })
+        
         
         oob.mat <- sapply(X = 1:nrow(ppfo$train), FUN = function(i) {
             table(pred.mtree[oob.obs[, i] == TRUE, i])
@@ -54,3 +55,5 @@ ppf_oob_error <- function(ppfo, nsplit) {
         p1 + ggplot2::scale_colour_discrete(name = "Class")
     }
 } 
+
+

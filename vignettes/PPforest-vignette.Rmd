@@ -159,9 +159,6 @@ set.seed(146)
 pprf.crab <- PPforest::PPforest(data = crab, size.tr = 2/3, m = 500, size.p = .7,  
               PPmethod = 'LDA', strata = TRUE)
 str(pprf.crab, max.level = 1)
-
-
-
 ```
 
 `PPforest` function returns the predicted values of the training data, training error, test error and predicted test values are returned. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix, number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned.
