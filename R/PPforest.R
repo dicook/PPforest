@@ -33,7 +33,7 @@
 #' PPmethod = 'PDA', strata = TRUE)
 #' 
 PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
-    
+
     tr.index <- train_fn(data[, 1], size.tr)
     train <- data[sort(tr.index$id), ]
     
@@ -87,6 +87,7 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     
     oob.error <- 1 - sum(diag(table(oob.pred, train[, 1])))/length(train[, 1])
 #############
+Var1 <- NULL
     aux1<-reshape2::melt(pred.tr[[2]]) 
     aux2<-reshape2::melt(as.matrix(oob.obs))
     aux1$oob <- aux2$value

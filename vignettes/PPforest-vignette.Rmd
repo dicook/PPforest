@@ -243,7 +243,7 @@ PPtreeViz::PPopt.Viz(PPtreeViz::PDAopt(NCI60[, 1], as.matrix(NCI60[, -1]), q = 1
 In the histogram we can observe each class distribution and we can observe that leukemia is separate from the other classes. In the plot with the coefficient values we can observe that Gene 30 and Gene 28 are the most important to separate the leukemia class in this view.  
 
 We can use a scatterplot matrix with some of these Gene variables that are important for the separation. We can see in this plot that the data are correlated and the green class is different from the rest (leukemia).
-```{r, ig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
+```{r, fig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
 
 GGally::ggpairs(NCI60, 
     columns= 27:31,
@@ -252,6 +252,11 @@ GGally::ggpairs(NCI60,
     axisLabels='none',
     upper=list(continuous='blank')
 )
+```
+
+```{r,  fig.show='hold', fig.width = 10, fig.height = 5, echo=FALSE}
+gpd <- GGally::ggparcoord(data = NCI60, columns = 2:31, groupColumn = 1, order = "anyClass", showPoints = TRUE) + theme(axis.text.x = element_text(angle = 90), legend.position="bottom")
+ gpd
 ```
 
 If we select q=2, `PPopt.Viz shows the best 2 dimensional projection coefficients and the scatter plot of the projected data. We can observe that colon and leukemia are separable.
