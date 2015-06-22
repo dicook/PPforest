@@ -46,8 +46,7 @@ ppf_oob_error <- function(ppfo, nsplit) {
     
     if (max(oob.pl$value) < 0.5) {
         p1 <- ggplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + 
-            ggplot2::geom_line() + ggplot2::scale_y_continuous(name = "OOB error rate", limits = c(0, 0.5)) + 
-            ggplot2::scale_x_continuous(name = "Number of trees")
+            ggplot2::geom_line() + ggplot2::scale_y_continuous(name = "OOB error rate", limits = c(0, 0.5)) + ggplot2::scale_x_continuous(name = "Number of trees")
         p1 + ggplot2::scale_colour_discrete(name = "Class")
         
     } else {
@@ -55,6 +54,4 @@ ppf_oob_error <- function(ppfo, nsplit) {
             ggplot2::geom_line() + ggplot2::scale_y_continuous(name = "OOB error rate", limits = c(0, 1)) + ggplot2::scale_x_continuous(name = "Number of trees")
         p1 + ggplot2::scale_colour_discrete(name = "Class")
     }
-}
-
- 
+} 

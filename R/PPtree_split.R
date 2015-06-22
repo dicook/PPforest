@@ -156,8 +156,8 @@ PPtree_split <- function(formula, data, PPmethod = "LDA", weight = TRUE, size.p 
             } else if (PPmethod == "PDA") {
                 a <- PPtreeViz::PDAopt(as.numeric(as.factor(class)), as.matrix(origdata), weight, q = 1, lambda = lambda)
             } else {
-                a <- PPtreeViz::PPopt(as.numeric(as.factor(class)), as.matrix(origdata), PPmethod = PPmethod, 
-                  r = r, q = 1, energy = energy, cooling = 0.999, TOL = TOL)
+                a <- PPtreeViz::PPopt(as.numeric(as.factor(class)), as.matrix(origdata), PPmethod = PPmethod, r = r, 
+                  q = 1, energy = energy, cooling = 0.999, TOL = TOL)
             }
             if (sign != sign(a$projbest[index])) 
                 a$projbest <- -a$projbest

@@ -33,7 +33,7 @@
 #' PPmethod = 'PDA', strata = TRUE)
 #' pprf.iris
 PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
-    #Var1 <- NULL
+    Var1 <- NULL
     tr.index <- train_fn(data[, 1], size.tr)
     train <- data[sort(tr.index$id), ]
     
@@ -88,23 +88,19 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     
     oob.error <- 1 - sum(diag(table(oob.pred, train[, 1])))/length(train[, 1])
     
-#     
-#     m.pred.tr <- reshape2::melt(pred.tr[[2]])
-#     m.oob.obs <- reshape2::melt(as.matrix(oob.obs))
-#     m.pred.tr$oob <- m.oob.obs$value
-#     m.pred.tr$class <- rep(train[, 1], each = m)
-#     
-#     
-#     oob.err.tree <- plyr::ddply(m.pred.tr[m.pred.tr$oob, ], plyr::.(Var1), function(x) {
-#         dd <- diag(table(x$value, x$class))
-#         1 - sum(dd)/length(x$value)
-#     })$V1
-#     
-#     
-       oob.err.tree <- sapply(X = 1:m, FUN = function(i) {
-       dd <- diag(table(pred.tr[[2]][i, oob.obs[i, ] == TRUE], train[oob.obs[i, ] == TRUE, 1]))
-            1 - sum(dd)/sum(oob.obs[i, ] == TRUE)
-         })
+    
+    m.pred.tr <- reshape2::melt(pred.tr[[2]])
+    m.oob.obs <- reshape2::melt(as.matrix(oob.obs))
+    m.pred.tr$oob <- m.oob.obs$value
+    m.pred.tr$class <- rep(train[, 1], each = m)
+    
+    
+    oob.err.tree <- plyr::ddply(m.pred.tr[m.pred.tr$oob, ], plyr::.(Var1), function(x) {
+        dd <- diag(table(x$value, x$class))
+        1 - sum(dd)/length(x$value)
+    })$V1
+    
+    
     
     error.tr <- 1 - sum(train[, 1] == pred.tr[[3]])/length(pred.tr[[3]])
     test <- data[-tr.index$id, -1]
