@@ -48,10 +48,10 @@ crab2 <- subset(crab, select=c(Type,RW,BD))
 grilla <- base::expand.grid(RW=seq(6,21,,100), BD=seq(6,22,,100))
 pptree <- PPtreeViz::PP.Tree.class(crab2[,1],crab2[,-1],"LDA")
 
-ppred.crab <- PPtreeViz::PP.classify( pptree, test.data=grilla )
+ppred.crab <- PPtreeViz::PP.classify( pptree, test.data=grilla)
 grilla$ppred<-ppred.crab[[2]]
 
-rpart.crab <- rpart::rpart(Type ~ RW + BD, data=crab2)
+rpart.crab <- rpart::rpart(Type ~ RW + BD, data=crab)
 rpart.pred <- predict(rpart.crab, newdata = grilla, type="class")
 ```
 To better understand the main characteristics of `PPtree` algorithm we will use a subset of crab data. We have selected two feature variables, RW and BD. With this reduced data set we run a `rpart` and a `PPtree` and we plot the decision boundaries for each tree.

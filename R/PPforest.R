@@ -33,7 +33,7 @@
 #' PPmethod = 'PDA', strata = TRUE)
 #' 
 PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
-
+    Var1 <- NULL
     tr.index <- train_fn(data[, 1], size.tr)
     train <- data[sort(tr.index$id), ]
     
@@ -56,7 +56,8 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     cond <- pos[, 1] >= pos[, 2]
     tri.low <- pos[cond, ]
     
-    same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[2]]), 2, function(x) x[tri.low[, 1]] == x[tri.low[, 2]]))
+    same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[2]]), 2, function(x) x[tri.low[, 1]] == x[tri.low[, 
+        2]]))
     
     proximity <- data.frame(same.node[, c(1:2)], proxi = apply(same.node[, -c(1:2)], 1, function(x) sum(x == 1))/dim((pred.tr[[2]]))[1])
     
@@ -81,31 +82,24 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
         cond <- colnames(votes) %in% names(oob.mat[[i]])
         votes[i, cond] <- oob.mat[[i]]
     }
-
+    
     
     vote.matrix.prop <- votes/rowSums(votes)
     
     oob.error <- 1 - sum(diag(table(oob.pred, train[, 1])))/length(train[, 1])
-#############
-Var1 <- NULL
-    aux1<-reshape2::melt(pred.tr[[2]]) 
-    aux2<-reshape2::melt(as.matrix(oob.obs))
-    aux1$oob <- aux2$value
-    aux1$class <- rep(train[,1], each=m)
     
-    aux3 <- aux1[aux1$oob, ]
     
-    oob.err.tree <- plyr::ddply(aux3, plyr::.(Var1), function(x) {
-      dd <- diag(table(x$value, x$class) )
-      1 - sum(dd)/length(x$value)
-    }
-    )$V1
-  
-##########
-#     oob.err.tree <- sapply(X = 1:m, FUN = function(i) {
-#         dd <- diag(table(pred.tr[[2]][i, oob.obs[i, ] == TRUE], train[oob.obs[i, ] == TRUE, 1]))
-#         1 - sum(dd)/sum(oob.obs[i, ] == TRUE)
-#     })
+    m.pred.tr <- reshape2::melt(pred.tr[[2]])
+    m.oob.obs <- reshape2::melt(as.matrix(oob.obs))
+    m.pred.tr$oob <- m.oob.obs$value
+    m.pred.tr$class <- rep(train[, 1], each = m)
+    
+    
+    oob.err.tree <- plyr::ddply(m.pred.tr[m.pred.tr$oob, ], plyr::.(Var1), function(x) {
+        dd <- diag(table(x$value, x$class))
+        1 - sum(dd)/length(x$value)
+    })$V1
+    
     
     error.tr <- 1 - sum(train[, 1] == pred.tr[[3]])/length(pred.tr[[3]])
     test <- data[-tr.index$id, -1]
@@ -125,9 +119,10 @@ Var1 <- NULL
     confusion <- cbind(tab.tr, class.error = round(class.error, 2))
     
     results <- list(prediction.training = pred.tr[[3]], training.error = error.tr, prediction.test = pred.test[[3]], 
-        error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, output.trees = output, 
-        proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, n.var = var.sel, type = "Classification", 
-        confusion = confusion, call = match.call(), train = train, test = test, vote.mat = pred.tr[[2]])
+        error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, 
+        output.trees = output, proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, 
+        n.var = var.sel, type = "Classification", confusion = confusion, call = match.call(), train = train, test = test, 
+        vote.mat = pred.tr[[2]])
     class(results) <- "PPforest"
     
     return(results)

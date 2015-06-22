@@ -42,8 +42,8 @@ pproxy_plot <- function(ppfo, type = "heat", k) {
         
         if (k == 2) {
             df <- data.frame(fac = ppfo$train[, 1], rf.mds$points)
-            ggplot2::ggplot(data = df) + ggplot2::geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = fac)) + ggplot2::theme(aspect.ratio = 1) + 
-                ggplot2::scale_colour_discrete(name = "Class")
+            ggplot2::ggplot(data = df) + ggplot2::geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = fac)) + 
+                ggplot2::theme(aspect.ratio = 1) + ggplot2::scale_colour_discrete(name = "Class")
             
         } else {
             df <- data.frame(fac = ppfo$train[, 1], rf.mds$points)
