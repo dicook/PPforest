@@ -104,6 +104,7 @@ The following plots shows the tree structure from `rpart` and `PPtree`. Trees fr
 library(rpart.plot)
 library(gridExtra)
 library(ggplot2)
+
 pptree <- PPtreeViz::PP.Tree.class(crab[,1],crab[,-1],"LDA")
 rp <- rpart::rpart(Type~ .,data=crab)
 

@@ -1,6 +1,6 @@
 #' Importance variable visualization 
 #' 
-#' @param data is a data frame with the complete data set. Class factor in the first column
+#' @param data is a data frame with the complete data set. Class factor in the first column and the data should be standardize
 #' @param ppforest is a PPforest object
 #' @param global is TRUE if we want to see the global importance of the forest
 #' @param weight is TRUE if we want to see a weighted mesure of the forest importance based on out of bag trees errors
@@ -8,9 +8,11 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
-#' ppforest <- PPforest( data = iris[,5:1], size.tr = 2/3,  
+#' iris.s<- data.frame(iris[, 5], scale(iris[, 1:4]))
+#' names(iris.s) <- colnames(iris[, 5:1])
+#' ppforest <- PPforest( data = iris.s, size.tr = 2/3,  
 #' m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-#' ppf_importance(iris[,5:1], ppforest, global = FALSE, weight = TRUE) 
+#' ppf_importance(iris[,5:1], ppforest, global = TRUE, weight = TRUE) 
 ppf_importance <- function(data, ppforest, global = TRUE, weight = TRUE) {
     value <- NULL
     variable <- NULL
