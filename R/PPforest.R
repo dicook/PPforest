@@ -76,7 +76,7 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     })
     
     votes <- matrix(0, ncol = length(unique(train[, 1])), nrow = nrow(train))
-    colnames(votes) <- unique(train[, 1])
+    colnames(votes) <- levels(train[, 1])
     
     for (i in 1:nrow(train)) {
         cond <- colnames(votes) %in% names(oob.mat[[i]])
