@@ -30,7 +30,7 @@ Australian crab data set contains measurements on rock crabs of the genus Leptog
 
 To visualize this data set we use a scatterplot matrix.
 
-```{r, ig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
+```{r, fig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
 load("../data/crab.rda")
 GGally::ggpairs(crab, 
     columns= 2:6,
