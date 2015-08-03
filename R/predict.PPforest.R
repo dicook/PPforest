@@ -22,11 +22,22 @@ predict.PPforest <- function(object, test.data, Rule, true.class = NULL, ...) {
     
     out <- votes %>% dplyr::do(pred = .$tr[[2]])
     
+    
     vote.mat <- matrix(unlist(out$pred), ncol = length(votes[[1]][[1]][[2]]), byrow = T)
     max.vote <- apply(vote.mat, 2, function(x) {
         t1 <- table(x)
         names(t1)[which.max(t1)]
     })
     
-    max.vote
+    votes2 <- matrix(0, ncol = length(unique(object$train[, 1])), nrow = nrow(test.data))
+    colnames(votes2) <- levels(object$train[, 1])
+    aux <-ddply(melt(vote.mat), .(X2), function(x) table(x$value))
+    
+    
+    vote.matrix.prop <- aux[,-1]/rowSums(aux[,-1])
+    
+    list(vote.matrix.prop, max.vote)
 } 
+
+
+

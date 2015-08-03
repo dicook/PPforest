@@ -29,7 +29,7 @@
 #' \item{test}{is the test data based on \code{1-size.tr} sample proportion}
 #' @export
 #' @examples
-#' pprf.iris <- PPforest(data = iris[,5:1], size.tr = 2/3, m = 500, size.p = .9, 
+#' pprf.iris <- PPforest(data = iris[,5:1], size.tr = 2/3, m = 500, size.p = .5, 
 #' PPmethod = 'PDA', strata = TRUE)
 #' pprf.iris
 PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
