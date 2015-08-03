@@ -3,7 +3,7 @@ title: "Projection pursuit classification random forest "
 author: "N. da Silva, E. Lee & D. Cook"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette 
-   
+  
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::docco_linear}
@@ -46,6 +46,9 @@ GGally::ggpairs(crab,
 library(ggplot2)
 crab2 <- subset(crab, select=c(Type,RW,BD))
 grilla <- base::expand.grid(RW=seq(6,21,,100), BD=seq(6,22,,100))
+
+
+
 pptree <- PPtreeViz::PP.Tree.class(crab2[,1],crab2[,-1],"LDA")
 
 ppred.crab <- PPtreeViz::PP.classify( pptree, test.data=grilla)
@@ -57,7 +60,7 @@ rpart.pred <- predict(rpart.crab, newdata = grilla, type="class")
 To better understand the main characteristics of `PPtree` algorithm we will use a subset of crab data. We have selected two feature variables, RW and BD. With this reduced data set we run a `rpart` and a `PPtree` and we plot the decision boundaries for each tree.
 
 ```{r, fig.show='hold',fig.width = 7, fig.height = 4, echo=FALSE, message=FALSE}
-p<- ggplot2::ggplot(data = grilla ) + ggplot2::geom_point(ggplot2::aes(x =RW, y = BD  , color = as.factor(ppred)),alpha = .20)+ ggplot2::scale_colour_brewer(type="qual",palette="Set1") + ggplot2::theme_bw() 
+p <- ggplot2::ggplot(data = grilla ) + ggplot2::geom_point(ggplot2::aes(x =RW, y = BD  , color = as.factor(ppred)),alpha = .20)+ ggplot2::scale_colour_brewer(type="qual",palette="Set1") + ggplot2::theme_bw() 
   
 
 
@@ -110,6 +113,8 @@ rp <- rpart::rpart(Type~ .,data=crab)
 
 pl2<-rpart.plot::rpart.plot(rp)
 pl1 <-plot(pptree)
+
+
 ```
 
 Projection pursuit random forest algorithm description
@@ -159,7 +164,44 @@ The number of trees in the forest is specified using the argument m. size.p is t
 set.seed(146)
 pprf.crab <- PPforest::PPforest(data = crab, size.tr = 2/3, m = 500, size.p = .7,  
               PPmethod = 'LDA', strata = TRUE)
+
+set.seed(146)
+grilla <- data.frame(FL=runif(10000)*((max(crab$FL)-min(crab$FL))+min(crab$FL)),RW=runif(10000)*((max(crab$RW)-min(crab$RW))+min(crab$RW)), CL=runif(10000)*((max(crab$CL)-min(crab$CL))+min(crab$CL)), CW=runif(10000)*((max(crab$CW)-min(crab$CW))+min(crab$CW)),BD=runif(10000)*((max(crab$BD)-min(crab$BD))+min(crab$BD)))
+
+pr <- predict(pprf.crab,test.data=grilla)
+cond <- pr[[1]] > 0.7
+cond2 <- apply(cond, 1, sum)
+
+
+datpp <- data.frame(pred = pr[[2]], grilla)
+datpp2 <- datpp[!cond2,]
+
+
+
+
+
+
+
+colnames(crab)[1]<-"pred"
+aux<-rbind(datpp2,crab)
+aux$dat<-c(rep(0,7810),rep(1,200))
+
+princ <- princomp(datpp2[,-1])
+
+ggplot(data.frame(princ$scores), aes(x = Comp.1, y = Comp.2, color = datpp2[,1])) + geom_point()
+#save(pprf.crab,file="datpp.Rdata")
+write.csv(aux,file="aux.csv")
 str(pprf.crab, max.level = 1)
+
+
+p <- ggplot2::ggplot(data = grilla[!cond2,] ) + ggplot2::geom_point(ggplot2::aes(x =RW, y = BD  , color = as.factor(pr[[2]][!cond2])),alpha = .20)+ ggplot2::scale_colour_brewer(type="qual",palette="Set1") + ggplot2::theme_bw() 
+  
+
+
+pl.pp <- p + ggplot2::geom_point(data = crab, ggplot2::aes(x =RW , y = BD, group=Type,shape = Type, color=Type), size = I(3)  ) +  ggplot2::scale_shape_manual(name = "Class", labels = levels(crab2$Type),values = c(19, 18, 15, 17)) + ggplot2::scale_colour_manual(name = "Class",
+                      labels = levels(crab2$Type),
+                      values = c("#e41a1c", "#377eb8", "#4daf4a", "#984ea3")) + theme(legend.position = "bottom", legend.text = element_text(size = 6))
+
 ```
 
 `PPforest` function returns the predicted values of the training data, training error, test error and predicted test values are returned. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix, number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned.
@@ -224,7 +266,7 @@ Finally a cumulative out of error plot can be done using `ppf_oob_error`
 PPforest::ppf_oob_error(pprf.crab, nsplit = 20)
 ```
 
-The oob-error rate decrease when we increase the numbers of trees but gets constant with less than  250 trees. 
+The oob-error rate decrease when we increase the numbers of trees but gets constant with less than 250 trees. 
  
 ##NCI60 example
 
