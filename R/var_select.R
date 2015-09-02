@@ -6,7 +6,7 @@
 #' @return a vector giving the names of the selected variables 
 #' @export
 #' @examples
-#' variables <- var_select(data=iris[,-5], size.p=0.9)
+#' variables <- var_select(data = iris[, -5], size.p = 0.9)
 #' variables
 var_select <- function(data, size.p) {
     nam <- colnames(data)

@@ -10,6 +10,11 @@
 #' PPmethod = 'LDA', strata = TRUE)
 #' pproxy_plot(ppfr.iris, type='heat')
 #' pproxy_plot(ppfr.iris, type='MDS', k=2)
+#' #Leukemia data set
+#' pprf.leukemia <- PPforest(data = leukemia, size.tr = .9, m = 500, size.p = .8, 
+#' PPmethod = 'LDA', strata = TRUE)
+#' pproxy_plot(pprf.leukemia, type='heat')
+#' pproxy_plot(pprf.leukemia, type='MDS', k=2)
 pproxy_plot <- function(ppfo, type = "heat", k) {
     
     if (type == "heat") {

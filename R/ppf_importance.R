@@ -10,9 +10,9 @@
 #' @examples
 #' iris.s<- data.frame(iris[, 5], scale(iris[, 1:4]))
 #' names(iris.s) <- colnames(iris[, 5:1])
-#' ppforest <- PPforest( data = iris.s, size.tr = 2/3,  
+#' pprf.iris  <- PPforest( data = iris.s, size.tr = 2/3,  
 #' m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-#' ppf_importance(iris[,5:1], ppforest, global = TRUE, weight = TRUE) 
+#' ppf_importance(iris[,5:1], pprf.iris, global = TRUE, weight = TRUE) 
 ppf_importance <- function(data, ppforest, global = TRUE, weight = TRUE) {
     value <- NULL
     variable <- NULL
@@ -51,16 +51,19 @@ ppf_importance <- function(data, ppforest, global = TRUE, weight = TRUE) {
     
     if (global == TRUE & weight == TRUE) {
         print(ggplot2::ggplot(import.vi.wg.0, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point())
+       print(import.vi.wg.0)
     }
     if (global == TRUE & weight == FALSE) {
         print(ggplot2::ggplot(import.vi.g.0, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point())
-        
+        print(import.vi.g.0)
     }
     if (global == FALSE & weight == FALSE) {
         print(ggplot2::ggplot(import.vi.0, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::facet_wrap(~node))
+    print(import.vi.0)
     }
     if (global == FALSE & weight == TRUE) {
         print(ggplot2::ggplot(import.vi.w.0, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::facet_wrap(~node))
+    print(import.vi.w.0)
     }
     
 } 

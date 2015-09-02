@@ -10,13 +10,19 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
+#' #iris data set
 #' pprf.iris <- PPforest(data = iris[,5:1], size.tr = .9, m = 500, size.p = .9, 
 #' PPmethod = 'PDA', strata = TRUE)
-#' pr <- predict( object = pprf.iris, test.data = pprf.iris$test)
-#' pr
+#' pred.iris <- predict( object = pprf.iris, test.data = pprf.iris$test)
+#' pred.iris
+#' #Leukemia data set
+#' pprf.leukemia <- PPforest(data = leukemia, size.tr = .9, m = 500, size.p = .8, 
+#' PPmethod = 'LDA', strata = TRUE)
+#' pr.leukemia <- predict( object = pprf.leukemia, test.data = pprf.leukemia$test)
+#' pr.leukemia
 predict.PPforest <- function(object, test.data, Rule, true.class = NULL, ...) {
     . <- NULL
-    
+    Var2 <- NULL
     votes <- object[[8]] %>% dplyr::do(tr = PPtreeViz::PP.classify(test.data = test.data, Tree.result = .$tr, Rule = 1, 
         ...))
     
@@ -31,7 +37,8 @@ predict.PPforest <- function(object, test.data, Rule, true.class = NULL, ...) {
     
     votes2 <- matrix(0, ncol = length(unique(object$train[, 1])), nrow = nrow(test.data))
     colnames(votes2) <- levels(object$train[, 1])
-    aux <-ddply(melt(vote.mat), .(X2), function(x) table(x$value))
+    dt <- reshape2::melt(vote.mat)
+    aux <- plyr::ddply(dt, plyr::.(Var2), function(x) table(x$value))
     
     
     vote.matrix.prop <- aux[,-1]/rowSums(aux[,-1])
