@@ -48,5 +48,9 @@ An object of class \code{PPforest} with components.
 pprf.iris <- PPforest(data = iris[,5:1], size.tr = 2/3, m = 500, size.p = .5,
 PPmethod = 'PDA', strata = TRUE)
 pprf.iris
+#Leukemia data set
+pprf.leukemia <- PPforest(data = leukemia, size.tr = .9, m = 500, size.p = .8,
+PPmethod = 'LDA', strata = TRUE)
+pprf.leukemia
 }
 

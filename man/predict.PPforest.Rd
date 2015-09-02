@@ -24,9 +24,15 @@ predicted values form PPforest
 Vector with predicted values from a PPforest.
 }
 \examples{
+#iris data set
 pprf.iris <- PPforest(data = iris[,5:1], size.tr = .9, m = 500, size.p = .9,
 PPmethod = 'PDA', strata = TRUE)
-pr <- predict( object = pprf.iris, test.data = pprf.iris$test)
-pr
+pred.iris <- predict( object = pprf.iris, test.data = pprf.iris$test)
+pred.iris
+#Leukemia data set
+pprf.leukemia <- PPforest(data = leukemia, size.tr = .9, m = 500, size.p = .8,
+PPmethod = 'LDA', strata = TRUE)
+pr.leukemia <- predict( object = pprf.leukemia, test.data = pprf.leukemia$test)
+pr.leukemia
 }
 

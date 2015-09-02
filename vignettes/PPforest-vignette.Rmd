@@ -2,12 +2,11 @@
 title: "Projection pursuit classification random forest "
 author: "N. da Silva, E. Lee & D. Cook"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette 
-  
+output: rmarkdown::html_vignette
 vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::docco_linear}
-  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
 ---
 
 ## Abstract
