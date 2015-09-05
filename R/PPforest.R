@@ -71,8 +71,12 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     oob.obs <- plyr::ldply(index, function(x) (!l.train %in% x))
     
     oob.pred <- sapply(X = 1:nrow(train), FUN = function(i) {
+      if(sum(oob.obs[, i]>0)){
         t1 <- table(pred.tr[[2]][oob.obs[, i] == TRUE, i])
         names(t1)[which.max(t1)]
+      }else{
+        print("More trees are needed to get the oob predictions")
+      }
     })
     
     oob.mat <- sapply(X = 1:nrow(train), FUN = function(i) {
