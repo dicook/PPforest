@@ -4,7 +4,8 @@
 #' @usage PPtree_split(formula, data, PPmethod='LDA', weight=TRUE, 
 #' size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...) 
 #' @param formula a formula describing the model to be fitted, with the form \code{response~predictors}
-#' @param data is a data frame with the class variable in the first column
+#' @param y is a vector with the class variable.
+#' @param x is a data frame with explicative variables.
 #' @param PPmethod index to use for projection pursuit: 'LDA', 'PDA', 'Lr', 'GINI', and 'ENTROPY'
 #' @param weight  flag in LDA, PDA and Lr index
 #' @param size.p proportion of variables randomly sampled in each split.
@@ -25,15 +26,19 @@
 #' @export
 #' @keywords tree
 #' @examples
-#' data(iris)
-#' Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1], size.p=0.9)
-#' Tree.result
-PPtree_split <- function(formula, data, PPmethod = "LDA", weight = TRUE, size.p = 0.9, r = 1, lambda = 0.1, energy = 0, 
+#' #leukemia data set
+#' Tree.leukemia <- PPtree_split(as.formula('y~.'), y = leukemia[, 1], x = leukemia[,-1], PPmethod = "PDA", size.p = 0.5)
+#' Tree.leukemia
+#' #crab data set
+#' Tree.crab <- PPtree_split(as.formula('y~.'), y = crab[, 1], x = crab[,-1], PPmethod = "LDA", size.p = 0.9)
+#' Tree.crab
+PPtree_split <- function(formula, y, x,  PPmethod = "LDA", weight = TRUE, size.p = 0.9, r = 1, lambda = 0.1, energy = 0, 
     maxiter = 50000, ...) {
+    df <- data.frame(y = y, x = x)
     TOL <- NULL
-    mf <- model.frame(formula, data = data)
+    mf <- model.frame(formula, data = df)
     origclass <- model.response(mf)
-    origdata <- data[, -1]
+    origdata <- x
     origdata <- as.matrix(origdata)
     
     Find.proj <- function(origclass, origdata, PPmethod, weight, r, lambda, maxiter, ...) {

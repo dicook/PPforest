@@ -1,6 +1,7 @@
 #' Importance variable visualization 
 #' 
-#' @param data is a data frame with the complete data set. Class factor in the first column and the data should be standardize
+#' @param y  is a vector with the class variable.
+#' @param x is a data frame with explicative variables,  should be standardized.
 #' @param ppforest is a PPforest object
 #' @param global is TRUE if we want to see the global importance of the forest
 #' @param weight is TRUE if we want to see a weighted mesure of the forest importance based on out of bag trees errors
@@ -8,12 +9,12 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
-#' iris.s<- data.frame(iris[, 5], scale(iris[, 1:4]))
-#' names(iris.s) <- colnames(iris[, 5:1])
-#' pprf.iris  <- PPforest( data = iris.s, size.tr = 2/3,  
-#' m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-#' ppf_importance(iris[,5:1], pprf.iris, global = TRUE, weight = TRUE) 
-ppf_importance <- function(data, ppforest, global = TRUE, weight = TRUE) {
+#' #leukemia data set with 2/3 observations used as training
+#' pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1], size.tr = 2/3, m = 500, size.p = .5, 
+#' PPmethod = 'PDA', strata = TRUE)
+#' ppf_importance(y = leukemia[, 1], x = leukemia[, -1], pprf.leukemia, global = TRUE, weight = TRUE) 
+ppf_importance <- function(y , x, ppforest, global = TRUE, weight = TRUE) {
+    data <- data.frame(y , x)
     value <- NULL
     variable <- NULL
     node <- NULL

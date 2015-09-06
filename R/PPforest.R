@@ -2,7 +2,8 @@
 #'
 #'\code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
 #' @usage PPforest(data, size.tr, m, PPmethod, size.p, strata = TRUE, lambda=.1)
-#' @param data a data frame with the class variable in the first column.
+#' @param y  is a vector with the class variable.
+#' @param x is a data frame with explicative variables.
 #' @param size.tr is the size proportion of the training if we want to split the data in training and test.
 #' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small. \code{m = 500} is by default.
 #' @param PPmethod is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.
@@ -29,16 +30,26 @@
 #' \item{test}{is the test data based on \code{1-size.tr} sample proportion}
 #' @export
 #' @examples
-#' pprf.iris <- PPforest(data = iris[,5:1], size.tr = 2/3, m = 500, size.p = .5, 
+#' #leukemia data set with 2/3 observations used as training
+#' pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1], size.tr = 2/3, m = 500, size.p = .5, 
 #' PPmethod = 'PDA', strata = TRUE)
-#' pprf.iris
-#' #Leukemia data set
-#' pprf.leukemia <- PPforest(data = leukemia, size.tr = .9, m = 500, size.p = .8, 
-#' PPmethod = 'LDA', strata = TRUE)
 #' pprf.leukemia
-PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
+#' #leukemia data set without test
+#' pprf.leukemia2 <- PPforest(y = leukemia[, 1], x = leukemia[, -1], size.tr = 1, m = 500, size.p = .5, 
+#' PPmethod = 'PDA', strata = TRUE)
+#' pprf.leukemia2
+#' #crab data set with 2/3 observations used as training
+#' pprf.crab <- PPforest(y = crab[, 1], x = crab[,-1], size.tr = 2/3, m = 100, size.p = .8, 
+#' PPmethod = 'LDA', strata = TRUE)
+#' pprf.crab
+#'  #crab data set without test
+#' pprf.crab2 <- PPforest(y = crab[, 1], x = crab[, -1], size.tr = 1, m = 100, size.p = .8, 
+#' PPmethod = 'LDA', strata = TRUE)
+#' pprf.crab2
+PPforest <- function(y, x, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
+    data <- data.frame(y, x)
     Var1 <- NULL
-    tr.index <- train_fn(data[, 1], size.tr)
+    tr.index <- train_fn(y, size.tr)
     train <- data[sort(tr.index$id), ]
     
     colnames(train)[1] <- "class"
@@ -48,14 +59,14 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     var.sel <- floor(length(var.num) * size.p)
     
     if (strata == TRUE) {
-        data.b <- ppf_bootstrap(train, m, strata)
+        data.b <- ppf_bootstrap(y = train[,1], df = train, m, strata)
         output <- trees_pp(data.b, size.p, PPmethod, lambda = 0.1)
     } else {
-        data.b <- ppf_bootstrap(train, m, strata = FALSE)
+        data.b <- ppf_bootstrap(y = train[, 1], df = train, m, strata = FALSE)
         output <- trees_pp(data.b, size.p, PPmethod, lambda = 0.1)
     }
     
-    pred.tr <- tree_ppred(train[, -1], output)
+    pred.tr <- tree_ppred(xnew = train[, -1], output)
     pos <- expand.grid(a = 1:dim(train)[1], b = 1:dim(train)[1])
     cond <- pos[, 1] >= pos[, 2]
     tri.low <- pos[cond, ]
@@ -114,7 +125,7 @@ PPforest <- function(data, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     test <- data[-tr.index$id, -1]
     
     if (dim(test)[1] != 0) {
-        pred.test <- tree_ppred(test, output)
+        pred.test <- tree_ppred(xnew = test, output)
         error.test <- 1 - sum(data[-tr.index$id, 1] == pred.test[[3]])/length(pred.test[[3]])
     } else {
         pred.test <- NULL
