@@ -22,11 +22,11 @@ trees_pp <- function(data.b, size.p = 0.9, PPmethod = "LDA", lambda = 0.1, ...) 
     
     names(data.b)[1] <- "class"
     if (PPmethod == "LDA") {
-        trees <- data.b %>% dplyr::do(tr = PPtree_split(as.formula("class~."), PPmethod = "LDA", data = ., size.p = size.p, 
+        trees <- data.b %>% dplyr::do(tr = PPtree_split(as.formula("class~."), df = ., PPmethod = "LDA",  size.p = size.p, 
             ...))
         
     } else {
-        trees <- data.b %>% dplyr::do(tr = PPtree_split(as.formula("class~."), PPmethod = "PDA", data = ., size.p = size.p, 
+        trees <- data.b %>% dplyr::do(tr = PPtree_split(as.formula("class~."),  df = ., PPmethod = "PDA", size.p = size.p, 
             lambda, ...))
     }
     trees

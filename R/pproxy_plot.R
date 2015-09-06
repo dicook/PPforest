@@ -7,8 +7,8 @@
 #' @export
 #' @examples
 #' #leukemia data set with 2/3 observations used as training
-#' pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1], size.tr = 2/3, m = 500, size.p = .5, 
-#' PPmethod = 'PDA', strata = TRUE)
+#' pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1],
+#' size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
 #' pproxy_plot(pprf.leukemia, type='heat')
 #' pproxy_plot(pprf.leukemia, type='MDS', k=2)
 pproxy_plot <- function(ppf, type = "heat", k) {

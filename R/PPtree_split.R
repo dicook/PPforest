@@ -1,11 +1,10 @@
 #' Projection pursuit classification tree with random variable selection in each split
 #' 
 #' Find tree structure using various projection pursuit indices of classification in each split.
-#' @usage PPtree_split(formula, data, PPmethod='LDA', weight=TRUE, 
+#' @usage PPtree_split(formula, df, PPmethod='LDA', weight=TRUE, 
 #' size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...) 
 #' @param formula a formula describing the model to be fitted, with the form \code{response~predictors}
-#' @param y is a vector with the class variable.
-#' @param x is a data frame with explicative variables.
+#' @param df is a data frame with class variable in the first column.
 #' @param PPmethod index to use for projection pursuit: 'LDA', 'PDA', 'Lr', 'GINI', and 'ENTROPY'
 #' @param weight  flag in LDA, PDA and Lr index
 #' @param size.p proportion of variables randomly sampled in each split.
@@ -27,18 +26,19 @@
 #' @keywords tree
 #' @examples
 #' #leukemia data set
-#' Tree.leukemia <- PPtree_split(as.formula('y~.'), y = leukemia[, 1], x = leukemia[,-1], PPmethod = "PDA", size.p = 0.5)
+#' Tree.leukemia <- PPtree_split(as.formula('Type~.'), df = leukemia,
+#'  PPmethod = "PDA", size.p = 0.5)
 #' Tree.leukemia
 #' #crab data set
-#' Tree.crab <- PPtree_split(as.formula('y~.'), y = crab[, 1], x = crab[,-1], PPmethod = "LDA", size.p = 0.9)
+#' Tree.crab <- PPtree_split(as.formula('Type~.'), df = crab,
+#'  PPmethod = "LDA", size.p = 0.9)
 #' Tree.crab
-PPtree_split <- function(formula, y, x,  PPmethod = "LDA", weight = TRUE, size.p = 0.9, r = 1, lambda = 0.1, energy = 0, 
+PPtree_split <- function(formula, df,  PPmethod = "LDA", weight = TRUE, size.p = 0.9, r = 1, lambda = 0.1, energy = 0, 
     maxiter = 50000, ...) {
-    df <- data.frame(y = y, x = x)
     TOL <- NULL
     mf <- model.frame(formula, data = df)
     origclass <- model.response(mf)
-    origdata <- x
+    origdata <- df[, -1]
     origdata <- as.matrix(origdata)
     
     Find.proj <- function(origclass, origdata, PPmethod, weight, r, lambda, maxiter, ...) {

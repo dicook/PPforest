@@ -10,14 +10,8 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
-#' #iris data set
-#' pprf.iris <- PPforest(data = iris[,5:1], size.tr = .9, m = 500, size.p = .9, 
-#' PPmethod = 'PDA', strata = TRUE)
-#' pred.iris <- predict( object = pprf.iris, test.data = pprf.iris$test)
-#' pred.iris
-#' #Leukemia data set
-#' pprf.leukemia <- PPforest(data = leukemia, size.tr = .9, m = 500, size.p = .8, 
-#' PPmethod = 'LDA', strata = TRUE)
+#' pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1],
+#'  size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
 #' pr.leukemia <- predict( object = pprf.leukemia, test.data = pprf.leukemia$test)
 #' pr.leukemia
 predict.PPforest <- function(object, test.data, Rule, true.class = NULL, ...) {

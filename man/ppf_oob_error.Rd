@@ -4,10 +4,10 @@
 \alias{ppf_oob_error}
 \title{OOB error visualization}
 \usage{
-ppf_oob_error(ppfo, nsplit)
+ppf_oob_error(ppf, nsplit)
 }
 \arguments{
-\item{ppfo}{a PPforest object}
+\item{ppf}{a PPforest object}
 
 \item{nsplit}{number of points where cumulative oob error rate is computed}
 }
@@ -18,8 +18,8 @@ a plot with the cumulative oob error rate
 \code{ppf_oob_error} Plot the cummulative oob error as a function of number of trees
 }
 \examples{
-pprf.crab <- PPforest(data = crab, size.tr = 1, m = 500, size.p = .5,
-PPmethod = 'LDA',  strata = TRUE)
-ppf_oob_error(pprf.crab, nsplit = 20)
+pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1],
+size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
+ppf_oob_error(ppf = pprf.leukemia, nsplit = 50)
 }
 

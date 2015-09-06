@@ -1,7 +1,7 @@
 #' Projection Pursuit Random Forest
 #'
 #'\code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
-#' @usage PPforest(data, size.tr, m, PPmethod, size.p, strata = TRUE, lambda=.1)
+#' @usage PPforest(y, x, size.tr, m, PPmethod, size.p, strata = TRUE, lambda=.1)
 #' @param y  is a vector with the class variable.
 #' @param x is a data frame with explicative variables.
 #' @param size.tr is the size proportion of the training if we want to split the data in training and test.
@@ -31,23 +31,23 @@
 #' @export
 #' @examples
 #' #leukemia data set with 2/3 observations used as training
-#' pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1], size.tr = 2/3, m = 500, size.p = .5, 
-#' PPmethod = 'PDA', strata = TRUE)
+#' pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1],
+#'  size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
 #' pprf.leukemia
 #' #leukemia data set without test
-#' pprf.leukemia2 <- PPforest(y = leukemia[, 1], x = leukemia[, -1], size.tr = 1, m = 500, size.p = .5, 
-#' PPmethod = 'PDA', strata = TRUE)
+#' pprf.leukemia2 <- PPforest(y = leukemia[, 1], x = leukemia[, -1], 
+#' size.tr = 1, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
 #' pprf.leukemia2
 #' #crab data set with 2/3 observations used as training
-#' pprf.crab <- PPforest(y = crab[, 1], x = crab[,-1], size.tr = 2/3, m = 100, size.p = .8, 
-#' PPmethod = 'LDA', strata = TRUE)
+#' pprf.crab <- PPforest(y = crab[, 1], x = crab[,-1], size.tr = 2/3,
+#'  m = 100, size.p = .8, PPmethod = 'LDA', strata = TRUE)
 #' pprf.crab
 #'  #crab data set without test
-#' pprf.crab2 <- PPforest(y = crab[, 1], x = crab[, -1], size.tr = 1, m = 100, size.p = .8, 
-#' PPmethod = 'LDA', strata = TRUE)
+#' pprf.crab2 <- PPforest(y = crab[, 1], x = crab[, -1], size.tr = 1, 
+#' m = 100, size.p = .8, PPmethod = 'LDA', strata = TRUE)
 #' pprf.crab2
 PPforest <- function(y, x, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
-    data <- data.frame(y, x)
+    data <- data.frame( y, x)
     Var1 <- NULL
     tr.index <- train_fn(y, size.tr)
     train <- data[sort(tr.index$id), ]

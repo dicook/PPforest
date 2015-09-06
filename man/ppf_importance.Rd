@@ -4,10 +4,12 @@
 \alias{ppf_importance}
 \title{Importance variable visualization}
 \usage{
-ppf_importance(data, ppforest, global = TRUE, weight = TRUE)
+ppf_importance(y, x, ppforest, global = TRUE, weight = TRUE)
 }
 \arguments{
-\item{data}{is a data frame with the complete data set. Class factor in the first column and the data should be standardize}
+\item{y}{is a vector with the class variable.}
+
+\item{x}{is a data frame with explicative variables,  should be standardized.}
 
 \item{ppforest}{is a PPforest object}
 
@@ -22,10 +24,10 @@ A dotplot with a global measure of importance  variables in the PPforest.
 Importance variable visualization
 }
 \examples{
-iris.s<- data.frame(iris[, 5], scale(iris[, 1:4]))
-names(iris.s) <- colnames(iris[, 5:1])
-pprf.iris  <- PPforest( data = iris.s, size.tr = 2/3,
-m = 500, size.p = .9, PPmethod = 'LDA', strata = TRUE)
-ppf_importance(iris[,5:1], pprf.iris, global = TRUE, weight = TRUE)
+#leukemia data set with 2/3 observations used as training
+pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1],
+ size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
+ppf_importance(y = leukemia[, 1], x = leukemia[, -1], pprf.leukemia,
+global = TRUE, weight = TRUE)
 }
 

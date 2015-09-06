@@ -4,10 +4,10 @@
 \alias{var_select}
 \title{Random selection of variables}
 \usage{
-var_select(data, size.p)
+var_select(x, size.p)
 }
 \arguments{
-\item{data}{is a data frame without the class variable.}
+\item{x}{is a data frame with explanatory variables.}
 
 \item{size.p}{proportion of variables used in each split}
 }
@@ -18,7 +18,7 @@ a vector giving the names of the selected variables
 Index id for variables set, sample variables without replacement.
 }
 \examples{
-variables <- var_select(data = iris[, -5], size.p = 0.9)
+variables <- var_select(x = leukemia[, -1], size.p = 0.9)
 variables
 }
 

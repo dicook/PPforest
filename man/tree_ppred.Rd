@@ -4,10 +4,10 @@
 \alias{tree_ppred}
 \title{Obtain predicted class for new data using PPforest}
 \usage{
-tree_ppred(newdata, output.tree, ...)
+tree_ppred(xnew, output.tree, ...)
 }
 \arguments{
-\item{newdata}{are the complete data without the class variable we want to predict}
+\item{xnew}{data frame with explicative variables used to get new predicted values.}
 
 \item{output.tree}{trees classifiers from trees_pp function or PPforest object}
 
@@ -20,11 +20,10 @@ predicted values form PPforest
 Vector with predicted values from a PPforest.
 }
 \examples{
-data(iris)
-training <- train_fn(class = iris[, 5], size.p = 2/3)
-iris.b <- ppf_bootstrap( iris[training$id, 5:1], 500)
-output <- trees_pp(iris.b, size.p = 0.9, PPmethod ='LDA')
-pr <- tree_ppred( iris[-training$id, 1:4] , output)
+training.id <- train_fn(y = leukemia[,1], size.p = 0.9)
+leukemia.b <- ppf_bootstrap(y = leukemia[, 1], df = leukemia, m= 200)
+leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .9, PPmethod = 'PDA', lambda = .1)
+pr <- tree_ppred( xnew = leukemia[-training.id$id, -1] , leukemia.trees)
 pr
 }
 

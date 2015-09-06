@@ -4,10 +4,10 @@
 \alias{train_fn}
 \title{Obtain stratified sample of the data}
 \usage{
-train_fn(class = class, size.p = 0.9)
+train_fn(y, size.p = 0.9)
 }
 \arguments{
-\item{class}{input character vector with class of the data}
+\item{y}{input character vector with class of the data}
 
 \item{size.p}{proportion of sample in each class group}
 }
@@ -18,8 +18,7 @@ numeric vector  with the sample indexes for training data
 Index id for training set, sample in each class with the same proportion.
 }
 \examples{
-data(iris)
-training <- train_fn(class=iris[,5], size.p=0.9)
-training
+training.id <- train_fn(y = leukemia[,1], size.p = 0.9)
+training.id
 }
 

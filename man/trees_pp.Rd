@@ -24,10 +24,11 @@ data frame with trees_pp output for all the bootstraps samples.
 For each bootstrap sample grow a projection persuit tree (PPtree object).
 }
 \examples{
-training <- train_fn(iris[,5], .9)
-data1 <- iris[training$id, 5:1]
-iris.b <- ppf_bootstrap(data1, 500)
-output1 <- trees_pp(iris.b, size.p=.9,  PPmethod = 'LDA')
-output2 <- trees_pp(iris.b, size.p=.9, PPmethod ='PDA', lambda=.1)
+#leukemia data set
+leukemia.b <- ppf_bootstrap(y = leukemia[, 1], df = leukemia, m= 200)
+leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .9, PPmethod = 'PDA', lambda = .1)
+#crab data set
+crab.b <- ppf_bootstrap(y = crab[, 1], df = crab, m= 200, strata = FALSE)
+crab.trees <- trees_pp(data.b = crab.b, size.p = .9, PPmethod = 'LDA')
 }
 

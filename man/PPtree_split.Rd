@@ -4,13 +4,13 @@
 \alias{PPtree_split}
 \title{Projection pursuit classification tree with random variable selection in each split}
 \usage{
-PPtree_split(formula, data, PPmethod='LDA', weight=TRUE,
+PPtree_split(formula, df, PPmethod='LDA', weight=TRUE,
 size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...)
 }
 \arguments{
 \item{formula}{a formula describing the model to be fitted, with the form \code{response~predictors}}
 
-\item{data}{is a data frame with the class variable in the first column}
+\item{df}{is a data frame with class variable in the first column.}
 
 \item{PPmethod}{index to use for projection pursuit: 'LDA', 'PDA', 'Lr', 'GINI', and 'ENTROPY'}
 
@@ -40,9 +40,14 @@ An object of class \code{PPtreeclass} with components
 Find tree structure using various projection pursuit indices of classification in each split.
 }
 \examples{
-data(iris)
-Tree.result <- PPtree_split(as.formula('Species~.'), data=iris[,5:1], size.p=0.9)
-Tree.result
+#leukemia data set
+Tree.leukemia <- PPtree_split(as.formula('Type~.'), df = leukemia,
+ PPmethod = "PDA", size.p = 0.5)
+Tree.leukemia
+#crab data set
+Tree.crab <- PPtree_split(as.formula('Type~.'), df = crab,
+ PPmethod = "LDA", size.p = 0.9)
+Tree.crab
 }
 \references{
 Lee, YD, Cook, D., Park JW, and Lee, EK (2013)

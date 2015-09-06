@@ -10,9 +10,10 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' #leukemia data set with 2/3 observations used as training
-#' pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1], size.tr = 2/3, m = 500, size.p = .5, 
-#' PPmethod = 'PDA', strata = TRUE)
-#' ppf_importance(y = leukemia[, 1], x = leukemia[, -1], pprf.leukemia, global = TRUE, weight = TRUE) 
+#' pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1],
+#'  size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
+#' ppf_importance(y = leukemia[, 1], x = leukemia[, -1], pprf.leukemia, 
+#' global = TRUE, weight = TRUE) 
 ppf_importance <- function(y , x, ppforest, global = TRUE, weight = TRUE) {
     data <- data.frame(y , x)
     value <- NULL
