@@ -150,9 +150,10 @@ Also `PPfores` package includes some data set that were used to test the predict
 We continue with crab data example to show how `PPforest`  works, we first split the data in training (2/3) and test (1/3).
 To do that we use `train_fn` function, this function has two arguments, class is a vector with the class variable and size.p is the sample proportion we want. The sample is stratified by each class with the same proportion. This function returns a vector with the sample ids.
 
-
 ```{r}
-training.id <- PPforest::train_fn(crab[, 1], 2/3)
+training.id <- PPforest::train_fn(y = crab[, 1],  size.p = 2/3)
+
+
 ```
 If we want all the selected id's we use `training.id$id`
 
@@ -161,13 +162,10 @@ The number of trees in the forest is specified using the argument m. size.p is t
 
 ```{r}
 set.seed(146)
-pprf.crab <- PPforest::PPforest(data = crab, size.tr = 2/3, m = 500, size.p = .7,  
-              PPmethod = 'LDA', strata = TRUE)
+pprf.crab <- PPforest::PPforest(y = crab[, 1], x = crab[, -1], size.tr = 2/3, m = 500, size.p =  .7,  PPmethod = 'LDA', strata = TRUE)
 
 
 ```
-
-
 
 `PPforest` function returns the predicted values of the training data, training error, test error and predicted test values are returned. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix, number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned.
 
@@ -178,13 +176,14 @@ pprf.crab
 
 If we compare the results with the `randomForest` function for this data set the results are the following:
 ```{r}
-rf.crab <- randomForest::randomForest(Type~.,data=crab,proximity=TRUE)
+rf.crab <- randomForest::randomForest(Type~., data = crab, proximity = TRUE)
 rf.crab
 ```
 We can see that for this data set the `PPforest` performance is much better than using `randomForest`. `PPforest` works well since the classes can be separated by linear combinations of variables. 
 This is a clear case where oblique hyperplanes are more adequate in this case than hyperplanes horizontal to the axis.
 
 We can get the predicted values for training and test using the output of `PPforest`
+
 ```{r}
  pred.training <- pprf.crab$prediction.training
  pred.test <- pprf.crab$prediction.test
@@ -220,7 +219,7 @@ A global measure of importance is computed. In `PPtree` the projection coefficie
 Using the `ppf_importance` function we can plot the global variable importance measure in `PPforest`.
 
 ```{r, fig.show='hold',fig.width = 4 ,fig.height = 3}
-PPforest::ppf_importance(crab, pprf.crab, global = TRUE, weight = TRUE) 
+PPforest::ppf_importance(y = crab[, 1], x = crab[, -1], pprf.crab, global = TRUE, weight = TRUE) 
 ```
 
 We can see that the most important variable in this example is RW while the less important is BD
@@ -239,7 +238,7 @@ Gene expression data set, contains 61 observations and 30 feature variables. Cla
 
 Since this data set present a considerable big number of predictive variables we will explore the data set using `PPTreeViz` package first.
 
-We can explore the optimal projection for classification in q-dimensional space. We select q=1 and  PDA  projection pursuit index. Whith q=1 `PPopt.Viz` returns an histogram with the projected data and the plot  with the coefficients of projection. 
+We can explore the optimal projection for classification in q-dimensional space. We select q=1 and PDA projection pursuit index. Whit q=1 `PPopt.Viz` returns an histogram with the projected data and the plot  with the coefficients of projection. 
 
 
 ```{r, fig.show='hold',fig.width = 7 ,fig.height = 4, message=FALSE}
@@ -248,6 +247,7 @@ load("../data/NCI60.rda")
 PPtreeViz::PPopt.Viz(PPtreeViz::PDAopt(NCI60[, 1], as.matrix(NCI60[, -1]), q = 1))
 
 ```
+
 In the histogram we can observe each class distribution and we can observe that leukemia is separate from the other classes. In the plot with the coefficient values we can observe that Gene 30 and Gene 28 are the most important to separate the leukemia class in this view.  
 
 We can use a scatterplot matrix with some of these Gene variables that are important for the separation. We can see in this plot that the data are correlated and the green class is different from the rest (leukemia).
@@ -279,7 +279,7 @@ In the same way than for crab data we split the data in training and test(size.t
 ```{r}
 set.seed(123)
 NCI60 <- dplyr::arrange(NCI60, desc(Type))
-pprf.nci60 <- PPforest::PPforest(data = NCI60, size.tr = 2/3, m = 500, size.p = .7, PPmethod = 'PDA', strata = TRUE, lambda=.5)
+pprf.nci60 <- PPforest::PPforest(y = NCI60[, 1], x = NCI60[, -1], size.tr = 2/3, m = 500, size.p = .7, PPmethod = 'PDA', strata = TRUE, lambda=.5)
 pprf.nci60
 ```
 
@@ -306,7 +306,7 @@ PPforest::pproxy_plot(pprf.nci60, type="MDS",k = 2)
 
 The importance variable plot shows that the most important variables are Gene26 to Gene30 while Gene9 and Gene16 are the less important for the classification `PPforest`.
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 6,echo=FALSE}
-PPforest::ppf_importance(NCI60, pprf.nci60, global = TRUE, weight = TRUE) 
+PPforest::ppf_importance(y = NCI60[ ,1], x = NCI60[, -1], pprf.nci60, global = TRUE, weight = TRUE) 
 ```
 
 The cumulative oob error plot shows that ovarian class has a constant error of 1 while for other classes like renal, melanoma and NSCLC show a decrease error when the number of trees increase.
@@ -315,8 +315,4 @@ The cumulative oob error plot shows that ovarian class has a constant error of 1
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 4}
 PPforest::ppf_oob_error(pprf.nci60, nsplit = 20)   
 ```
-
-
-
-
 
