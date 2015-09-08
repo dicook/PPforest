@@ -1,16 +1,17 @@
 #' OOB error visualization
 #' 
 #'\code{ppf_oob_error} Plot the cummulative oob error as a function of number of trees 
-#' @usage ppf_oob_error(ppf, nsplit)
+#' @usage ppf_oob_error(ppf, nsplit1, nsplit2)
 #' @param ppf a PPforest object
-#' @param nsplit number of points where cumulative oob error rate is computed
+#' @param nsplit1 number, increment of the sequence where cumulative oob error rate is computed in the  1/3 trees
+#' @param nsplit2 number, increment of the sequence where cumulative oob error rate is computed in the  2/3 trees
 #' @return a plot with the cumulative oob error rate
 #' @export
 #' @examples
 #' pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1], 
 #' size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
-#' ppf_oob_error(ppf = pprf.leukemia, nsplit = 50)
-ppf_oob_error <- function(ppf, nsplit) {
+#' ppf_oob_error(ppf = pprf.leukemia, nsplit1 = 10, nsplit2 = 100)
+ppf_oob_error <- function(ppf, nsplit1, nsplit2) {
     ntree <- NULL
     value <- NULL
     variable <- NULL
@@ -38,7 +39,7 @@ ppf_oob_error <- function(ppf, nsplit) {
         c(oob.all, oob.class)
     }
     
-    oob.err.sp <- plyr::mdply(data.frame(m = round(seq(2, ppf$n.tree, nsplit))), error.cum, ppf = ppf)
+    oob.err.sp <- plyr::mdply(data.frame(m = round(c(seq(2, round(ppf$n.tree*1/3), nsplit1),seq( round(ppf$n.tree*1/3)+1, ppf$n.tree,nsplit2)))), error.cum, ppf = ppf)
     
     names(oob.err.sp)[1:2] <- c("ntree", "all")
     

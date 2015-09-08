@@ -227,7 +227,7 @@ We can see that the most important variable in this example is RW while the less
 Finally a cumulative out of error plot can be done using `ppf_oob_error`
 
 ```{r, fig.show='hold',fig.width = 6 ,fig.height = 4}
-PPforest::ppf_oob_error(pprf.crab, nsplit = 20)
+PPforest::ppf_oob_error(pprf.crab, nsplit1 = 10, nsplit2 = 100)
 ```
 
 The oob-error rate decrease when we increase the numbers of trees but gets constant with less than 250 trees. 
@@ -313,6 +313,6 @@ The cumulative oob error plot shows that ovarian class has a constant error of 1
 
 
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 4}
-PPforest::ppf_oob_error(pprf.nci60, nsplit = 20)   
+PPforest::ppf_oob_error(pprf.nci60, nsplit1 = 10, nsplit2 = 100)   
 ```
 
