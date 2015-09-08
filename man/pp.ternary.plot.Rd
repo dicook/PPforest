@@ -24,6 +24,6 @@ pp.ternary.plot(x, y, z, pprf, data)
 #crab data set without test
 pprf.crab2 <- PPforest(y = crab[, 1], x = crab[, -1], size.tr = 1,
 m = 100, size.p = .8, PPmethod = 'LDA', strata = TRUE)
-pp.ternary.plot(1,2,3,pprf.crab2,crab)
+pp.ternary.plot(1, 2, 3, pprf.crab2, crab)
 }
 
