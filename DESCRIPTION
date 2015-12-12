@@ -14,8 +14,8 @@ Imports:
     PPtreeViz,
     reshape2,
     GGally
-Description: Random forest build on projection pursuit classification tree using LDA or PDA
-    projection pursuit index.
+Description: Random forest build on projection pursuit classification tree using
+    LDA or PDA projection pursuit index.
 License: LGPL-2.1
 LazyData: true
 Suggests:
@@ -23,6 +23,8 @@ Suggests:
     randomForest,
     rpart,
     gridExtra,
+    RColorBrewer,
     rpart.plot,
     roxygen2 (>= 3.0.0)
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1.9000
