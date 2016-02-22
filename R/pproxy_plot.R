@@ -22,11 +22,18 @@ pproxy_plot <- function(ppf, type = "heat", k) {
         id[lower.tri(id, diag = TRUE)] <- ppf[[9]]$proxi
         id[upper.tri(id)] <- t(id)[upper.tri(id)]
         m.prox <- reshape2::melt(id)
+        m.prox$Var2 <- as.factor(m.prox$Var2)
+        m.prox$Var2 <- factor(m.prox$Var2, levels=rev(levels(m.prox$Var2)))
+        m.prox$Var1 <- as.factor( m.prox$Var1)
         
-        ggplot2::ggplot(m.prox, ggplot2::aes(Var1, Var2, fill = value)) + ggplot2::scale_y_reverse() + ggplot2::xlab("") + 
+        a <- ggplot2::ggplot(m.prox, ggplot2::aes(Var1, Var2, fill = value)) + ggplot2::xlab("") + 
             ggplot2::ylab("") + ggplot2::geom_tile(ggplot2::aes(fill = value)) + ggplot2::scale_fill_gradient(high = "#132B43", 
-            low = "#56B1F7", name = "Proximity")
-    } else {
+            low = "#56B1F7", name = "Proximity") 
+      
+        
+        plotly::ggplotly(a)
+       
+         } else {
         
         value <- NULL
         Var1 <- NULL
@@ -34,6 +41,10 @@ pproxy_plot <- function(ppf, type = "heat", k) {
         MDS1 <- NULL
         MDS2 <- NULL
         fac <- NULL
+        x <- NULL
+        y <- NULL
+        Type <- NULL
+      
         
         id <- diag(dim(ppf$train)[1])
         id[lower.tri(id, diag = TRUE)] <- 1 - ppf[[9]]$proxi
@@ -45,11 +56,50 @@ pproxy_plot <- function(ppf, type = "heat", k) {
             df <- data.frame(fac = ppf$train[, 1], rf.mds$points)
             ggplot2::ggplot(data = df) + ggplot2::geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = fac)) + ggplot2::theme(aspect.ratio = 1) + 
                 ggplot2::scale_colour_discrete(name = "Class")
+            plotly::ggplotly()
             
         } else {
             df <- data.frame(fac = ppf$train[, 1], rf.mds$points)
-            GGally::ggpairs(data = df, columns = 2:ncol(df), colour = "fac")
-        }
+             # GGally::ggpairs(data = df, columns = 2:ncol(df), colour = "fac")
+            makePairs <- function(data) 
+            {
+              grid <- expand.grid(x = 1:ncol(data), y = 1:ncol(data))
+              grid <- subset(grid, x != y)
+              all <- do.call("rbind", lapply(1:nrow(grid), function(i) {
+                xcol <- grid[i, "x"]
+                ycol <- grid[i, "y"]
+                data.frame(xvar = names(data)[ycol], yvar = names(data)[xcol], 
+                           x = data[, xcol], y = data[, ycol], data)
+              }))
+              all$xvar <- factor(all$xvar, levels = names(data))
+              all$yvar <- factor(all$yvar, levels = names(data))
+              densities <- do.call("rbind", lapply(1:ncol(data), function(i) {
+                data.frame(xvar = names(data)[i], yvar = names(data)[i], x = data[, i])
+              }))
+              list(all=all, densities=densities)
+            }
+            
+            # expand iris data frame for pairs plot
+            gg1 = makePairs(data[,-1])
+            
+            # new data frame mega iris
+            mega_data = data.frame(gg1$all, Type=rep(data$fac, length=nrow(gg1$all)))
+           
+            # pairs plot
+            a <- ggplot2::ggplot(mega_data, ggplot2::aes_string(x = "x", y = "y")) + 
+              ggplot2::facet_grid(xvar ~ yvar, scales = "free") + 
+              ggplot2::geom_point(ggplot2::aes(colour=Type), na.rm = TRUE, alpha=0.8) + 
+              ggplot2::stat_density(ggplot2::aes(x = x, y = ..scaled.. * diff(range(x)) + min(x)), 
+                           data = gg1$densities, position = "identity", 
+                           colour = "grey20", geom = "line", size=I(0.5))+
+              ggplot2::theme(legend.position='none')
+            
+            
+            plotly::ggplotly(a)
+            
+              
+              
+              }
         
     }
 } 
