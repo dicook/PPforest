@@ -13,11 +13,11 @@ Imports:
     dplyr,
     PPtreeViz,
     reshape2,
-    GGally
+    plotly
 Description: Random forest build on projection pursuit classification tree using
     LDA or PDA projection pursuit index.
 License: LGPL-2.1
-LazyData: true
+LazyData: yes
 Suggests:
     knitr,
     randomForest,
