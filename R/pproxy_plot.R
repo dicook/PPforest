@@ -79,19 +79,19 @@ pproxy_plot <- function(ppf, type = "heat", k) {
               list(all=all, densities=densities)
             }
             
-            # expand iris data frame for pairs plot
-            gg1 = makePairs(data[,-1])
+            # expand data frame for pairs plot
+            gg1 = makePairs(df[,-1])
             
             # new data frame mega iris
-            mega_data = data.frame(gg1$all, Type=rep(data$fac, length=nrow(gg1$all)))
+            mega_data = data.frame(gg1$all, Type=rep(df$fac, length=nrow(gg1$all)))
            
             # pairs plot
             a <- ggplot2::ggplot(mega_data, ggplot2::aes_string(x = "x", y = "y")) + 
               ggplot2::facet_grid(xvar ~ yvar, scales = "free") + 
               ggplot2::geom_point(ggplot2::aes(colour=Type), na.rm = TRUE, alpha=0.8) + 
-              ggplot2::stat_density(ggplot2::aes(x = x, y = ..scaled.. * diff(range(x)) + min(x)), 
+              ggplot2::stat_density(ggplot2::aes_string(x = x, y = ..scaled.. * diff(range(x)) + min(x)), 
                            data = gg1$densities, position = "identity", 
-                           colour = "grey20", geom = "line", size=I(0.5))+
+                           colour = "grey20", geom = "line", size=I(0.1))+
               ggplot2::theme(legend.position='none')
             
             

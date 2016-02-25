@@ -33,5 +33,5 @@ pp.ternary.plot <- function(x, y, z, pprf, data){
   
   p <- tri + ggplot2::geom_point(data = pr, ggplot2::aes(X1, X2, color = class, size = sp)) +  
     ggplot2::theme(legend.position = "bottom", legend.text = ggplot2::element_text(size = 6)) 
-  return(p) 
+  plotly::ggplotly(p)
 }

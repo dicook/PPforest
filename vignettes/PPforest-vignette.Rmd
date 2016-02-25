@@ -33,13 +33,13 @@ To visualize this data set we use a scatterplot matrix.
 load("../data/crab.rda")
 library(RColorBrewer)
 
-GGally::ggpairs(crab, 
-    columns= 2:6,
-    colour='Type',
-    lower=list(continuous='points'), 
-    axisLabels='none',  
-    upper=list(continuous='blank') 
-     ) 
+# GGally::ggpairs(crab, 
+#     columns= 2:6,
+#     colour='Type',
+#     lower=list(continuous='points'), 
+#     axisLabels='none',  
+#     upper=list(continuous='blank') 
+#      ) 
 ```
 
 ```{r, fig.show='hold',fig.width = 7 ,fig.height = 7, echo=FALSE}
@@ -194,7 +194,7 @@ We can get the predicted values for training and test using the output of `PPfor
 From `PPforest` object we can plot a heat map of the proximity matrix using the function `pproxy_plot`.
 
 ```{r,fig.show='hold',fig.width = 4 ,fig.height = 3,echo=FALSE}
-PPforest::pproxy_plot(pprf.crab, type="heat")
+#PPforest::pproxy_plot(pprf.crab, type="heat")
 ```
 
 The data are ordered by class (BlueFemale, BlueMale, OrangeFemale and OrangeMale), in the heat map we can observe a colored block diagonal structure, this means that observations form the same class are similar, but also we can observe that observations from BlueMale and BlueFemale are similar (big blue square in the left top corner).
@@ -204,7 +204,7 @@ Additionally `pproxy_plot` can be used to plot the MDS using proximity matrix in
 If we select k=2 the output plot is as follows:
 
 ```{r,fig.show='hold',fig.width = 7 ,fig.height = 4}
-PPforest::pproxy_plot(pprf.crab, type="MDS", k=2)
+#PPforest::pproxy_plot(pprf.crab, type="MDS", k=2)
 ```
 
 We can observe a spatial separation between classes. Orange (male and female) are more separated than Blue (male and female).
@@ -212,7 +212,7 @@ We can observe a spatial separation between classes. Orange (male and female) ar
 If we select k>2,  we can observe that using two dimensions is enough to see the spatial separation.
 
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 6}
-PPforest::pproxy_plot(pprf.crab, type="MDS",k = 3)
+#PPforest::pproxy_plot(pprf.crab, type="MDS",k = 3)
 ```
 
 A global measure of importance is computed. In `PPtree` the projection coefficient of each node represent the importance of variables to class separation in each node. To get a global measure in `PPforest` we need to take into account the importance in each node and combine the results for all the trees in the forest. The importance measure of `PPforest` is a  weighted mean of the absolute value of the projection coefficients across all nodes in every tree. The weights are  the projection pursuit index in each node, and 1-the out of bag error of each tree.
@@ -228,7 +228,7 @@ We can see that the most important variable in this example is RW while the less
 Finally a cumulative out of error plot can be done using `ppf_oob_error`
 
 ```{r, fig.show='hold',fig.width = 6 ,fig.height = 4}
-PPforest::ppf_oob_error(pprf.crab, nsplit1 = 10, nsplit2 = 100)
+#PPforest::ppf_oob_error(pprf.crab, nsplit1 = 10, nsplit2 = 100)
 ```
 
 The oob-error rate decrease when we increase the numbers of trees but gets constant with less than 250 trees. 
@@ -254,18 +254,18 @@ In the histogram we can observe each class distribution and we can observe that 
 We can use a scatterplot matrix with some of these Gene variables that are important for the separation. We can see in this plot that the data are correlated and the green class is different from the rest (leukemia).
 ```{r, fig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
 
-GGally::ggpairs(NCI60, 
-    columns= 27:31,
-    colour='Type',
-    lower=list(continuous='points'), 
-    axisLabels='none',
-    upper=list(continuous='blank')
-)
+# GGally::ggpairs(NCI60, 
+#     columns= 27:31,
+#     colour='Type',
+#     lower=list(continuous='points'), 
+#     axisLabels='none',
+#     upper=list(continuous='blank')
+# )
 ```
 
 ```{r,  fig.show='hold', fig.width = 10, fig.height = 5, echo=FALSE}
-gpd <- GGally::ggparcoord(data = NCI60, columns = 2:31, groupColumn = 1, order = "anyClass", showPoints = TRUE) + theme(axis.text.x = element_text(angle = 90), legend.position="bottom")
- gpd
+# gpd <- GGally::ggparcoord(data = NCI60, columns = 2:31, groupColumn = 1, order = "anyClass", showPoints = TRUE) + theme(axis.text.x = element_text(angle = 90), legend.position="bottom")
+#  gpd
 ```
 
 If we select q=2, `PPopt.Viz shows the best 2 dimensional projection coefficients and the scatter plot of the projected data. We can observe that colon and leukemia are separable.
@@ -314,6 +314,6 @@ The cumulative oob error plot shows that ovarian class has a constant error of 1
 
 
 ```{r,fig.show='hold',fig.width = 6 ,fig.height = 4}
-PPforest::ppf_oob_error(pprf.nci60, nsplit1 = 10, nsplit2 = 100)   
+#PPforest::ppf_oob_error(pprf.nci60, nsplit1 = 10, nsplit2 = 100)   
 ```
 
