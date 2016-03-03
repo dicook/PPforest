@@ -29,7 +29,7 @@ Australian crab data set contains measurements on rock crabs of the genus Leptog
 
 To visualize this data set we use a scatterplot matrix.
 
-```{r, v1,fig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE, cache=TRUE}
+```{r,fig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
 load("../data/crab.rda")
 #library(RColorBrewer)
 #library(GGally)
@@ -43,7 +43,7 @@ load("../data/crab.rda")
 #      ) 
 ```
 
-```{r, v2,fig.show='hold',fig.width = 7 ,fig.height = 7, echo=FALSE, message=FALSE,cache=TRUE}
+```{r, fig.show='hold',fig.width = 7 ,fig.height = 7, echo=FALSE, message=FALSE}
 # library(ggplot2)
 # library(RColorBrewer)
 # crab2 <- base::subset(crab, select=c(Type,RW,BD))
@@ -58,7 +58,7 @@ load("../data/crab.rda")
 # rpart.pred <- predict(rpart.crab, newdata = grilla, type="class")
 ```
 
-```{r,v3, fig.show='hold',fig.width = 7, fig.height = 4, echo=FALSE, message=FALSE,cache=TRUE, warning=FALSE,eval=FALSE}
+```{r, fig.show='hold',fig.width = 7, fig.height = 4, echo=FALSE, message=FALSE,warning=FALSE,eval=FALSE}
 
 #To better understand the main characteristics of `PPtree` algorithm we will use a subset of crab data. We have selected two feature variables, RW and BD. With this reduced data set we run a `rpart` and a `PPtree` and we plot the decision boundaries for each tree.
 
@@ -107,7 +107,7 @@ Finally the projection coefficient of the node represent the variable importance
 
 The following plots shows the tree structure from `rpart` and `PPtree`. Trees from `PPtree` are smaller and simpler than trees from `rpart`. For this example `PPtree` present three splits while `rpart` tree did  13 splits. 
 
-```{r, v4, fig.show='hold',fig.width = 7, fig.height = 4, echo=FALSE, message=FALSE,cache=TRUE}
+```{r,  fig.show='hold',fig.width = 7, fig.height = 4, echo=FALSE, message=FALSE}
 # library(rpart.plot)
 # library(gridExtra)
 # library(ggplot2)
@@ -160,7 +160,7 @@ Also `PPforest` package includes some data set that were used to test the predic
 We continue with crab data example to show how `PPforest` works, we first split the data in training (2/3) and test (1/3).
 To do that we use `train_fn` function, this function has three arguments, data is a data frame with the complete data set, class is a character withthe name of the class variable in my data set and size.p is the sample proportion we want. The sample is stratified by each class with the same proportion. This function returns a vector with the sample ids.
 
-```{r,v5, cache=TRUE}
+```{r}
 # training.id <- PPforest::train_fn(data = crab, class= "Type", size.p = 2/3)
 
 ```
@@ -169,7 +169,7 @@ If we want all the selected id's we use `training.id$id`
 ```PPforest``` function runs a projection pursuit random forest. This function also has a data argument and class argument. Using this function we have the option to split the data in training and test using size.tr directly. `size.tr` is the size proportion of the training then the proportion of this will be 1- `size.tr`.
 The number of trees in the forest is specified using the argument m. The argument size.p is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized there are two options LDA and PDA. Finally strata=TRUE indicate that the bootstrap samples are stratified by class variable. 
 
-```{r, v6, cache=TRUE}
+```{r}
 # set.seed(146)
 # pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = 2/3, m = 500, size.p =  .7,  PPmethod = 'LDA', strata = TRUE)
 # 
@@ -179,14 +179,14 @@ The number of trees in the forest is specified using the argument m. The argumen
 `PPforest` function returns the predicted values of the training data, training error, test error and predicted test values are returned. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix, number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned.
 
 The printed version of a `PPforest` object follows the `randomForest` printed version to make them comparable. Based on confusion matrix, we can observe that the biggest error is for BlueMale class. Most of the wrong classified values are between BlueFemale and BlueMale.
-```{r,v7}
+```{r}
 # pprf.crab
 ```
 
 
 
 If we compare the results with the `randomForest` function for this data set the results are the following:
-```{r,v8,cache=TRUE}
+```{r}
 # rf.crab <- randomForest::randomForest(Type~., data = crab, proximity = TRUE)
 # rf.crab
 ```
@@ -195,7 +195,7 @@ This is a clear case where oblique hyperplanes are more adequate in this case th
 
 We can get the predicted values for training and test using the output of `PPforest`
 
-```{r,v9,cache=TRUE}
+```{r}
 #  pred.training <- pprf.crab$prediction.training
 #  pred.test <- pprf.crab$prediction.test
 #  pred.test[1:10]
@@ -203,7 +203,7 @@ We can get the predicted values for training and test using the output of `PPfor
 
 From `PPforest` object we can plot a heat map of the proximity matrix using the function `pproxy_plot`.
 
-```{r,v10,fig.width = 4 ,fig.height = 3,echo=FALSE,cache=TRUE}
+```{r,fig.width = 4 ,fig.height = 3,echo=FALSE}
 #PPforest::pproxy_plot(pprf.crab, type="heat", inter=FALSE)
 ```
 
@@ -213,7 +213,7 @@ Additionally `pproxy_plot` can be used to plot the MDS using proximity matrix in
 
 If we select k=2 the output plot is as follows:
 
-```{r,v11,fig.show='hold',fig.width = 7 ,fig.height = 4,cache=TRUE}
+```{r,fig.show='hold',fig.width = 7 ,fig.height = 4}
 #PPforest::pproxy_plot(pprf.crab, type="MDS", k=2,inter=FALSE)
 ```
 
@@ -221,7 +221,7 @@ We can observe a spatial separation between classes. Orange (male and female) ar
 
 If we select k>2,  we can observe that using two dimensions is enough to see the spatial separation.
 
-```{r,v12,fig.show='hold',fig.width = 6 ,fig.height = 6,cache=TRUE}
+```{r,fig.show='hold',fig.width = 6 ,fig.height = 6}
 #PPforest::pproxy_plot(pprf.crab, type="MDS",k = 3)
 ```
 
@@ -229,7 +229,7 @@ A global measure of importance is computed. In `PPtree` the projection coefficie
 
 Using the `ppf_importance` function we can plot the global variable importance measure in `PPforest`.
 
-```{r,v13, fig.show='hold',fig.width = 4 ,fig.height = 3,cahce=TRUE}
+```{r, fig.show='hold',fig.width = 4 ,fig.height = 3}
 # PPforest::ppf_importance(y = crab[, 1], x = crab[, -1], pprf.crab, global = TRUE, weight = TRUE, inter=FALSE) 
 ```
 
@@ -237,7 +237,7 @@ We can see that the most important variable in this example is RW while the less
 
 Finally a cumulative out of error plot can be done using `ppf_oob_error`
 
-```{r, v14, fig.show='hold',fig.width = 6 ,fig.height = 4,cache=TRUE}
+```{r, fig.show='hold',fig.width = 6 ,fig.height = 4}
 # PPforest::ppf_oob_error(pprf.crab, nsplit1 = 10, nsplit2 = 100)
 ```
 
@@ -252,7 +252,7 @@ Since this data set present a considerable big number of predictive variables we
 We can explore the optimal projection for classification in q-dimensional space. We select q=1 and PDA projection pursuit index. Whit q=1 `PPopt.Viz` returns an histogram with the projected data and the plot  with the coefficients of projection. 
 
 
-```{r, v15, fig.show='hold',fig.width = 7 ,fig.height = 4, message=FALSE,cache=TRUE}
+```{r,  fig.show='hold',fig.width = 7 ,fig.height = 4, message=FALSE}
 # library(ggplot2)
 # load("../data/NCI60.rda")
 # PPtreeViz::PPopt.Viz(PPtreeViz::PDAopt(NCI60[, 1], as.matrix(NCI60[, -1]), q = 1))
@@ -262,7 +262,7 @@ We can explore the optimal projection for classification in q-dimensional space.
 In the histogram we can observe each class distribution and we can observe that leukemia is separate from the other classes. In the plot with the coefficient values we can observe that Gene 30 and Gene 28 are the most important to separate the leukemia class in this view.  
 
 We can use a scatterplot matrix with some of these Gene variables that are important for the separation. We can see in this plot that the data are correlated and the green class is different from the rest (leukemia).
-```{r, v16, fig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE,cache=TRUE}
+```{r, fig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
 # ggpairs(NCI60, 
 #     columns= 27:31,
 #     colour='Type',
@@ -272,13 +272,13 @@ We can use a scatterplot matrix with some of these Gene variables that are impor
 # )
 ```
 
-```{r, v17, fig.show='hold', fig.width = 10, fig.height = 5, echo=FALSE,cache=TRUE}
+```{r, fig.show='hold', fig.width = 10, fig.height = 5, echo=FALSE}
 # gpd <-ggparcoord(data = NCI60, columns = 2:31, groupColumn = 1, order = "anyClass", showPoints = TRUE) + theme(axis.text.x = element_text(angle = 90), legend.position="bottom")
 #  gpd
 ```
 
 If we select q=2, `PPopt.Viz shows the best 2 dimensional projection coefficients and the scatter plot of the projected data. We can observe that colon and leukemia are separable.
-```{r, v18, fig.show='hold',fig.width = 7 ,fig.height = 4, message=FALSE,cache=TRUE}
+```{r, fig.show='hold',fig.width = 7 ,fig.height = 4, message=FALSE}
 # library(ggplot2)
 # PPtreeViz::PPopt.Viz(PPtreeViz::PDAopt(NCI60[, 1], as.matrix(NCI60[, -1]), q = 2))
 ```
@@ -286,7 +286,7 @@ If we select q=2, `PPopt.Viz shows the best 2 dimensional projection coefficient
 In the same way than for crab data we split the data in training and test(size.tr=2/3) and we run a 
 `PPforest`. In this case PDA index are more appropriate since the number of observations small related to the number of feature variables. We select $\lambda=.7$, it is a penalty parameter in PDA index and is between 0 to 1. size.p=.7 is the random sample variable proportion used in each node split.
 
-```{r,v19,cache=TRUE}
+```{r}
 # set.seed(123)
 # NCI60 <- dplyr::arrange(NCI60, desc(Type))
 # pprf.nci60 <- PPforest::PPforest(data = NCI60, class = "Type", size.tr = 2/3, m = 500, size.p = .7, PPmethod = 'PDA', strata = TRUE, lambda=.5)
@@ -294,7 +294,7 @@ In the same way than for crab data we split the data in training and test(size.t
 ```
 
 We can compare the `PPfores` performance with `randomForest`
-```{r,v20,cache=TRUE}
+```{r}
 # set.seed(123)
 # rf.nci60 <- randomForest::randomForest(Type~., data = NCI60, proximity = TRUE)
 # rf.nci60
@@ -304,25 +304,25 @@ In this case `PPforest` also shows a better performance than `randomForest`.
 
 We can also plot the MDS of the proximity matrix using the function `pproxy_plot`.
 If we select k=2 we can see a block diagonal structure with 8 blocks that are related with the order of the classes (Renal, Ovarian, NSCLC, Melanoma, Leukemia, Colon CNS and Breast). Colon and leukemia are classes that are different to the rest of the classes and this result is consistent with the previous 2 dimension projection plot were we saw that leukemia and colon are separable.  
-```{r,v21,fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE,cache=TRUE}
+```{r,v21,fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE}
 #PPforest::pproxy_plot( pprf.nci60, type="heat" )
 ```
 
 
 
-```{r,v22, fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE,cache=TRUE}
+```{r, fig.show='hold',fig.width = 5 ,fig.height = 4,echo=FALSE}
 #PPforest::pproxy_plot(pprf.nci60, type="MDS",k = 2)
 ```
 
 The importance variable plot shows that the most important variables are Gene26 to Gene30 while Gene9 and Gene16 are the less important for the classification `PPforest`.
-```{r,v23,fig.show='hold',fig.width = 6 ,fig.height = 6,echo=FALSE,cache=TRUE}
+```{r,fig.show='hold',fig.width = 6 ,fig.height = 6,echo=FALSE}
 # PPforest::ppf_importance(y = NCI60[ ,1], x = NCI60[, -1], pprf.nci60, global = TRUE, weight = TRUE) 
 ```
 
 The cumulative oob error plot shows that ovarian class has a constant error of 1 while for other classes like renal, melanoma and NSCLC show a decrease error when the number of trees increase.
   
 
-```{r,v24, fig.show='hold',fig.width = 6 ,fig.height = 4,cache=TRUE}
+```{r,v24, fig.show='hold',fig.width = 6 ,fig.height = 4}
 #PPforest::ppf_oob_error(pprf.nci60, nsplit1 = 10, nsplit2 = 100)   
 ```
 
