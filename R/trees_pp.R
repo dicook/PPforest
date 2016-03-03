@@ -12,21 +12,24 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' #leukemia data set
-#' leukemia.b <- ppf_bootstrap(y = leukemia[, 1], df = leukemia, m= 200) 
+#' leukemia.b <- ppf_bootstrap(data = leukemia, class = "Type", m = 200) 
 #' leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .9, PPmethod = 'PDA', lambda = .1) 
 #' #crab data set
-#' crab.b <- ppf_bootstrap(y = crab[, 1], df = crab, m= 200, strata = FALSE) 
+#' crab.b <- ppf_bootstrap(data = crab, class = "Type", m = 200, strata = FALSE) 
+#' system.time({
 #' crab.trees <- trees_pp(data.b = crab.b, size.p = .9, PPmethod = 'LDA') 
+#' 
+#' })
 trees_pp <- function(data.b, size.p = 0.9, PPmethod = "LDA", lambda = 0.1, ...) {
     . <- NULL
-    
+
     names(data.b)[1] <- "class"
     if (PPmethod == "LDA") {
-        trees <- data.b %>% dplyr::do(tr = PPtree_split(as.formula("class~."), df = ., PPmethod = "LDA",  size.p = size.p, 
+        trees <- data.b %>% dplyr::do(tr = PPtree_split(class~., data = .,  PPmethod = "LDA",  size.p = size.p, 
             ...))
         
     } else {
-        trees <- data.b %>% dplyr::do(tr = PPtree_split(as.formula("class~."),  df = ., PPmethod = "PDA", size.p = size.p, 
+        trees <- data.b %>% dplyr::do(tr = PPtree_split(class~. ,  data = ., PPmethod = "PDA", size.p = size.p, 
             lambda, ...))
     }
     trees

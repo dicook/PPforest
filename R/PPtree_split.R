@@ -1,10 +1,10 @@
 #' Projection pursuit classification tree with random variable selection in each split
 #' 
 #' Find tree structure using various projection pursuit indices of classification in each split.
-#' @usage PPtree_split(formula, df, PPmethod='LDA', weight=TRUE, 
+#' @usage PPtree_split(form, data, PPmethod='LDA', weight=TRUE, 
 #' size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...) 
-#' @param formula a formula describing the model to be fitted, with the form \code{response~predictors}
-#' @param df is a data frame with class variable in the first column.
+#' @param form a formula describing the model to be fitted, with the form \code{response~predictors}
+#' @param data Data frame with the complete data set.
 #' @param PPmethod index to use for projection pursuit: 'LDA', 'PDA', 'Lr', 'GINI', and 'ENTROPY'
 #' @param weight  flag in LDA, PDA and Lr index
 #' @param size.p proportion of variables randomly sampled in each split.
@@ -26,19 +26,21 @@
 #' @keywords tree
 #' @examples
 #' #leukemia data set
-#' Tree.leukemia <- PPtree_split(as.formula('Type~.'), df = leukemia,
-#'  PPmethod = "PDA", size.p = 0.5)
+#' Tree.leukemia <- PPtree_split('Type~.', data = leukemia, 
+#'  PPmethod = "PDA", size.p = 0.9)
 #' Tree.leukemia
 #' #crab data set
-#' Tree.crab <- PPtree_split(as.formula('Type~.'), df = crab,
+#' Tree.crab <- PPtree_split("Type~.", data = crab, 
 #'  PPmethod = "LDA", size.p = 0.9)
 #' Tree.crab
-PPtree_split <- function(formula, df,  PPmethod = "LDA", weight = TRUE, size.p = 0.9, r = 1, lambda = 0.1, energy = 0, 
+PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 0.9, r = 1, lambda = 0.1, energy = 0, 
     maxiter = 50000, ...) {
     TOL <- NULL
-    mf <- model.frame(formula, data = df)
+    formula <- as.formula(form)
+    mf <- model.frame(formula, data = data)
     origclass <- model.response(mf)
-    origdata <- df[, -1]
+    cls <- all.vars(formula)[[1]]
+    origdata <- data[,-which(colnames(data)%in%cls)]
     origdata <- as.matrix(origdata)
     
     Find.proj <- function(origclass, origdata, PPmethod, weight, r, lambda, maxiter, ...) {

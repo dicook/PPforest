@@ -4,21 +4,21 @@
 \alias{var_select}
 \title{Random selection of variables}
 \usage{
-var_select(x, size.p)
+var_select(data, size.p)
 }
 \arguments{
-\item{x}{is a data frame with explanatory variables.}
+\item{data}{Data frame with the complete data set.}
 
-\item{size.p}{proportion of variables used in each split}
+\item{size.p}{Sample size proportion of variables randomly sampled as candidates at each split.}
 }
 \value{
-a vector giving the names of the selected variables
+a vector giving the id of the randomly sampled variables.
 }
 \description{
 Index id for variables set, sample variables without replacement.
 }
 \examples{
-variables <- var_select(x = leukemia[, -1], size.p = 0.9)
+variables <- var_select(data = leukemia,  size.p = 0.9)
 variables
 }
 

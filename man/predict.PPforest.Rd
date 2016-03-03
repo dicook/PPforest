@@ -24,7 +24,7 @@ predicted values form PPforest
 Vector with predicted values from a PPforest.
 }
 \examples{
-pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1],
+pprf.leukemia <- PPforest(data = leukemia, class = "Type",
  size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
 pr.leukemia <- predict( object = pprf.leukemia, test.data = pprf.leukemia$test)
 pr.leukemia

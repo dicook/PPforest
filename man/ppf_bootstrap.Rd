@@ -4,12 +4,12 @@
 \alias{ppf_bootstrap}
 \title{Draws bootstrap samples with strata option.}
 \usage{
-ppf_bootstrap(y, df, m = 500, strata = TRUE)
+ppf_bootstrap(data, class, m = 500, strata = TRUE)
 }
 \arguments{
-\item{y}{is a vector with the class variable.}
+\item{data}{Data frame with the complete data set.}
 
-\item{df}{is a data frame with class and explicative variables.}
+\item{class}{A character with the name of the class variable.}
 
 \item{m}{is the number of bootstrap replicates we want to sample.}
 
@@ -22,7 +22,7 @@ data frame object with m bootstrap samples
 Draws bootstrap samples with strata option.
 }
 \examples{
-leukemia.b <- ppf_bootstrap(y = leukemia[, 1], df = leukemia, m= 200) 
+leukemia.b <- ppf_bootstrap(data = leukemia, class = "Type",  m = 200) 
 index <- lapply(attributes(leukemia.b)$indices, function(x) x + 1)
 }
 

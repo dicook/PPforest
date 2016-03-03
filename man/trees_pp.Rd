@@ -25,10 +25,13 @@ For each bootstrap sample grow a projection persuit tree (PPtree object).
 }
 \examples{
 #leukemia data set
-leukemia.b <- ppf_bootstrap(y = leukemia[, 1], df = leukemia, m= 200) 
+leukemia.b <- ppf_bootstrap(data = leukemia, class = "Type", m = 200) 
 leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .9, PPmethod = 'PDA', lambda = .1) 
 #crab data set
-crab.b <- ppf_bootstrap(y = crab[, 1], df = crab, m= 200, strata = FALSE) 
+crab.b <- ppf_bootstrap(data = crab, class = "Type", m = 200, strata = FALSE) 
+system.time({
 crab.trees <- trees_pp(data.b = crab.b, size.p = .9, PPmethod = 'LDA') 
+
+})
 }
 

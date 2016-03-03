@@ -4,7 +4,7 @@
 \alias{ppf_importance}
 \title{Importance variable visualization}
 \usage{
-ppf_importance(y, x, ppforest, global = TRUE, weight = TRUE)
+ppf_importance(y, x, ppforest, global = TRUE, weight = TRUE, inter = TRUE)
 }
 \arguments{
 \item{y}{is a vector with the class variable.}
@@ -16,6 +16,8 @@ ppf_importance(y, x, ppforest, global = TRUE, weight = TRUE)
 \item{global}{is TRUE if we want to see the global importance of the forest}
 
 \item{weight}{is TRUE if we want to see a weighted mesure of the forest importance based on out of bag trees errors}
+
+\item{inter}{condition if it is TRUE interactive plot}
 }
 \value{
 A dotplot with a global measure of importance  variables in the PPforest.
@@ -25,7 +27,7 @@ Importance variable visualization
 }
 \examples{
 #leukemia data set with 2/3 observations used as training
-pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1],
+pprf.leukemia <- PPforest(data = leukemia, class = "Type",
  size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
 ppf_importance(y = leukemia[, 1], x = leukemia[, -1], pprf.leukemia, 
 global = TRUE, weight = TRUE) 

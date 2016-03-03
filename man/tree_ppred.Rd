@@ -20,10 +20,11 @@ predicted values form PPforest
 Vector with predicted values from a PPforest.
 }
 \examples{
-training.id <- train_fn(y = leukemia[,1], size.p = 0.9)
-leukemia.b <- ppf_bootstrap(y = leukemia[, 1], df = leukemia, m= 200) 
+training.id <- train_fn(data = leukemia, class = "Type", size.p = 0.9)
+leukemia.b <- ppf_bootstrap(data = leukemia, class = "Type", m = 200) 
 leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .9, PPmethod = 'PDA', lambda = .1)
 pr <- tree_ppred( xnew = leukemia[-training.id$id, -1] , leukemia.trees)
-pr
+crab.b <- ppf_bootstrap(data = crab, class = "Type", m = 200, strata = FALSE) 
+crab.trees <- trees_pp(data.b = crab.b, size.p = .9, PPmethod = 'LDA') 
 }
 

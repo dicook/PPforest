@@ -5,16 +5,17 @@
 #' @param ppforest is a PPforest object
 #' @param global is TRUE if we want to see the global importance of the forest
 #' @param weight is TRUE if we want to see a weighted mesure of the forest importance based on out of bag trees errors
+#' @param inter condition if it is TRUE interactive plot
 #' @return A dotplot with a global measure of importance  variables in the PPforest.
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
 #' #leukemia data set with 2/3 observations used as training
-#' pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1],
+#' pprf.leukemia <- PPforest(data = leukemia, class = "Type",
 #'  size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
 #' ppf_importance(y = leukemia[, 1], x = leukemia[, -1], pprf.leukemia, 
 #' global = TRUE, weight = TRUE) 
-ppf_importance <- function(y , x, ppforest, global = TRUE, weight = TRUE) {
+ppf_importance <- function(y , x, ppforest, global = TRUE, weight = TRUE,inter=TRUE) {
     data <- data.frame(y , x)
     value <- NULL
     variable <- NULL
@@ -73,5 +74,10 @@ ppf_importance <- function(y , x, ppforest, global = TRUE, weight = TRUE) {
     print(import.vi.w.0)
   
     }
-    plotly::ggplotly(a)
+    if(inter==TRUE){
+      
+      plotly::ggplotly(a)
+    }else{
+    print(a)
+    }
 } 

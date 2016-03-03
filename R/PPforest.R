@@ -1,9 +1,9 @@
 #' Projection Pursuit Random Forest
 #'
 #'\code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
-#' @usage PPforest(y, x, size.tr, m, PPmethod, size.p, strata = TRUE, lambda=.1)
-#' @param y  is a vector with the class variable.
-#' @param x is a data frame with explicative variables.
+#' @usage PPforest(data, class, size.tr, m, PPmethod, size.p, strata = TRUE, lambda=.1)
+#' @param data Data frame with the complete data set.
+#' @param class A character with the name of the class variable. 
 #' @param size.tr is the size proportion of the training if we want to split the data in training and test.
 #' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small. \code{m = 500} is by default.
 #' @param PPmethod is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.
@@ -31,49 +31,48 @@
 #' @export
 #' @examples
 #' #leukemia data set with 2/3 observations used as training
-#' pprf.leukemia <- PPforest(y = leukemia[, 1], x = leukemia[, -1],
+#' pprf.leukemia <- PPforest(data = leukemia, class = "Type",
 #'  size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
 #' pprf.leukemia
 #' #leukemia data set without test
-#' pprf.leukemia2 <- PPforest(y = leukemia[, 1], x = leukemia[, -1], 
+#' pprf.leukemia2 <- PPforest(data = leukemia, class = "Type", 
 #' size.tr = 1, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
 #' pprf.leukemia2
 #' #crab data set with 2/3 observations used as training
-#' pprf.crab <- PPforest(y = crab[, 1], x = crab[,-1], size.tr = 2/3,
+#' pprf.crab <- PPforest(data = crab, class = "Type", size.tr = 2/3,
 #'  m = 100, size.p = .8, PPmethod = 'LDA', strata = TRUE)
 #' pprf.crab
 #'  #crab data set without test
-#' pprf.crab2 <- PPforest(y = crab[, 1], x = crab[, -1], size.tr = 1, 
+#' pprf.crab2 <- PPforest(data = crab, class = 'Type',  size.tr = 1, 
 #' m = 100, size.p = .8, PPmethod = 'LDA', strata = TRUE)
 #' pprf.crab2
-PPforest <- function(y, x, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
-    data <- data.frame( y, x)
+PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
+   
     Var1 <- NULL
-    tr.index <- train_fn(y, size.tr)
-    train <- data[sort(tr.index$id), ]
+    tr.index <- train_fn(data, class,  size.tr)
+    train <-  data %>% 
+              dplyr::slice(as.numeric(tr.index$id))
     
-    colnames(train)[1] <- "class"
+    
     type = "Classification"
-    nam <- colnames(train[, -1])
-    var.num <- 1:length(nam)
-    var.sel <- floor(length(var.num) * size.p)
+    var.sel <- floor((ncol(train)-1) * size.p)
     
     if (strata == TRUE) {
-        data.b <- ppf_bootstrap(y = train[,1], df = train, m, strata)
-        output <- trees_pp(data.b, size.p, PPmethod, lambda = 0.1)
+        data.b <- ppf_bootstrap(data = train, class, m, strata)  
+        output <- data.b %>% trees_pp(size.p, PPmethod, lambda = 0.1)
     } else {
-        data.b <- ppf_bootstrap(y = train[, 1], df = train, m, strata = FALSE)
-        output <- trees_pp(data.b, size.p, PPmethod, lambda = 0.1)
+        data.b <- ppf_bootstrap(data = train, class, m, strata = FALSE)
+        output <- data.b %>% trees_pp( size.p, PPmethod, lambda = 0.1)
     }
     
-    pred.tr <- tree_ppred(xnew = train[, -1], output)
+ 
+    pred.tr <- tree_ppred(xnew = dplyr::select(train,-get(class)), output)
+ 
     pos <- expand.grid(a = 1:dim(train)[1], b = 1:dim(train)[1])
-    cond <- pos[, 1] >= pos[, 2]
-    tri.low <- pos[cond, ]
+    tri.low <- pos %>% filter(pos[, 1] >= pos[, 2])
     
     same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[2]]), 2, function(x) x[tri.low[, 1]] == x[tri.low[, 
         2]]))
-    
     proximity <- data.frame(same.node[, c(1:2)], proxi = apply(same.node[, -c(1:2)], 1, function(x) sum(x == 1))/dim((pred.tr[[2]]))[1])
     
     l.train <- 1:nrow(train)
@@ -90,28 +89,34 @@ PPforest <- function(y, x, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
       }
     })
     
-    oob.mat <- sapply(X = 1:nrow(train), FUN = function(i) {
-        table(pred.tr[[2]][oob.obs[, i] == TRUE, i])
-    })
-    
-    votes <- matrix(0, ncol = length(unique(train[, 1])), nrow = nrow(train))
-    colnames(votes) <- levels(train[, 1])
-    
-    for (i in 1:nrow(train)) {
-        cond <- colnames(votes) %in% names(oob.mat[[i]])
-        votes[i, cond] <- oob.mat[[i]]
-    }
+
+    votes <- plyr::mdply( dplyr::data_frame( id = 1:nrow(train)) , function(id) {
+      x <- pred.tr[[2]][oob.obs[, id] == TRUE, id] 
+      table(factor(x, levels=levels(train[, class])) )  
+      })[,-1]
     
     
-    vote.matrix.prop <- votes/rowSums(votes)
     
-    oob.error <- 1 - sum(diag(table(oob.pred, train[, 1])))/length(train[, 1])
+#     votes <- matrix(0, ncol = length(unique(train[, class])), nrow = nrow(train))
+#     colnames(votes) <- levels(train[, class])
+#     
+    
+#     for (i in 1:nrow(train)) {
+#         cond <- colnames(votes) %in% names(oob.mat[[i]])
+#         votes[i, cond] <- oob.mat[[i]]
+#     }
+#     
+
+    
+    vote.matrix.prop <-votes/rowSums(votes)
+
+    oob.error <- 1 - sum(diag(table(oob.pred, train[, class])))/length(train[, class])
     
     
     m.pred.tr <- reshape2::melt(pred.tr[[2]])
     m.oob.obs <- reshape2::melt(as.matrix(oob.obs))
     m.pred.tr$oob <- m.oob.obs$value
-    m.pred.tr$class <- rep(train[, 1], each = m)
+    m.pred.tr$class <- rep(train[, class], each = m)
     
     
     oob.err.tree <- plyr::ddply(m.pred.tr[m.pred.tr$oob, ], plyr::.(Var1), function(x) {
@@ -121,7 +126,7 @@ PPforest <- function(y, x, size.tr = 2/3, m = 500, PPmethod, size.p, strata = TR
     
     
     
-    error.tr <- 1 - sum(train[, 1] == pred.tr[[3]])/length(pred.tr[[3]])
+    error.tr <- 1 - sum(train[, class] == pred.tr[[3]])/length(pred.tr[[3]])
     test <- data[-tr.index$id, -1]
     
     if (dim(test)[1] != 0) {
