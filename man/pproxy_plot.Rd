@@ -4,7 +4,7 @@
 \alias{pproxy_plot}
 \title{Proximity matrix visualization}
 \usage{
-pproxy_plot(ppf, type = "heat", k, inter = TRUE)
+pproxy_plot(ppf, type = "heat", k)
 }
 \arguments{
 \item{ppf}{a PPforest object}
@@ -12,8 +12,6 @@ pproxy_plot(ppf, type = "heat", k, inter = TRUE)
 \item{type}{is MDS or heat}
 
 \item{k}{number of dimensions of the MDS layout}
-
-\item{inter}{condition if it is TRUE interactive plot}
 }
 \value{
 proximity matrix plot, if type is MDS then a MDS plot using proximity matrix information is shown and if type is heat a heat map of the proximity matrix is shown
@@ -22,9 +20,10 @@ proximity matrix plot, if type is MDS then a MDS plot using proximity matrix inf
 Proximity matrix visualization
 }
 \examples{
-#leukemia data set with 2/3 observations used as training
+#leukemia data set with all the observations used as training
 pprf.leukemia <- PPforest(data = leukemia, class = 'Type',
-size.tr = 2/3, m = 100, size.p = .5, PPmethod = 'PDA', strata = TRUE)
+size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
 pproxy_plot(pprf.leukemia, type= "heat")
+pproxy_plot(pprf.leukemia, type= "MDS", k = 2)
 }
 

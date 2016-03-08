@@ -14,17 +14,15 @@ tree_ppred(xnew, output.tree, ...)
 \item{...}{arguments to be passed to methods}
 }
 \value{
-predicted values form PPforest
+predicted values from PPforest
 }
 \description{
 Vector with predicted values from a PPforest.
 }
 \examples{
 training.id <- train_fn(data = leukemia, class = "Type", size.p = 0.9)
-leukemia.b <- ppf_bootstrap(data = leukemia, class = "Type", m = 200) 
-leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .9, PPmethod = 'PDA', lambda = .1)
+leukemia.b <- ppf_bootstrap(data = leukemia[training.id$id,], class = "Type", m = 70) 
+leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .4, PPmethod = 'LDA')
 pr <- tree_ppred( xnew = leukemia[-training.id$id, -1] , leukemia.trees)
-crab.b <- ppf_bootstrap(data = crab, class = "Type", m = 200, strata = FALSE) 
-crab.trees <- trees_pp(data.b = crab.b, size.p = .9, PPmethod = 'LDA') 
 }
 

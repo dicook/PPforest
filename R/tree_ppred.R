@@ -4,16 +4,14 @@
 #' @param xnew data frame with explicative variables used to get new predicted values.
 #' @param output.tree trees classifiers from trees_pp function or PPforest object
 #' @param ... arguments to be passed to methods
-#' @return predicted values form PPforest  
+#' @return predicted values from PPforest  
 #' @export
 #' @importFrom magrittr %>%
 #' @examples 
 #' training.id <- train_fn(data = leukemia, class = "Type", size.p = 0.9)
-#' leukemia.b <- ppf_bootstrap(data = leukemia, class = "Type", m = 200) 
-#' leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .9, PPmethod = 'PDA', lambda = .1)
+#' leukemia.b <- ppf_bootstrap(data = leukemia[training.id$id,], class = "Type", m = 70) 
+#' leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .4, PPmethod = 'LDA')
 #' pr <- tree_ppred( xnew = leukemia[-training.id$id, -1] , leukemia.trees)
-#' crab.b <- ppf_bootstrap(data = crab, class = "Type", m = 200, strata = FALSE) 
-#' crab.trees <- trees_pp(data.b = crab.b, size.p = .9, PPmethod = 'LDA') 
 tree_ppred <- function(xnew, output.tree, ...) {
     . <- NULL
     

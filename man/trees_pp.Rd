@@ -2,7 +2,7 @@
 % Please edit documentation in R/trees_pp.R
 \name{trees_pp}
 \alias{trees_pp}
-\title{Grow a PPtree for each bootstrap sample}
+\title{Grow a PPtree_split for each bootstrap sample}
 \usage{
 trees_pp(data.b, size.p = 0.9, PPmethod = "LDA", lambda = 0.1, ...)
 }
@@ -25,13 +25,8 @@ For each bootstrap sample grow a projection persuit tree (PPtree object).
 }
 \examples{
 #leukemia data set
-leukemia.b <- ppf_bootstrap(data = leukemia, class = "Type", m = 200) 
-leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .9, PPmethod = 'PDA', lambda = .1) 
-#crab data set
-crab.b <- ppf_bootstrap(data = crab, class = "Type", m = 200, strata = FALSE) 
-system.time({
-crab.trees <- trees_pp(data.b = crab.b, size.p = .9, PPmethod = 'LDA') 
-
-})
+leukemia.b <- ppf_bootstrap(data = leukemia, class = "Type", m = 70) 
+leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .4, PPmethod = 'PDA', lambda = .1) 
+str(leukemia.trees,max.level=1)
 }
 

@@ -9,8 +9,8 @@
 #' @export
 #' @examples
 #' pprf.leukemia <- PPforest(data = leukemia, class = "Type", 
-#' size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
-#' ppf_oob_error(ppf = pprf.leukemia, nsplit1 = 10, nsplit2 = 100)
+#' size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
+#' ppf_oob_error(ppf = pprf.leukemia, nsplit1 = 5, nsplit2 = 10)
 ppf_oob_error <- function(ppf, nsplit1, nsplit2) {
     ntree <- NULL
     value <- NULL
@@ -47,14 +47,17 @@ ppf_oob_error <- function(ppf, nsplit1, nsplit2) {
     
     if (max(oob.pl$value) < 0.5) {
         p1 <- ggplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + 
-            ggplot2::geom_line(size=I(0.1)) + ggplot2::scale_y_continuous(name = "OOB error rate", limits = c(0, max(oob.pl$value))) + ggplot2::scale_x_continuous(name = "Number of trees")
-       p2 <- p1 + ggplot2::scale_colour_discrete(name = "Class")
-        plotly::ggplotly(p2)
+            ggplot2::geom_line(size=I(0.5)) + ggplot2::scale_y_continuous(name = "OOB error rate", limits = c(-0.1, max(oob.pl$value)+.1)) + ggplot2::scale_x_continuous(name = "Number of trees")
+       a <- p1 + ggplot2::scale_colour_discrete(name = "Class")
+      
+         plotly::ggplotly(a)
+     
         
     } else {
         p1 <- ggplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + 
-            ggplot2::geom_line(size=I(0.1)) + ggplot2::scale_y_continuous(name = "OOB error rate", limits = c(0, 1)) + ggplot2::scale_x_continuous(name = "Number of trees")
-        p2 <- p1 + ggplot2::scale_colour_discrete(name = "Class")
-        plotly::ggplotly(p2)
+            ggplot2::geom_line(size=I(.5)) + ggplot2::scale_y_continuous(name = "OOB error rate", limits = c(-0.1, 1.1)) + ggplot2::scale_x_continuous(name = "Number of trees")
+        a <- p1 + ggplot2::scale_colour_discrete(name = "Class")
+          plotly::ggplotly(a)
+      
     }
 } 

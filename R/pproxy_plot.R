@@ -3,15 +3,15 @@
 #' @param ppf a PPforest object
 #' @param type is MDS or heat
 #' @param k number of dimensions of the MDS layout 
-#' @param inter condition if it is TRUE interactive plot 
 #' @return proximity matrix plot, if type is MDS then a MDS plot using proximity matrix information is shown and if type is heat a heat map of the proximity matrix is shown
 #' @export
 #' @examples
-#' #leukemia data set with 2/3 observations used as training
+#' #leukemia data set with all the observations used as training
 #' pprf.leukemia <- PPforest(data = leukemia, class = 'Type',
-#' size.tr = 2/3, m = 100, size.p = .5, PPmethod = 'PDA', strata = TRUE)
+#' size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
 #' pproxy_plot(pprf.leukemia, type= "heat")
-pproxy_plot <- function(ppf, type = "heat", k, inter=TRUE) {
+#' pproxy_plot(pprf.leukemia, type= "MDS", k = 2)
+pproxy_plot <- function(ppf, type = "heat", k) {
     
     if (type == "heat") {
         value <- NULL
@@ -26,15 +26,12 @@ pproxy_plot <- function(ppf, type = "heat", k, inter=TRUE) {
         m.prox$Var2 <- factor(m.prox$Var2, levels=rev(levels(m.prox$Var2)))
         m.prox$Var1 <- as.factor( m.prox$Var1)
         
-        a <- ggplot2::ggplot(m.prox, ggplot2::aes(Var1, Var2, fill = value)) + ggplot2::xlab("") + 
+        a <- ggplot2::ggplot(m.prox, ggplot2::aes(Var1, Var2)) + ggplot2::xlab("") + 
             ggplot2::ylab("") + ggplot2::geom_tile(ggplot2::aes(fill = value)) + ggplot2::scale_fill_gradient(high = "#132B43", 
             low = "#56B1F7", name = "Proximity") 
-      if(inter==TRUE){
-        
-        plotly::ggplotly(a)
-      }else{
-      print(a)  
-      }
+   
+          plotly::ggplotly(a)
+      
          } else {
         
         value <- NULL
@@ -50,19 +47,17 @@ pproxy_plot <- function(ppf, type = "heat", k, inter=TRUE) {
         
         id <- diag(dim(ppf$train)[1])
         id[lower.tri(id, diag = TRUE)] <- 1 - ppf[[9]]$proxi
-        rf.mds <- stats::cmdscale(as.dist(id), eig = TRUE, k = k)
+        rf.mds <- cmdscale(d=as.dist(id), eig = TRUE, k = k)
         colnames(rf.mds$points) <- paste("MDS", 1:k, sep = "")
         nlevs <- nlevels(ppf$train[, 1])
         
-        if (k == 2) {
+        if ( k == 2) {
             df <- data.frame(fac = ppf$train[, 1], rf.mds$points)
            a <- ggplot2::ggplot(data = df) + ggplot2::geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = fac)) + ggplot2::theme(aspect.ratio = 1) + 
-                ggplot2::scale_colour_discrete(name = "Class")
-            if(inter==TRUE){
+             ggplot2::scale_colour_discrete(name = "Class") 
+           
              plotly::ggplotly(a)
-            }else{
-             print(a) 
-            }
+         
       } else {
             df <- data.frame(fac = ppf$train[, 1], rf.mds$points)
             makePairs <- function(data) 
@@ -97,15 +92,11 @@ pproxy_plot <- function(ppf, type = "heat", k, inter=TRUE) {
                ggplot2::geom_point(ggplot2::aes(colour=Type), na.rm = TRUE, alpha=0.8) + 
                ggplot2::stat_density(ggplot2::aes_string(x = "x", y = "..scaled.." ), 
                            data = gg1$densities, position = "identity", 
-                           colour = "grey20", geom = "line",  size=I(0.1))+
+                           colour = "grey20", geom = "line",  size=I(0.5))+
               ggplot2::theme(legend.position='none')
-             if(inter==TRUE){
-            plotly::ggplotly(a)
-             }else{
-               print(a)
-             }
-              
-              
+           
+               plotly::ggplotly(a)
+            
               }
         
     }

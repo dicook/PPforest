@@ -1,83 +1,82 @@
 #' Importance variable visualization 
 #' 
-#' @param y  is a vector with the class variable.
-#' @param x is a data frame with explicative variables,  should be standardized.
-#' @param ppforest is a PPforest object
+#' @param data Data frame with the complete data set.
+#' @param class A character with the name of the class variable. 
+#' @param ppf is a PPforest object
 #' @param global is TRUE if we want to see the global importance of the forest
 #' @param weight is TRUE if we want to see a weighted mesure of the forest importance based on out of bag trees errors
-#' @param inter condition if it is TRUE interactive plot
 #' @return A dotplot with a global measure of importance  variables in the PPforest.
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
-#' #leukemia data set with 2/3 observations used as training
+#' #leukemia data set with all the observations used as training
 #' pprf.leukemia <- PPforest(data = leukemia, class = "Type",
-#'  size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
-#' ppf_importance(y = leukemia[, 1], x = leukemia[, -1], pprf.leukemia, 
-#' global = TRUE, weight = TRUE) 
-ppf_importance <- function(y , x, ppforest, global = TRUE, weight = TRUE,inter=TRUE) {
-    data <- data.frame(y , x)
-    value <- NULL
-    variable <- NULL
-    node <- NULL
-    
-    mat.proj <- abs(plyr::ldply(ppforest[[8]][[2]], function(x) data.frame(node = 1:dim(x$projbest.node)[1], x$projbest.node)))
-    colnames(mat.proj)[-1] <- colnames(data[, -1])
-    
-    index.part <- plyr::ldply(ppforest[[8]][[2]], function(x) data.frame(index = x$Tree.Struct[, 5][x$Tree.Struct[, 
-        5] != 0]))
-    n.vars <- ncol( mat.proj[, -1] )
-    index.mat <- matrix(rep(index.part[, 1], ncol(x) ), ncol = ncol(x), byrow = F)
-    
-    oob.error.tree <- rep(ppforest[[6]], each = length(unique(mat.proj$node)))
-    imp.weight <- mat.proj[, -1] * index.mat * (1 - oob.error.tree)
-    mmat.vi <- reshape2::melt(mat.proj, id.vars = "node")
-    mat.vi.w <- data.frame(node = mat.proj$node, imp.weight)
-    colnames(mat.vi.w)[-1] <- colnames(data[, -1])
-    mmat.vi.w <- reshape2::melt(mat.vi.w, id.vars = "node")
-    
-    mmat.vi.0 <- subset(mmat.vi, value != 0)
-    mmat.vi.w.0 <- subset(mmat.vi.w, value != 0)
-    
-    import.vi.0 <- mmat.vi.0 %>% dplyr::group_by(node, variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
-    import.vi.0$variable <- with(import.vi.0, reorder(variable, mean))
-    
-    
-    import.vi.g.0 <- mmat.vi.0 %>% dplyr::group_by(variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
-    import.vi.g.0$variable <- with(import.vi.g.0, reorder(variable, mean))
-    
-    import.vi.w.0 <- mmat.vi.w.0 %>% dplyr::group_by(node, variable) %>% dplyr::summarise(mean = mean(value)) %>% 
-        dplyr::arrange(dplyr::desc(mean))
-    import.vi.w.0$variable <- with(import.vi.w.0, reorder(variable, mean))
-    
-    import.vi.wg.0 <- mmat.vi.w.0 %>% dplyr::group_by(variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
-    import.vi.wg.0$variable <- with(import.vi.wg.0, reorder(variable, mean))
-    
-    if (global == TRUE & weight == TRUE) {
-       a <- ggplot2::ggplot(import.vi.wg.0, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point()
-  print(import.vi.wg.0)
-    
-    }
+#'  size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
+#' ppf_importance(data = leukemia, class = "Type", pprf.leukemia, global = FALSE, weight = TRUE) 
+ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE) {
+  x <- data %>% dplyr::select(-get(class)) %>%
+    apply(2,FUN=scale)
+  y <- data %>% dplyr::select(get(class))
+  value <- NULL
+  variable <- NULL
+  node <- NULL
   
-    if (global == TRUE & weight == FALSE) {
-       a <- ggplot2::ggplot(import.vi.g.0, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point()
-        print(import.vi.g.0)
-     
-    }
-    if (global == FALSE & weight == FALSE) {
-       a <- print(ggplot2::ggplot(import.vi.0, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::facet_wrap(~node))
-    print(import.vi.0)
-   
-    }
-    if (global == FALSE & weight == TRUE) {
-        a <- ggplot2::ggplot(import.vi.w.0, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::facet_wrap(~node)
-    print(import.vi.w.0)
+  mat.proj <- abs(plyr::ldply(ppf[[8]][[2]], function(x) data.frame(node = 1:dim(x$projbest.node)[1], x$projbest.node)))
+  colnames(mat.proj)[-1] <- colnames(dplyr::select(data,-get(class)))
   
-    }
-    if(inter==TRUE){
+  index.part <- plyr::ldply(ppf[[8]][[2]], function(x) data.frame(index = x$Tree.Struct[, 5][x$Tree.Struct[, 
+                                                                                                           5] != 0]))
+  n.vars <- ncol( mat.proj[, -1] )
+  index.mat <- matrix(rep(index.part[, 1], ncol(x) ), ncol = ncol(x), byrow = F)
+  
+  oob.error.tree <- rep(ppf[[6]], each = length(unique(mat.proj$node)))
+  imp.weight <- mat.proj[, -1] * index.mat * (1 - oob.error.tree)
+  
+  
+  mmat.vi <- reshape2::melt(mat.proj, id.vars = "node")
+  mat.vi.w <- data.frame(node = mat.proj$node, imp.weight)
+  colnames(mat.vi.w)[-1] <- colnames(x)
+  mmat.vi.w <- reshape2::melt(mat.vi.w, id.vars = "node")
+  
+  if(global ){
+    if(weight){
+      import.vi.wg <- mmat.vi.w %>% dplyr::group_by(variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
+      import.vi.wg$variable <- with(import.vi.wg, reorder(variable, mean))
       
-      plotly::ggplotly(a)
+      a <- ggplot2::ggplot(import.vi.wg, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point()
+      print(import.vi.wg)
+      
     }else{
-    print(a)
+      import.vi <- mmat.vi %>% dplyr::group_by(variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
+      import.vi$variable <- with(import.vi, reorder(variable, mean))
+      
+      a <- ggplot2::ggplot(import.vi, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::facet_wrap(~node)
+      print(import.vi) 
     }
-} 
+  }else{
+    if(weight){
+      import.vi.w <- mmat.vi.w%>% dplyr::filter( value != 0) %>% dplyr::group_by(node, variable) %>% dplyr::summarise(mean = mean(value)) %>% 
+        dplyr::arrange(dplyr::desc(mean))
+      
+      import.vi.w$variable <- with(import.vi.w, reorder(variable, mean))
+      a <- ggplot2::ggplot(import.vi.w, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::facet_grid(~node)
+      print(import.vi.w)
+      
+    }else{
+      
+      import.vi <- mmat.vi%>% dplyr::filter(value!= 0)%>%dplyr::group_by(node, variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
+      
+      import.vi$variable <- with(import.vi, reorder(variable, mean))
+      
+      a <- ggplot2::ggplot(import.vi, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::facet_grid(~node)
+      print(import.vi) 
+    }
+  
+  }
+  
+  plotly::ggplotly(a)
+  
+}
+
+
+

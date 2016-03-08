@@ -47,21 +47,9 @@ An object of class \code{PPforest} with components.
 \code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
 }
 \examples{
-#leukemia data set with 2/3 observations used as training
+#leukemia data set with all the observations used as training
 pprf.leukemia <- PPforest(data = leukemia, class = "Type",
- size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
+ size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
 pprf.leukemia
-#leukemia data set without test
-pprf.leukemia2 <- PPforest(data = leukemia, class = "Type", 
-size.tr = 1, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
-pprf.leukemia2
-#crab data set with 2/3 observations used as training
-pprf.crab <- PPforest(data = crab, class = "Type", size.tr = 2/3,
- m = 100, size.p = .8, PPmethod = 'LDA', strata = TRUE)
-pprf.crab
- #crab data set without test
-pprf.crab2 <- PPforest(data = crab, class = 'Type',  size.tr = 1, 
-m = 100, size.p = .8, PPmethod = 'LDA', strata = TRUE)
-pprf.crab2
 }
 

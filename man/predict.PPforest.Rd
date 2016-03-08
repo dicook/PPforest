@@ -4,10 +4,13 @@
 \alias{predict.PPforest}
 \title{Obtain predicted class for new data using PPforest}
 \usage{
-\method{predict}{PPforest}(object, test.data, Rule, true.class = NULL, ...)
+\method{predict}{PPforest}(object, class, test.data, Rule, true.class = NULL,
+  ...)
 }
 \arguments{
 \item{object}{an object of class PPforest}
+
+\item{class}{A character with the name of the class variable.}
 
 \item{test.data}{the test dataset}
 
@@ -24,9 +27,10 @@ predicted values form PPforest
 Vector with predicted values from a PPforest.
 }
 \examples{
+#use 2/3 of the observations as training data and 1/3 as test
 pprf.leukemia <- PPforest(data = leukemia, class = "Type",
- size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
-pr.leukemia <- predict( object = pprf.leukemia, test.data = pprf.leukemia$test)
+ size.tr = 2/3, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
+pr.leukemia <- predict( object = pprf.leukemia, class= "Type", test.data = pprf.leukemia$test)
 pr.leukemia
 }
 

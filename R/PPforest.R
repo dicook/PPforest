@@ -30,22 +30,10 @@
 #' \item{test}{is the test data based on \code{1-size.tr} sample proportion}
 #' @export
 #' @examples
-#' #leukemia data set with 2/3 observations used as training
+#' #leukemia data set with all the observations used as training
 #' pprf.leukemia <- PPforest(data = leukemia, class = "Type",
-#'  size.tr = 2/3, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
+#'  size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
 #' pprf.leukemia
-#' #leukemia data set without test
-#' pprf.leukemia2 <- PPforest(data = leukemia, class = "Type", 
-#' size.tr = 1, m = 500, size.p = .5, PPmethod = 'PDA', strata = TRUE)
-#' pprf.leukemia2
-#' #crab data set with 2/3 observations used as training
-#' pprf.crab <- PPforest(data = crab, class = "Type", size.tr = 2/3,
-#'  m = 100, size.p = .8, PPmethod = 'LDA', strata = TRUE)
-#' pprf.crab
-#'  #crab data set without test
-#' pprf.crab2 <- PPforest(data = crab, class = 'Type',  size.tr = 1, 
-#' m = 100, size.p = .8, PPmethod = 'LDA', strata = TRUE)
-#' pprf.crab2
 PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
    
     Var1 <- NULL
@@ -69,7 +57,7 @@ PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, str
     pred.tr <- tree_ppred(xnew = dplyr::select(train,-get(class)), output)
  
     pos <- expand.grid(a = 1:dim(train)[1], b = 1:dim(train)[1])
-    tri.low <- pos %>% filter(pos[, 1] >= pos[, 2])
+    tri.low <- pos %>% dplyr::filter(pos[, 1] >= pos[, 2])
     
     same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[2]]), 2, function(x) x[tri.low[, 1]] == x[tri.low[, 
         2]]))
@@ -127,11 +115,13 @@ PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, str
     
     
     error.tr <- 1 - sum(train[, class] == pred.tr[[3]])/length(pred.tr[[3]])
-    test <- data[-tr.index$id, -1]
+    test <- data[-tr.index$id,]%>%  
+            dplyr::select(-get(class))%>%
+            dplyr::filter_()
     
     if (dim(test)[1] != 0) {
         pred.test <- tree_ppred(xnew = test, output)
-        error.test <- 1 - sum(data[-tr.index$id, 1] == pred.test[[3]])/length(pred.test[[3]])
+        error.test <- 1 - sum(data[-tr.index$id, class] == pred.test[[3]])/length(pred.test[[3]])
     } else {
         pred.test <- NULL
         error.test <- NULL
@@ -139,9 +129,9 @@ PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, str
     }
     
     oob.pred <- as.factor(oob.pred)
-    levels(oob.pred) <- levels(train[, 1])
+    levels(oob.pred) <- levels(train[, class])
     
-    tab.tr <- table(Observed = train[, 1], Predicted = oob.pred)
+    tab.tr <- table(Observed = train[, class], Predicted = oob.pred)
     
     class.error <- 1 - diag(tab.tr)/((addmargins(tab.tr, 2))[, "Sum"])
     confusion <- cbind(tab.tr, class.error = round(class.error, 2))
@@ -150,7 +140,7 @@ PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, str
         error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, 
         output.trees = output, proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, 
         n.var = var.sel, type = "Classification", confusion = confusion, call = match.call(), train = train, test = test, 
-        vote.mat = pred.tr[[2]])
+        vote.mat = pred.tr[[2]],class.var=class)
     class(results) <- "PPforest"
     
     return(results)

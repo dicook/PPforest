@@ -5,11 +5,11 @@ Title: Projection pursuit classification forest
 Author: Natalia da Silva, Eun-Kyung Lee, Di Cook
 Maintainer: Natalia da Silva <ndasilva@iastate.edu>
 Depends:
-    R (>= 3.1.1)
+    R (>= 3.2.3)
 Imports:
     ggplot2,
     magrittr,
-    plyr,
+     plyr,
     dplyr,
     PPtreeViz,
     reshape2,
@@ -24,7 +24,9 @@ Suggests:
     rpart,
     gridExtra,
     RColorBrewer,
+    GGally,
     rpart.plot,
-    roxygen2 (>= 3.0.0)
+    roxygen2 (>= 3.0.0),
+    rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1.9000
