@@ -9,8 +9,7 @@
 #' #leukemia data set with all the observations used as training
 #' pprf.leukemia <- PPforest(data = leukemia, class = 'Type',
 #' size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
-#' pproxy_plot(pprf.leukemia, type= "heat")
-#' pproxy_plot(pprf.leukemia, type= "MDS", k = 2)
+#' pproxy_plot(pprf.leukemia, type= "MDS", k = 3)
 pproxy_plot <- function(ppf, type = "heat", k) {
     
     if (type == "heat") {

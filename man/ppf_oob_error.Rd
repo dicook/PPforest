@@ -22,6 +22,6 @@ a plot with the cumulative oob error rate
 \examples{
 pprf.leukemia <- PPforest(data = leukemia, class = "Type", 
 size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
-ppf_oob_error(ppf = pprf.leukemia, nsplit1 = 5, nsplit2 = 10)
+ppf_oob_error(ppf = pprf.leukemia, nsplit1 = 5, nsplit2 = 15)
 }
 
