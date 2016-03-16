@@ -47,7 +47,7 @@ library(plotly)
 
 ```{r,fig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
  load("../data/crab.rda")
-ggpairs(crab, 
+a<-ggpairs(crab, 
     columns= 2:6,
     ggplot2::aes(colour=Type,alpha=.3),
     lower=list(continuous='points'), 

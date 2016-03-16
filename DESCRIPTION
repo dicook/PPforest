@@ -5,7 +5,7 @@ Title: Projection pursuit classification forest
 Author: Natalia da Silva, Eun-Kyung Lee, Di Cook
 Maintainer: Natalia da Silva <ndasilva@iastate.edu>
 Depends:
-    R (>= 3.2.3)
+    R (>= 3.2.2)
 Imports:
     ggplot2,
     magrittr,

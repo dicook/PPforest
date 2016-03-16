@@ -91,7 +91,7 @@ pproxy_plot <- function(ppf, type = "heat", k) {
                ggplot2::geom_point(ggplot2::aes(colour=Type), na.rm = TRUE, alpha=0.8) + 
                ggplot2::stat_density(ggplot2::aes_string(x = "x", y = "..scaled.." ), 
                            data = gg1$densities, position = "identity", 
-                           colour = "grey20", geom = "line",  size=I(0.5))+
+                           colour = "grey20", geom = "line",  size=I(.5))+
               ggplot2::theme(legend.position='none')
            
                plotly::ggplotly(a)
