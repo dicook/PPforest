@@ -36,9 +36,9 @@
 PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 0.9, r = 1, lambda = 0.1, energy = 0, 
     maxiter = 50000, ...) {
     TOL <- NULL
-    formula <- as.formula(form)
-    mf <- model.frame(formula, data = data)
-    origclass <- model.response(mf)
+    formula <- stats::as.formula(form)
+    mf <- stats::model.frame(formula, data = data)
+    origclass <- stats::model.response(mf)
     cls <- all.vars(formula)[[1]]
     origdata <- data[,-which(colnames(data)%in%cls)]
     origdata <- as.matrix(origdata)
@@ -174,8 +174,8 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
         temp.list <- sort.list(m.LR)
         m.LR <- m.LR[temp.list]
         sd.LR <- tapply(proj.data, class, function(x) ifelse(length(x) > 1, sd(x), 0))[temp.list]
-        IQR.LR <- tapply(proj.data, class, function(x) ifelse(length(x) > 1, IQR(x), 0))[temp.list]
-        median.LR <- tapply(proj.data, class, median)[temp.list]
+        IQR.LR <- tapply(proj.data, class, function(x) ifelse(length(x) > 1, stats::IQR(x), 0))[temp.list]
+        median.LR <- tapply(proj.data, class, stats::median)[temp.list]
         n.LR <- table(class)[temp.list]
         
         c1 <- (m.LR[1] + m.LR[2])/2

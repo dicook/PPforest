@@ -46,7 +46,7 @@ pproxy_plot <- function(ppf, type = "heat", k) {
         
         id <- diag(dim(ppf$train)[1])
         id[lower.tri(id, diag = TRUE)] <- 1 - ppf[[9]]$proxi
-        rf.mds <- cmdscale(d=as.dist(id), eig = TRUE, k = k)
+        rf.mds <- stats::cmdscale(d = stats::as.dist(id), eig = TRUE, k = k)
         colnames(rf.mds$points) <- paste("MDS", 1:k, sep = "")
         nlevs <- nlevels(ppf$train[, 1])
         

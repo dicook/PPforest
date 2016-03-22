@@ -1,7 +1,7 @@
 Package: PPforest
 Version: 1.0.0
 Date: 2015-05-14
-Title: Projection pursuit classification forest
+Title: Projection Pursuit Classification Forest
 Author: Natalia da Silva, Eun-Kyung Lee, Di Cook
 Maintainer: Natalia da Silva <ndasilva@iastate.edu>
 Depends:
@@ -13,9 +13,9 @@ Imports:
     dplyr,
     PPtreeViz,
     reshape2,
-    plotly
-Description: Random forest build on projection pursuit classification tree using
-    LDA or PDA projection pursuit index.
+    plotly,
+    stats
+Description: Random forest build on projection pursuit classification tree using.
 License: LGPL-2.1
 LazyData: yes
 Suggests:

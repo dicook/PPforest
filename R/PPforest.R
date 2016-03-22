@@ -133,7 +133,7 @@ PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, str
     
     tab.tr <- table(Observed = train[, class], Predicted = oob.pred)
     
-    class.error <- 1 - diag(tab.tr)/((addmargins(tab.tr, 2))[, "Sum"])
+    class.error <- 1 - diag(tab.tr)/((stats::addmargins(tab.tr, 2))[, "Sum"])
     confusion <- cbind(tab.tr, class.error = round(class.error, 2))
     
     results <- list(prediction.training = pred.tr[[3]], training.error = error.tr, prediction.test = pred.test[[3]], 
