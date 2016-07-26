@@ -27,7 +27,7 @@ pproxy_plot <- function(ppf, type = "heat", k) {
         
         a <- ggplot2::ggplot(m.prox, ggplot2::aes(Var1, Var2)) + ggplot2::xlab("") + 
             ggplot2::ylab("") + ggplot2::geom_tile(ggplot2::aes(fill = value)) + ggplot2::scale_fill_gradient(high = "#132B43", 
-            low = "#56B1F7", name = "Proximity") 
+            low = "#56B1F7", name = "Proximity") + ggplot2::theme(aspect.ratio = 1)
    
           plotly::ggplotly(a)
       
@@ -38,7 +38,7 @@ pproxy_plot <- function(ppf, type = "heat", k) {
         Var2 <- NULL
         MDS1 <- NULL
         MDS2 <- NULL
-        fac <- NULL
+        Class <- NULL
         x <- NULL
         y <- NULL
         Type <- NULL
@@ -51,14 +51,14 @@ pproxy_plot <- function(ppf, type = "heat", k) {
         nlevs <- nlevels(ppf$train[, 1])
         
         if ( k == 2) {
-            df <- data.frame(fac = ppf$train[, 1], rf.mds$points)
-           a <- ggplot2::ggplot(data = df) + ggplot2::geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = fac)) + ggplot2::theme(aspect.ratio = 1) + 
-             ggplot2::scale_colour_discrete(name = "Class") 
+            df <- data.frame(Class = ppf$train[, 1], rf.mds$points)
+           a <- ggplot2::ggplot(data = df) + ggplot2::geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = Class),size = I(3),alpha = .5) + ggplot2::theme(aspect.ratio = 1) + 
+              ggplot2::scale_colour_brewer(type ="qual",palette = "Dark2",name = "Class")
            
              plotly::ggplotly(a)
          
       } else {
-            df <- data.frame(fac = ppf$train[, 1], rf.mds$points)
+            df <- data.frame(Class = ppf$train[, 1], rf.mds$points)
             makePairs <- function(data) 
             {
               grid <- expand.grid(x = 1:ncol(data), y = 1:ncol(data))
@@ -81,18 +81,18 @@ pproxy_plot <- function(ppf, type = "heat", k) {
             gg1 = makePairs(df[,-1])
             
             # new data frame mega iris
-            mega_data = data.frame(gg1$all, Type=rep(df$fac, length=nrow(gg1$all)))
+            mega_data = data.frame(gg1$all, Class=rep(df$Class, length=nrow(gg1$all)))
            
             #pairs plot
             
             
-             a <-  ggplot2::ggplot(mega_data, ggplot2::aes_string(x = "x", y = "y")) + 
+             a <-  ggplot2::ggplot(mega_data, ggplot2::aes_string(x = "x", y = "y")) +  ggplot2::theme(legend.position='bottom', aspect.ratio = 1) +
                ggplot2::facet_grid(xvar ~ yvar, scales = "free") + 
-               ggplot2::geom_point(ggplot2::aes(colour=Type), na.rm = TRUE, alpha=0.8) + 
+               ggplot2::geom_point(ggplot2::aes(colour=Class), na.rm = TRUE, alpha=0.5, size=I(3)) + 
                ggplot2::stat_density(ggplot2::aes_string(x = "x", y = "..scaled.." ), 
                            data = gg1$densities, position = "identity", 
                            colour = "grey20", geom = "line",  size=I(.5))+
-              ggplot2::theme(legend.position='none')
+              ggplot2::scale_colour_brewer(type ="qual",palette = "Dark2", name="Class")
            
                plotly::ggplotly(a)
             

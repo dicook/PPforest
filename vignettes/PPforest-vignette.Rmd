@@ -79,15 +79,15 @@ rpart.pred <- predict(rpart.crab, newdata = grilla, type="class")
 #To better understand the main characteristics of `PPtree` algorithm we will use a subset of crab data. We have selected two feature variables, RW and BD. With this reduced data set we run a `rpart` and a `PPtree` and we plot the decision boundaries for each tree.
 
 
-# p <- ggplot2::ggplot(data = grilla ) + ggplot2::geom_point(ggplot2::aes(x =RW, y = BD  , color = as.factor(ppred), ratio = 1),alpha = .50)+ ggplot2::scale_colour_brewer(type="qual",palette="Dark2") + ggplot2::theme_bw() 
-#   
-# 
-# 
+# # p <- ggplot2::ggplot(data = grilla ) + ggplot2::geom_point(ggplot2::aes(x =RW, y = BD  , color = as.factor(ppred), ratio = 1),alpha = .50)+ ggplot2::scale_colour_brewer(type="qual",palette="Dark2") + ggplot2::theme_bw() 
+# #   
+# # 
+# # 
 # pl.pp <- p + ggplot2::geom_point(data = crab2, ggplot2::aes(x =RW , y = BD, group=Type,shape = Type, color=Type), size = I(3)  ) +  ggplot2::scale_shape_manual(name = "Class", labels = levels(crab2$Type),values = c(19, 18, 15, 17)) + ggplot2::scale_colour_brewer(type="qual",palette="Dark2") + ggplot2::theme_bw()+  ggplot2::scale_colour_manual(name = "Class",
 #                       labels = levels(crab2$Type),
 #                       values = c("#1B9E77" ,"#D95F02" ,"#7570B3" ,"#E7298A")) +
 #   ggplot2::theme(legend.position = "bottom")
-# 
+
 #  p2 <- ggplot2::ggplot(data = grilla ) + ggplot2::geom_point(ggplot2::aes(x =RW, y = BD  , color = as.factor(rpart.pred), ratio = 1), alpha = .5) + ggplot2::scale_colour_brewer(type="qual",palette="Dark2") + ggplot2::theme_bw() 
 #   
 # 
