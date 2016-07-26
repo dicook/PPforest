@@ -12,7 +12,7 @@
 #' #leukemia data set with all the observations used as training
 #' pprf.leukemia <- PPforest(data = leukemia, class = "Type",
 #'  size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
-#' ppf_importance(data = leukemia, class = "Type", pprf.leukemia, global = FALSE, weight = TRUE) 
+#' ppf_importance(data = leukemia, class = "Type", pprf.leukemia, global = TRUE, weight = TRUE) 
 ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE) {
   x <- data %>% dplyr::select(-get(class)) %>%
     apply(2,FUN=scale)

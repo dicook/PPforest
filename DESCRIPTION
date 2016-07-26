@@ -24,6 +24,7 @@ Suggests:
     rpart,
     gridExtra,
     RColorBrewer,
+    tidyr,
     GGally,
     roxygen2 (>= 3.0.0),
     rmarkdown
