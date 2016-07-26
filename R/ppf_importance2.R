@@ -12,8 +12,6 @@
 #' pprf.leukemia <- PPforest(data = leukemia, class = "Type",
 #'  size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
 #' ppf_importance2(leukemia,"Type",pprf.leukemia, tree.id = 1)
-
-
 ppf_importance2 <- function(data, class, ppf, tree.id = 1) {
   var <- NULL
   value <- NULL

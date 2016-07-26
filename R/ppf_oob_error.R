@@ -45,10 +45,14 @@ ppf_oob_error <- function(ppf, nsplit1, nsplit2) {
     
     oob.pl <- reshape2::melt(oob.err.sp, id.vars = "ntree")
     
+    myColors <- c("#000000", RColorBrewer::brewer.pal(length(unique((oob.pl$variable)))-1,"Dark2"))
+    names(myColors) <- levels(oob.pl$Class)
+    
     if (max(oob.pl$value) < 0.5) {
         p1 <- ggplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + 
             ggplot2::geom_line(size=I(0.5)) + ggplot2::scale_y_continuous(name = "OOB error rate", limits = c(-0.1, max(oob.pl$value)+.1)) + ggplot2::scale_x_continuous(name = "Number of trees")
-       a <- p1 + ggplot2::scale_colour_discrete(name = "Class")
+       a <- p1 + ggplot2::theme(legend.position = "bottom",aspect.ratio=1) + ggplot2::scale_color_manual(values = myColors, name =
+                                                                          "Class") + ggplot2::ggtitle("Cumulative OOB error")
       
          plotly::ggplotly(a)
      
@@ -56,8 +60,11 @@ ppf_oob_error <- function(ppf, nsplit1, nsplit2) {
     } else {
         p1 <- ggplot2::ggplot(data = oob.pl, ggplot2::aes(x = ntree, y = value, color = variable)) + ggplot2::geom_point() + 
             ggplot2::geom_line(size=I(.5)) + ggplot2::scale_y_continuous(name = "OOB error rate", limits = c(-0.1, 1.1)) + ggplot2::scale_x_continuous(name = "Number of trees")
-        a <- p1 + ggplot2::scale_colour_discrete(name = "Class")
-          plotly::ggplotly(a)
+        a <- p1 +ggplot2::theme(legend.position = "bottom",aspect.ratio=1) + ggplot2::scale_color_manual(values = myColors, name =
+                                                                                                           "Class") + ggplot2::ggtitle("Cumulative OOB error")
+        
+         
+         plotly::ggplotly(a)
       
     }
 } 
