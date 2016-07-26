@@ -25,7 +25,6 @@ Suggests:
     gridExtra,
     RColorBrewer,
     GGally,
-    rpart.plot,
     roxygen2 (>= 3.0.0),
     rmarkdown
 VignetteBuilder: knitr

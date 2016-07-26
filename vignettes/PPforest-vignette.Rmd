@@ -40,7 +40,7 @@ To visualize this data set we use a scatterplot matrix.
 library(PPforest)
 library(RColorBrewer)
 library(GGally)
-library(rpart.plot)
+#library(rpart.plot)
 library(gridExtra)
 library(plotly)
 ```

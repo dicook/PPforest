@@ -49,7 +49,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
         
         pp <- ncol(origdata)
         
-        # remove the variable with zero variance
+        #remove the variable with zero variance
         remove <- (1:pp) * (apply(origdata, 2, sd) == 0)
         remove <- remove[remove != 0]
         if (length(remove) != 0) {

@@ -7,7 +7,7 @@
 var_select(data, size.p)
 }
 \arguments{
-\item{data}{Data frame with the complete data set.}
+\item{data}{data frame with the data set with the variables to be selected.}
 
 \item{size.p}{Sample size proportion of variables randomly sampled as candidates at each split.}
 }
@@ -18,7 +18,7 @@ a vector giving the id of the randomly sampled variables.
 Index id for variables set, sample variables without replacement.
 }
 \examples{
-variables <- var_select(data = leukemia,  size.p = 0.9)
+variables <- var_select(data = leukemia[,-1],  size.p = 0.9)
 variables
 }
 
