@@ -82,9 +82,7 @@ PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, str
       x <- pred.tr[[2]][oob.obs[, id] == TRUE, id] 
       table(factor(x, levels=levels(train[, class])) )  
       })[,-1]
-    
-    
-    
+
 #     votes <- matrix(0, ncol = length(unique(train[, class])), nrow = nrow(train))
 #     colnames(votes) <- levels(train[, class])
 #     
@@ -140,7 +138,7 @@ PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, str
         error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, 
         output.trees = output, proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, 
         n.var = var.sel, type = "Classification", confusion = confusion, call = match.call(), train = train, test = test, 
-        vote.mat = pred.tr[[2]],class.var=class)
+        vote.mat = pred.tr[[2]],class.var=class, oob.obs = oob.obs)
     class(results) <- "PPforest"
     
     return(results)
