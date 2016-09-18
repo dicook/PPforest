@@ -1,0 +1,5 @@
+setwd("/Users/nataliadasilva/Documents/PP.forest/PP.Forest")
+install.package(PPforest)
+install.packages(PPforest)
+install.packages(PP.forest)
+install.packages(PP.Forest)
