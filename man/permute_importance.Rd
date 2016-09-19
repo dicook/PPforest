@@ -4,7 +4,7 @@
 \alias{permute_importance}
 \title{Obtain the importance variable measure based in permutation}
 \usage{
-permute_importance(ppf, cl.tree = TRUE)
+permute_importance(ppf, cl.tree = TRUE, pl = TRUE)
 }
 \arguments{
 \item{ppf}{is a PPforest object}
@@ -16,5 +16,10 @@ importance variable plot
 }
 \description{
 Obtain the importance variable measure based in permutation
+}
+\examples{
+pprf.crab<- PPforest(data = crab, class = "Type",
+ size.tr = 1, m = 100, size.p = .4, PPmethod = 'LDA', strata = TRUE)
+permute_importance(ppf = pprf.crab, cl.tree = FALSE, pl = TRUE) 
 }
 
