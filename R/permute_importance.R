@@ -11,6 +11,8 @@
 #' permute_importance(ppf = pprf.crab, cl.tree = FALSE, pl = TRUE) 
 permute_importance <- function(ppf, cl.tree = TRUE, pl = TRUE){
   imp <-NULL
+  imp2 <- NULL
+  sd<- NULL
   nm <- NULL
   oob.id <- apply(ppf$oob.obs,1, which)
   permute <- plyr:: llply(oob.id , function(x) sample(x,length(x)))
@@ -29,14 +31,22 @@ for(i in 1:(ncol(ppf$train)-1)) {
     corr.oob.per[j,i] <-  sum(diag(table(pred.oob.per[[j]], ppf$train[ oob.id[[j]],ppf$class.var])))
   }
 }
-  corr.oob <- (1-ppf$oob.error.tree) * unlist(lapply(oob.id, length))
   
- imp.pl<- data.frame( nm = colnames(ppf$train)[colnames(ppf$train)!=ppf$class.var], imp=apply(corr.oob.per, 2, function(x) mean((corr.oob-x)))) %>% dplyr::arrange(imp)
- #imp.pl$imp/sd(imp.pl$imp)
- imp.pl$nm <- factor(imp.pl$nm, levels= imp.pl[order( imp.pl$imp), "nm"])
+  rank.var<-t(apply(corr.oob.per,1,rank,ties.method = "random"))
+  corr.oob <- (1-ppf$oob.error.tree) * unlist(lapply(oob.id, length))
+  n.oob =  unlist(lapply(permute, length))
+ imp.pl<- data.frame( nm = colnames(ppf$train)[colnames(ppf$train)!=ppf$class.var], 
+                      imp=apply(corr.oob.per, 2, function(x) mean((corr.oob-x))), 
+                      imp2=apply(corr.oob.per, 2, function(x) mean(((1-x/n.oob)-ppf$oob.error.tree))), 
+                      sd =apply(corr.oob.per, 2, function(x) sd( ((1-x/n.oob)-ppf$oob.error.tree)))) %>%
+   mutate(imp.sd =imp2/sd)%>% dplyr::arrange(imp)
  
- p <-  ggplot2::ggplot(data = imp.pl, ggplot2::aes(imp,nm) ) + ggplot2::geom_point() + ggplot2::xlab("Importance") +
-   ggplot2::ylab("")
+              
+ #imp.pl$imp/sd(imp.pl$imp)
+ imp.pl$nm <- factor(imp.pl$nm, levels= imp.pl[order( imp.pl$imp2), "nm"])
+ 
+ p <-  ggplot2::ggplot(data = imp.pl, ggplot2::aes(imp2,nm) ) + ggplot2::geom_point() + ggplot2::xlab("Importance") +
+   ggplot2::ylab("") +ggplot2::theme(aspect.ratio=1)
   
 }else{
   
@@ -63,14 +73,14 @@ for(i in 1:(ncol(ppf$train)-1)) {
   imp.pl$nm <- factor(imp.pl$nm, levels= imp.pl[order( imp.pl$imp), "nm"])
   
   p <-  ggplot2::ggplot(data = imp.pl, ggplot2::aes(imp,nm) ) +ggplot2::geom_point() + ggplot2::xlab("Importance") +
-    ggplot2::ylab("")
+    ggplot2::ylab("") + ggplot2::theme(aspect.ratio=1)
  
   
 }
   if(pl==TRUE){
     plotly::ggplotly(p)
   }else{
-    imp.pl
+    list(imp.pl,rank.var)
   }
 }
   

@@ -43,14 +43,15 @@ ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE) {
       import.vi.wg <- mmat.vi.w %>% dplyr::group_by(variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
       import.vi.wg$variable <- with(import.vi.wg, reorder(variable, mean))
       
-      a <- ggplot2::ggplot(import.vi.wg, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point()
+      a <- ggplot2::ggplot(import.vi.wg, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point()+ggplot2::theme(aspect.ratio=1)
       print(import.vi.wg)
       
     }else{
       import.vi <- mmat.vi %>% dplyr::group_by(variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
       import.vi$variable <- with(import.vi, reorder(variable, mean))
       
-      a <- ggplot2::ggplot(import.vi, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::facet_wrap(~node)
+      a <- ggplot2::ggplot(import.vi, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + 
+        ggplot2::facet_wrap(~node)+ ggplot2::theme(aspect.ratio=1)
       print(import.vi) 
     }
   }else{
@@ -59,7 +60,8 @@ ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE) {
         dplyr::arrange(dplyr::desc(mean))
       
       import.vi.w$variable <- with(import.vi.w, reorder(variable, mean))
-      a <- ggplot2::ggplot(import.vi.w, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::facet_grid(~node)
+      a <- ggplot2::ggplot(import.vi.w, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + 
+        ggplot2::facet_grid(~node) +ggplot2::theme(aspect.ratio=1)
       print(import.vi.w)
       
     }else{
@@ -68,7 +70,8 @@ ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE) {
       
       import.vi$variable <- with(import.vi, reorder(variable, mean))
       
-      a <- ggplot2::ggplot(import.vi, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::facet_grid(~node)
+      a <- ggplot2::ggplot(import.vi, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + 
+        ggplot2::facet_grid(~node) +ggplot2::theme(aspect.ratio=1)
       print(import.vi) 
     }
   
