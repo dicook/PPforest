@@ -42,7 +42,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
     cls <- all.vars(formula)[[1]]
     origdata <- data[,-which(colnames(data)%in%cls)]
     origdata <- as.matrix(origdata)
-    
+   
     Find.proj <- function(origclass, origdata, PPmethod, weight, r, lambda, maxiter, ...) {
         
         i.data.ori <- origdata  #original data set

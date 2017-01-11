@@ -11,7 +11,7 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
-#' #leukemia data set
+#' #leukemia data set example
 #' leukemia.b <- ppf_bootstrap(data = leukemia, class = "Type", m = 70) 
 #' leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .4, PPmethod = 'PDA', lambda = .1) 
 #' str(leukemia.trees,max.level=1)
