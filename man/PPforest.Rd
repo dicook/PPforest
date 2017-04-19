@@ -47,9 +47,8 @@ An object of class \code{PPforest} with components.
 \code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
 }
 \examples{
-#leukemia data set with all the observations used as training
+#leukemia data set example with all the observations used as training
 pprf.leukemia <- PPforest(data = leukemia, class = "Type",
  size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
 pprf.leukemia
 }
-

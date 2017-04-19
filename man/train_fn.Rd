@@ -23,4 +23,3 @@ Index id for training set, sample in each class with the same proportion.
 training.id <- train_fn(data = leukemia, class = "Type", size.p = 0.7)
 training.id
 }
-

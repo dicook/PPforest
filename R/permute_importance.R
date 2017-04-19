@@ -2,6 +2,7 @@
 #' 
 #' @param ppf is a PPforest object
 #' @param cl.tree when it is TRUE compute the importance variable base on permuted oob observations for each variable when it is FALSE compute an importance for all the forest with permuted values for each variable instead
+#' @param  pl plotly version is it is TRUE
 #' @return importance variable plot  
 #' @export
 #' @importFrom magrittr %>%
@@ -27,7 +28,7 @@ for(i in 1:(ncol(ppf$train)-1)) {
     d[, i] <- aux[ permute[[j]], i]
     
     
-    pred.oob.per[[j]] <- PPtreeViz::PP.classify(test.data = d, Tree.result =  ppf[[8]][[2]][[j]], Rule = 1)[[2]]
+    pred.oob.per[[j]] <- PPtreeViz::PPclassify(test.data = d, Tree.result =  ppf[[8]][[2]][[j]], Rule = 1)[[2]]
     corr.oob.per[j,i] <-  sum(diag(table(pred.oob.per[[j]], ppf$train[ oob.id[[j]],ppf$class.var])))
   }
 }
@@ -39,7 +40,7 @@ for(i in 1:(ncol(ppf$train)-1)) {
                       imp=apply(corr.oob.per, 2, function(x) mean((corr.oob-x))), 
                       imp2=apply(corr.oob.per, 2, function(x) mean(((1-x/n.oob)-ppf$oob.error.tree))), 
                       sd =apply(corr.oob.per, 2, function(x) sd( ((1-x/n.oob)-ppf$oob.error.tree)))) %>%
-   mutate(imp.sd =imp2/sd)%>% dplyr::arrange(imp)
+   plyr::mutate(imp.sd =imp2/sd)%>% dplyr::arrange(imp)
  
               
  #imp.pl$imp/sd(imp.pl$imp)

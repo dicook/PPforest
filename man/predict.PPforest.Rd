@@ -33,4 +33,3 @@ pprf.leukemia <- PPforest(data = leukemia, class = "Type",
 pr.leukemia <- predict( object = pprf.leukemia, class= "Type", test.data = pprf.leukemia$test)
 pr.leukemia
 }
-

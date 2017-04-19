@@ -10,6 +10,8 @@ permute_importance(ppf, cl.tree = TRUE, pl = TRUE)
 \item{ppf}{is a PPforest object}
 
 \item{cl.tree}{when it is TRUE compute the importance variable base on permuted oob observations for each variable when it is FALSE compute an importance for all the forest with permuted values for each variable instead}
+
+\item{pl}{plotly version is it is TRUE}
 }
 \value{
 importance variable plot
@@ -22,4 +24,3 @@ pprf.crab<- PPforest(data = crab, class = "Type",
  size.tr = 1, m = 100, size.p = .4, PPmethod = 'LDA', strata = TRUE)
 permute_importance(ppf = pprf.crab, cl.tree = FALSE, pl = TRUE) 
 }
-

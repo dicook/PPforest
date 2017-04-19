@@ -21,4 +21,3 @@ Index id for variables set, sample variables without replacement.
 variables <- var_select(data = leukemia[,-1],  size.p = 0.9)
 variables
 }
-

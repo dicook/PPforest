@@ -23,4 +23,3 @@ pprf.leukemia <- PPforest(data = leukemia, class = "Type",
  size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
 parallel_dat(leukemia,"Type")
 }
-

@@ -25,4 +25,3 @@ Draws bootstrap samples with strata option.
 leukemia.b <- ppf_bootstrap(data = leukemia, class = "Type",  m = 200) 
 index <- lapply(attributes(leukemia.b)$indices, function(x) x + 1)
 }
-

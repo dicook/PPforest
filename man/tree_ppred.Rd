@@ -25,4 +25,3 @@ leukemia.b <- ppf_bootstrap(data = leukemia[training.id$id,], class = "Type", m 
 leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .4, PPmethod = 'LDA')
 pr <- tree_ppred( xnew = leukemia[-training.id$id, -1] , leukemia.trees)
 }
-

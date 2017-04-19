@@ -24,9 +24,8 @@ data frame with trees_pp output for all the bootstraps samples.
 For each bootstrap sample grow a projection persuit tree (PPtree object).
 }
 \examples{
-#leukemia data set
+#leukemia data set example
 leukemia.b <- ppf_bootstrap(data = leukemia, class = "Type", m = 70) 
 leukemia.trees <- trees_pp(data.b = leukemia.b, size.p = .4, PPmethod = 'PDA', lambda = .1) 
 str(leukemia.trees,max.level=1)
 }
-
